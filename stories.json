@@ -39,6 +39,11 @@
     },
     "book": "book/book.json",
     "pages": 15,
-    "bookThumb": "book/07.jpg"
+    "bookThumb": "book/07.jpg",
+    "storytelling": {
+      "file": "storytelling.mp4",
+      "thumb": "storytelling-thumb.jpg",
+      "minutes": 2.9
+    }
   }
 ]

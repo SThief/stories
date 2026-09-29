@@ -13,7 +13,7 @@ The folder needs:
 The voice is made once per page and kept in <story-dir>/build/storytell/voice/, so a re-run after swapping one
 picture only re-cuts the video. Delete a page's .wav to re-record it.
 """
-import json, os, subprocess, sys, shutil
+import json, os, subprocess, sys
 import numpy as np, soundfile as sf
 
 VOICE_LAB = "/Users/khavu/Project/voice-lab/models/"
@@ -134,7 +134,12 @@ def shelve(d, out, sid, minutes):
     L = os.path.join(LIBRARY, "stories", sid); p = os.path.join(LIBRARY, "stories.json")
     stories = json.load(open(p)); e = next((x for x in stories if x["id"] == sid), None)
     if not e: die(f"no story '{sid}' in {p} — add its entry (cartoon/book) first")
-    os.makedirs(L, exist_ok=True); shutil.copy(out, os.path.join(L, "storytelling.mp4"))
+    # the shelf keeps a web copy (the library's rule: CRF 24, faststart, under GitHub's 100 MB); the full-size video stays in the story folder
+    os.makedirs(L, exist_ok=True)
+    run(["ffmpeg", "-y", "-loglevel", "error", "-i", out, "-c:v", "libx264", "-crf", "24", "-preset", "medium", "-pix_fmt", "yuv420p",
+         "-c:a", "copy", "-movflags", "+faststart", os.path.join(L, "storytelling.mp4")])
+    mb = os.path.getsize(os.path.join(L, "storytelling.mp4")) / 1048576
+    if mb > 95: die(f"the web copy is {mb:.0f} MB — GitHub refuses files over 100 MB")
     run(["ffmpeg", "-y", "-loglevel", "error", "-ss", "20", "-i", out, "-frames:v", "1", "-vf", "scale=960:-1", "-q:v", "3",
          os.path.join(L, "storytelling-thumb.jpg")])
     e["storytelling"] = {"file": "storytelling.mp4", "thumb": "storytelling-thumb.jpg", "minutes": round(minutes, 1)}
