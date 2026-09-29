@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Story Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --night: #0d1330; --deep: #080c20; --card: #18204a; --line: rgba(255, 236, 200, .16); --ink: #fff7ea; --soft: #cfc4b0;
+    --gold: #f4c542; --warm: #ff9a4a; --blue: #6fa8ff; --green: #6fd08c; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; min-height: 100%; }
+  body { background: radial-gradient(1400px 700px at 50% -20%, #25336e, var(--night) 55%, var(--deep)); color: var(--ink);
+    font-family: "Baloo 2", "Chalkboard SE", system-ui, sans-serif; overflow-x: hidden; }
+  #sky { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  #sky i { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #fff6c2; animation: tw 3s ease-in-out infinite; }
+  @keyframes tw { 50% { opacity: .2; transform: scale(.6); } }
+  .moon { position: fixed; right: 7vw; top: 60px; width: 90px; height: 90px; border-radius: 50%; background: #fff3c4;
+    box-shadow: 0 0 80px 30px rgba(255, 236, 170, .18); z-index: 0; }
+  .moon::after { content: ""; position: absolute; left: 22px; top: 12px; width: 90px; height: 90px; border-radius: 50%; background: var(--night); opacity: .0; }
+  main { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; padding: 36px 16px 80px; }
+  button, a.btn { font: inherit; color: inherit; cursor: pointer; }
+  .back { display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, .08); border: 1px solid var(--line);
+    padding: 8px 18px 8px 12px; border-radius: 999px; font-size: 20px; font-weight: 700; text-decoration: none; color: var(--ink); }
+  .back:hover { background: rgba(255, 255, 255, .14); }
+  /* shelf */
+  .hero h1 { margin: 20px 0 0; font-size: clamp(44px, 8vw, 84px); line-height: .95; letter-spacing: -.5px; }
+  .hero h1 span { color: var(--gold); }
+  .hero p { margin: 10px 0 0; color: var(--soft); font-size: clamp(18px, 2.4vw, 23px); }
+  .shelf { margin-top: 44px; display: grid; gap: 34px 26px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); position: relative; }
+  .book { text-decoration: none; color: inherit; display: block; transition: transform .2s; }
+  .book:hover { transform: translateY(-8px) rotate(-1deg); }
+  .cover { position: relative; aspect-ratio: 3 / 4; border-radius: 6px 16px 16px 6px; overflow: hidden; background: #222 center / cover;
+    box-shadow: inset 12px 0 0 rgba(0, 0, 0, .25), inset 14px 0 0 rgba(255, 255, 255, .12), 0 18px 34px rgba(0, 0, 0, .55); }
+  .cover .t { position: absolute; left: 0; right: 0; bottom: 0; padding: 60px 16px 14px 26px; font-size: 24px; font-weight: 800; line-height: 1.05;
+    background: linear-gradient(transparent, rgba(8, 10, 30, .92)); text-shadow: 0 2px 0 rgba(0, 0, 0, .4); }
+  .plank { height: 18px; margin: 14px -8px 0; border-radius: 6px; background: linear-gradient(#a36a3c, #6b4226); box-shadow: 0 10px 18px rgba(0, 0, 0, .5); }
+  .meta { margin-top: 12px; color: var(--soft); font-size: 17px; }
+  .soon .cover { background: repeating-linear-gradient(135deg, #1b2350 0 18px, #1f2858 18px 36px); display: grid; place-items: center; box-shadow: none; border: 2px dashed var(--line); }
+  .soon .cover b { font-size: 60px; color: rgba(255, 255, 255, .25); }
+  /* story page */
+  .story { display: grid; grid-template-columns: minmax(240px, 380px) 1fr; gap: 44px; margin-top: 28px; align-items: start; }
+  .story .cover { box-shadow: inset 12px 0 0 rgba(0, 0, 0, .25), 0 26px 60px rgba(0, 0, 0, .6); }
+  .story h2 { margin: 0; font-size: clamp(38px, 5.5vw, 64px); line-height: 1; }
+  .story .from { color: var(--soft); font-size: 20px; margin-top: 8px; }
+  .lesson { display: inline-block; margin-top: 16px; padding: 8px 18px; border-radius: 999px; background: rgba(244, 197, 66, .14);
+    border: 1px solid rgba(244, 197, 66, .4); color: var(--gold); font-weight: 700; font-size: 20px; }
+  .ways { display: grid; gap: 16px; margin-top: 30px; }
+  .way { display: grid; grid-template-columns: 170px 1fr auto; gap: 20px; align-items: center; text-decoration: none; color: inherit; background: var(--card);
+    border: 1px solid var(--line); border-radius: 22px; padding: 12px 22px 12px 12px; transition: transform .15s, background .15s; }
+  .way:hover { transform: translateX(6px); background: #1f2960; }
+  .way .th { aspect-ratio: 16 / 9; border-radius: 14px; background: #0a0f25 center / cover; position: relative; }
+  .way .th::after { content: ""; position: absolute; inset: 0; margin: auto; width: 46px; height: 46px; border-radius: 50%; background: rgba(0, 0, 0, .45)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 7l9 5-9 5z' fill='white'/%3E%3C/svg%3E") center / 28px no-repeat; }
+  .way.readit .th::after { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 6c3-1 6-1 8 1 2-2 5-2 8-1v12c-3-1-6-1-8 1-2-2-5-2-8-1z' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E"); }
+  .way h3 { margin: 0; font-size: 28px; line-height: 1.05; }
+  .way p { margin: 4px 0 0; color: var(--soft); font-size: 18px; line-height: 1.3; }
+  .tag { font-weight: 800; font-size: 15px; padding: 4px 12px; border-radius: 999px; white-space: nowrap; }
+  .c1 .tag { background: rgba(255, 154, 74, .18); color: var(--warm); } .c2 .tag { background: rgba(111, 168, 255, .18); color: var(--blue); } .c3 .tag { background: rgba(111, 208, 140, .18); color: var(--green); } .c4 .tag { background: rgba(196, 140, 255, .18); color: #c9a4ff; }
+  /* player */
+  .player { margin-top: 20px; border-radius: 22px; overflow: hidden; background: #000; box-shadow: 0 30px 70px rgba(0, 0, 0, .6); }
+  .player video { display: block; width: 100%; max-height: 78vh; background: #000; }
+  .ptitle { margin: 18px 0 0; font-size: 30px; }
+  /* reader */
+  .reader { margin-top: 20px; }
+  .spread { display: grid; grid-template-columns: 1fr 1fr; background: #fbf3e2; color: #3b2a1e; border-radius: 14px 22px 22px 14px; overflow: hidden;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, .6), inset 0 0 0 1px rgba(0, 0, 0, .08); min-height: min(62vh, 560px); position: relative; }
+  .spread::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 40px; margin-left: -20px; background: linear-gradient(90deg, transparent, rgba(0, 0, 0, .12), transparent); pointer-events: none; }
+  .spread .pic { background: #f3e6cc center / contain no-repeat; margin: 18px; border-radius: 10px; }
+  .spread .words { display: flex; align-items: center; padding: 36px 44px; font-family: "Chalkboard SE", "Baloo 2", sans-serif; font-size: clamp(22px, 2.6vw, 34px); line-height: 1.45; }
+  .spread.title .words { font-size: clamp(34px, 4.4vw, 58px); font-weight: 700; line-height: 1.1; justify-content: center; text-align: center; }
+  .spread .words span.hl { background: rgba(244, 197, 66, .45); border-radius: 6px; }
+  .turn { animation: turn .45s ease; } @keyframes turn { from { opacity: 0; transform: translateX(24px); } }
+  .controls { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 20px; flex-wrap: wrap; }
+  .controls button { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 10px 24px; font-size: 22px; font-weight: 700; min-width: 64px; }
+  .controls button:hover { background: #222c66; }
+  .controls button.on { background: var(--gold); color: #2a1d08; border-color: transparent; }
+  .controls .count { color: var(--soft); font-size: 20px; min-width: 80px; text-align: center; }
+  .dots { display: flex; gap: 6px; justify-content: center; margin-top: 14px; flex-wrap: wrap; }
+  .dots i { width: 10px; height: 10px; border-radius: 50%; background: rgba(255, 255, 255, .2); } .dots i.on { background: var(--gold); }
+  @media (max-width: 760px) {
+    .story { grid-template-columns: 1fr; gap: 24px; } .story .cover { max-width: 300px; }
+    .way { grid-template-columns: 110px 1fr; } .way .tag { display: none; }
+    .spread { grid-template-columns: 1fr; } .spread .pic { aspect-ratio: 1; margin: 12px 12px 0; } .spread::after { display: none; }
+    .spread .words { padding: 20px 22px 26px; }
+  }
+</style>
+</head>
+<body>
+<div id="sky"></div><div class="moon"></div>
+<main id="app"></main>
+<script>
+const app = document.getElementById('app');
+const sky = document.getElementById('sky');
+for (let i = 0; i < 90; i++) { const s = document.createElement('i'); s.style.left = Math.random() * 100 + '%'; s.style.top = Math.random() * 70 + '%'; s.style.animationDelay = (Math.random() * 3) + 's'; s.style.opacity = .3 + Math.random() * .7; sky.appendChild(s); }
+let STORIES = [];
+const base = id => `stories/${id}/`;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function shelf() {
+  app.innerHTML = `<section class="hero"><h1>Story <span>Library</span></h1><p>Pick a book. Watch it, listen to it, or read it together.</p></section>
+  <section class="shelf">${STORIES.map(s => `<a class="book" href="#/story/${s.id}"><div class="cover" style="background-image:url('${base(s.id)}cover.jpg')"><div class="t">${esc(s.title)}</div></div><div class="plank"></div><div class="meta">Ages ${esc(s.age)} · ${['cartoon', 'puppets', 'storytelling', 'book'].filter(k => s[k]).length} ways</div></a>`).join('')}
+  <div class="book soon"><div class="cover"><b>+</b></div><div class="plank"></div><div class="meta">Next story…</div></div></section>`;
+}
+function story(s) {
+  app.innerHTML = `<a class="back" href="#/">‹ Library</a>
+  <section class="story"><div class="cover" style="background-image:url('${base(s.id)}cover.jpg')"></div>
+  <div><h2>${esc(s.title)}</h2><div class="from">From the movie ${esc(s.from)}</div><div class="lesson">★ ${esc(s.lesson)}</div>
+  <div class="ways">
+    <a class="way c1" href="#/watch/${s.id}/cartoon"><div class="th" style="background-image:url('${base(s.id)}${s.cartoon.thumb}')"></div><div><h3>Cartoon</h3><p>${esc(s.cartoon.blurb || 'Watch the story move.')}</p></div><span class="tag">${Math.round(s.cartoon.minutes)} min</span></a>
+    ${s.puppets ? `<a class="way c4" href="#/watch/${s.id}/puppets"><div class="th" style="background-image:url('${base(s.id)}${s.puppets.thumb}')"></div><div><h3>Puppet cartoon</h3><p>The same story with painted puppets in big painted places.</p></div><span class="tag">${Math.round(s.puppets.minutes)} min</span></a>` : ''}
+    ${s.storytelling ? `<a class="way c2" href="#/watch/${s.id}/storytelling"><div class="th" style="background-image:url('${base(s.id)}${s.storytelling.thumb}')"></div><div><h3>Storytelling</h3><p>Painted pictures and a storyteller's voice.</p></div><span class="tag">${Math.round(s.storytelling.minutes)} min</span></a>` : ''}
+    <a class="way c3 readit" href="#/read/${s.id}/0"><div class="th" style="background-image:url('${base(s.id)}${s.bookThumb || 'book/05.jpg'}')"></div><div><h3>Read the book</h3><p>Turn the pages yourself. Tap "Read to me" to hear each page.</p></div><span class="tag">${s.pages || 15} pages</span></a>
+  </div></div></section>`;
+}
+function watch(s, kind) {
+  const v = s[kind];
+  app.innerHTML = `<a class="back" href="#/story/${s.id}">‹ ${esc(s.title)}</a><h2 class="ptitle">${({ cartoon: 'Cartoon', puppets: 'Puppet cartoon', storytelling: 'Storytelling' })[kind] || 'Watch'}</h2>
+  <div class="player"><video src="${base(s.id)}${v.file}" poster="${base(s.id)}${v.thumb}" controls playsinline autoplay></video></div>`;
+}
+let audio = null, autoRead = false;
+async function read(s, n) {
+  const b = s._book || (s._book = await (await fetch(base(s.id) + s.book)).json());
+  n = Math.max(0, Math.min(b.pages.length - 1, n | 0)); const p = b.pages[n];
+  const img = p.img.startsWith('..') ? base(s.id) + p.img.slice(3) : base(s.id) + 'book/' + p.img;
+  app.innerHTML = `<a class="back" href="#/story/${s.id}">‹ ${esc(s.title)}</a>
+  <section class="reader"><div class="spread turn ${p.cover ? 'title' : ''}"><div class="pic" style="background-image:url('${img}')"></div><div class="words"><span>${esc(p.text)}</span></div></div>
+  <div class="controls"><button id="prev" aria-label="Previous page">‹</button><button id="say">🔊 Read to me</button><button id="auto" class="${autoRead ? 'on' : ''}">Read it all</button><span class="count">${n + 1} / ${b.pages.length}</span><button id="next" aria-label="Next page">›</button></div>
+  <div class="dots">${b.pages.map((_, i) => `<i class="${i === n ? 'on' : ''}"></i>`).join('')}</div></section>`;
+  const go = k => { location.hash = `#/read/${s.id}/${k}`; };
+  const speak = () => { if (audio) audio.pause(); audio = new Audio(base(s.id) + 'book/' + p.audio); const w = app.querySelector('.words span'); w.classList.add('hl');
+    audio.onended = () => { w.classList.remove('hl'); if (autoRead && n < b.pages.length - 1) setTimeout(() => go(n + 1), 900); else { autoRead = false; } };
+    audio.play().catch(() => w.classList.remove('hl')); };
+  document.getElementById('prev').onclick = () => { autoRead = false; go(n - 1); };
+  document.getElementById('next').onclick = () => { autoRead = false; go(n + 1); };
+  document.getElementById('say').onclick = speak;
+  document.getElementById('auto').onclick = () => { autoRead = !autoRead; if (autoRead) speak(); else if (audio) audio.pause(); read(s, n).then(() => {}); };
+  if (autoRead) speak();
+  let x0 = null; const sp = app.querySelector('.spread');
+  sp.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+  sp.addEventListener('touchend', e => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) { autoRead = false; go(n + (dx < 0 ? 1 : -1)); } x0 = null; });
+}
+document.addEventListener('keydown', e => { const m = location.hash.match(/#\/read\/([^/]+)\/(\d+)/); if (!m) return;
+  if (e.key === 'ArrowRight') { autoRead = false; location.hash = `#/read/${m[1]}/${+m[2] + 1}`; } if (e.key === 'ArrowLeft') { autoRead = false; location.hash = `#/read/${m[1]}/${+m[2] - 1}`; } });
+function route() {
+  if (audio && !autoRead) audio.pause();
+  const h = location.hash.slice(2).split('/'), s = STORIES.find(x => x.id === h[1]);
+  if (h[0] === 'story' && s) story(s); else if (h[0] === 'watch' && s) watch(s, h[2]); else if (h[0] === 'read' && s) read(s, +h[2]); else shelf();
+  window.scrollTo(0, 0);
+}
+fetch('stories.json').then(r => r.json()).then(j => { STORIES = j; route(); });
+addEventListener('hashchange', route);
+</script>
+</body>
+</html>

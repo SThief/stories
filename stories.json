@@ -1,0 +1,44 @@
+[
+  {
+    "id": "knights-tale",
+    "title": "The Boy Who Changed His Stars",
+    "from": "A Knight's Tale (2001)",
+    "age": "4-8",
+    "lesson": "You can change your stars.",
+    "made": "2026-09-25",
+    "cartoon": {
+      "file": "cartoon.mp4",
+      "thumb": "cartoon-thumb.jpg",
+      "minutes": 3.3,
+      "blurb": "Watch the story move — knights, horses and a big BANG!"
+    },
+    "puppets": {
+      "file": "puppets.mp4",
+      "thumb": "puppets-thumb.jpg",
+      "minutes": 3.3
+    },
+    "storytelling": {
+      "file": "storytelling.mp4",
+      "thumb": "storytelling-thumb.jpg",
+      "minutes": 2.5
+    },
+    "book": "book/book.json"
+  },
+  {
+    "id": "karate-kid",
+    "title": "Wax On, Wax Off",
+    "from": "The Karate Kid (1984)",
+    "age": "4-8",
+    "lesson": "Small practice, every day, makes you strong.",
+    "made": "2026-09-29",
+    "cartoon": {
+      "file": "cartoon.mp4",
+      "thumb": "cartoon-thumb.jpg",
+      "minutes": 3.9,
+      "blurb": "Watch the story move — wax on, wax off, and the crane kick!"
+    },
+    "book": "book/book.json",
+    "pages": 15,
+    "bookThumb": "book/07.jpg"
+  }
+]

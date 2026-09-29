@@ -1,0 +1,162 @@
+#!/Users/khavu/Project/voice-lab/.venv/bin/python
+"""storytell — turn a story folder into a storytelling video: a painted picture on the left page, the words on the
+right page, a storyteller's voice, a soft harp, and a slow zoom on each picture.
+
+    storytell <story-dir>                 build <story-dir>/storytelling.mp4
+    storytell <story-dir> --library ID    ...and put it on the story-library shelf as story ID
+
+The folder needs:
+    story.json     {"title", "voice" (a Kokoro voice, e.g. bm_fable), "scenes": [{"id": "01", "text": "..."}, ...]}
+    art/00.png     the cover picture (shown with the title)
+    art/<id>.png   one square picture per scene
+
+The voice is made once per page and kept in <story-dir>/build/storytell/voice/, so a re-run after swapping one
+picture only re-cuts the video. Delete a page's .wav to re-record it.
+"""
+import json, os, subprocess, sys, shutil
+import numpy as np, soundfile as sf
+
+VOICE_LAB = "/Users/khavu/Project/voice-lab/models/"
+LIBRARY = "/Users/khavu/Project/story-library"
+FONT = "/System/Library/Fonts/Supplemental/ChalkboardSE.ttc"
+PAPER, INK, GUTTER = "#f8f1e3", "#4a3526", "#e9dcc3"
+LEAD, TAIL, FADE, END = 0.8, 1.6, 0.6, 2.5          # seconds: before the voice, after it, crossfade, last hold
+TEXT_W, TEXT_H, TEXT_PT = 760, 900, 50               # the words' box on the right page, and their largest size
+# Kokoro reads a few abbreviations badly or pauses after them
+SAY = {"Mr.": "Mister", "Mrs.": "Missus", "Dr.": "Doctor"}
+
+
+def run(cmd):
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    if r.returncode:
+        sys.exit(f"storytell: {cmd[0]} failed:\n{r.stderr[-1500:]}")
+    return r.stdout
+
+
+def die(msg):
+    sys.exit(f"storytell: {msg}")
+
+
+def pages_of(d):
+    s = json.load(open(os.path.join(d, "story.json")))
+    for k in ("title", "voice", "scenes"):
+        if k not in s: die(f"story.json has no '{k}'")
+    pages = [{"id": "00", "text": s["title"], "title": True}] + [{"id": x["id"], "text": x["text"]} for x in s["scenes"]]
+    missing = [f"art/{p['id']}.png" for p in pages if not os.path.exists(os.path.join(d, "art", p["id"] + ".png"))]
+    if missing: die("missing pictures: " + ", ".join(missing))
+    return s, pages
+
+
+def voices(s, pages, vdir):
+    todo = [p for p in pages if not os.path.exists(os.path.join(vdir, p["id"] + ".wav"))]
+    if not todo: return
+    from kokoro_onnx import Kokoro
+    k = Kokoro(VOICE_LAB + "kokoro-v1.0.onnx", VOICE_LAB + "voices-v1.0.bin")
+    for p in todo:
+        t = p["text"].replace('"', "")
+        for a, b in SAY.items(): t = t.replace(a, b)
+        a, sr = k.create(t, voice=s["voice"], speed=0.85 if p.get("title") else s.get("speed", 0.88), lang="en-gb")
+        sf.write(os.path.join(vdir, p["id"] + ".wav"), a, sr); print("  voice", p["id"], round(len(a) / sr, 1), "s", flush=True)
+
+
+def text_page(txt, out, title, tmp):
+    # the words must fit their box: shrink from the largest size until the caption is no taller than the page
+    pt = 92 if title else TEXT_PT
+    while True:
+        run(["magick", "-size", f"{TEXT_W}x", "-background", "none", "-fill", INK, "-font", FONT, "-pointsize", str(pt),
+             "-interline-spacing", "10" if title else "14", "-gravity", "Center" if title else "West", f"caption:{txt}", tmp])
+        h = int(run(["magick", "identify", "-format", "%h", tmp]))
+        if h <= TEXT_H or pt <= 30: break
+        pt -= 2
+    run(["magick", "-size", "1920x1080", f"xc:{PAPER}", "-fill", GUTTER, "-draw", "rectangle 1040,60 1044,1020",
+         tmp, "-gravity", "NorthWest", "-geometry", f"+1110+{90 + (TEXT_H - h) // 2}", "-composite", out])
+    return pt
+
+
+def clip(page, i, bdir, vdir, art):
+    v = os.path.join(vdir, page["id"] + ".wav"); d = round(LEAD + sf.info(v).duration + TAIL, 2)
+    pg = os.path.join(bdir, f"page_{page['id']}.png")
+    pt = text_page(page["text"], pg, page.get("title"), os.path.join(bdir, "caption.png"))
+    fr = int(d * 30)
+    z = f"min(1+0.07*on/{fr},1.07)" if i % 2 == 0 else f"max(1.07-0.07*on/{fr},1)"      # zoom in, then out, then in...
+    out = os.path.join(bdir, f"clip_{page['id']}.mp4"); ms = int(LEAD * 1000)
+    run(["ffmpeg", "-y", "-loglevel", "error", "-loop", "1", "-i", pg, "-i", art, "-i", v, "-filter_complex",
+         f"[1]scale=4000:4000,zoompan=z='{z}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d={fr}:s=940x940:fps=30[p];"
+         f"[0][p]overlay=60:70:shortest=1,format=yuv420p[v];"
+         f"[2]adelay={ms}|{ms},apad,atrim=0:{d},aformat=sample_rates=44100:channel_layouts=stereo[a]",
+         "-map", "[v]", "-map", "[a]", "-t", str(d), "-r", "30", "-c:v", "libx264", "-crf", "20", "-preset", "medium",
+         "-c:a", "aac", "-b:a", "160k", out])
+    print(f"  page {page['id']}  {d:5.1f} s  text {pt}pt", flush=True)
+    return out, d
+
+
+def harp(dur, out):
+    # soft plucked harp in D major (Karplus-Strong), the same bed as the first story
+    SR = 44100; rng = np.random.default_rng(7)
+    def pluck(f, n, decay=0.996):
+        p = int(SR / f); buf = rng.uniform(-1, 1, p); o = np.zeros(n)
+        for i in range(n): o[i] = buf[i % p]; buf[i % p] = decay * 0.5 * (buf[i % p] + buf[(i + 1) % p])
+        return o
+    hz = lambda m: 440 * 2 ** ((m - 69) / 12)
+    chords = [[50, 57, 62, 66, 69], [43, 55, 59, 62, 67], [45, 57, 61, 64, 69], [50, 57, 62, 66, 74],
+              [47, 54, 59, 62, 66], [43, 55, 59, 62, 67], [50, 57, 62, 66, 69], [45, 57, 61, 64, 67]]
+    beat = 60 / 66; N = int(dur * SR) + SR * 4; mix = np.zeros(N); t = 0.0; ci = 0; cache = {}
+    while t * SR < N - SR * 3:
+        ch = chords[ci % len(chords)]; ci += 1
+        for k, idx in enumerate([0, 2, 3, 4, 3, 2, 1, 2]):
+            m = ch[idx]
+            if m not in cache: cache[m] = pluck(hz(m), int(SR * 2.5))
+            s = int((t + k * beat / 2) * SR); seg = cache[m] * (0.9 if k == 0 else 0.55)
+            if s >= N: continue
+            e = min(N, s + len(seg)); mix[s:e] += seg[:e - s]
+        t += 4 * beat
+    mix = mix[:int(dur * SR)]; f = int(SR * 4); mix[-f:] *= np.linspace(1, 0, f); mix[:SR] *= np.linspace(0, 1, SR)
+    sf.write(out, np.stack([mix, mix], 1) * (0.5 / np.max(np.abs(mix))), SR)
+
+
+def join(clips, durs, bdir, out):
+    ins = sum([["-i", c] for c in clips], []); vf = af = ""; off = 0; lv, la = "[0:v]", "[0:a]"
+    for k in range(1, len(clips)):
+        off += durs[k - 1] - FADE
+        vf += f"{lv}[{k}:v]xfade=transition=fade:duration={FADE}:offset={off:.3f}[v{k}];"; lv = f"[v{k}]"
+        af += f"{la}[{k}:a]acrossfade=d={FADE}[a{k}];"; la = f"[a{k}]"
+    total = sum(durs) - FADE * (len(clips) - 1) + END
+    music = os.path.join(bdir, "music.wav"); harp(total, music)
+    fc = vf + af + (f"{lv}tpad=stop_mode=clone:stop_duration={END}[vo];{la}apad=pad_dur={END}[vx];[{len(clips)}:a]volume=0.13[m];"
+                    f"[vx][m]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-16:TP=-1.5[ao]")
+    run(["ffmpeg", "-y", "-loglevel", "error", *ins, "-i", music, "-filter_complex", fc, "-map", "[vo]", "-map", "[ao]",
+         "-c:v", "libx264", "-crf", "20", "-preset", "medium", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k",
+         "-movflags", "+faststart", out])
+    return total
+
+
+def shelve(d, out, sid, minutes):
+    L = os.path.join(LIBRARY, "stories", sid); p = os.path.join(LIBRARY, "stories.json")
+    stories = json.load(open(p)); e = next((x for x in stories if x["id"] == sid), None)
+    if not e: die(f"no story '{sid}' in {p} — add its entry (cartoon/book) first")
+    os.makedirs(L, exist_ok=True); shutil.copy(out, os.path.join(L, "storytelling.mp4"))
+    run(["ffmpeg", "-y", "-loglevel", "error", "-ss", "20", "-i", out, "-frames:v", "1", "-vf", "scale=960:-1", "-q:v", "3",
+         os.path.join(L, "storytelling-thumb.jpg")])
+    e["storytelling"] = {"file": "storytelling.mp4", "thumb": "storytelling-thumb.jpg", "minutes": round(minutes, 1)}
+    json.dump(stories, open(p, "w"), indent=2, ensure_ascii=False)
+    print(f"  on the shelf: {L}/storytelling.mp4")
+
+
+def main():
+    a = sys.argv[1:]
+    if not a or a[0] in ("-h", "--help"): print(__doc__); return
+    d = os.path.abspath(a[0]); sid = a[a.index("--library") + 1] if "--library" in a else None
+    s, pages = pages_of(d)
+    bdir = os.path.join(d, "build", "storytell"); vdir = os.path.join(bdir, "voice"); os.makedirs(vdir, exist_ok=True)
+    print(f"storytell: {s['title']} — {len(pages)} pages", flush=True)
+    voices(s, pages, vdir)
+    clips, durs = zip(*[clip(p, i, bdir, vdir, os.path.join(d, "art", p["id"] + ".png")) for i, p in enumerate(pages)])
+    out = os.path.join(d, "storytelling.mp4"); total = join(list(clips), list(durs), bdir, out)
+    real = float(run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", out]))
+    print(f"storytell: {out}  {real:.1f} s (planned {total:.1f} s)")
+    if abs(real - total) > 1.0: die(f"video is {real:.1f} s but the pages add up to {total:.1f} s — a clip was cut short")
+    if sid: shelve(d, out, sid, real / 60)
+
+
+if __name__ == "__main__":
+    main()
