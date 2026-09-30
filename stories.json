@@ -45,5 +45,27 @@
       "thumb": "storytelling-thumb.jpg",
       "minutes": 2.9
     }
+  },
+  {
+    "id": "snow-queen",
+    "title": "The Girl with the Warm Heart",
+    "from": "The Snow Queen (1957)",
+    "age": "4-8",
+    "lesson": "A warm, kind heart can melt any ice.",
+    "made": "2026-10-01",
+    "cartoon": {
+      "file": "cartoon.mp4",
+      "thumb": "cartoon-thumb.jpg",
+      "minutes": 4.1,
+      "blurb": "Watch the story move — a magic sleigh, a big reindeer and the northern lights!"
+    },
+    "book": "book/book.json",
+    "pages": 15,
+    "bookThumb": "book/11.jpg",
+    "storytelling": {
+      "file": "storytelling.mp4",
+      "thumb": "storytelling-thumb.jpg",
+      "minutes": 4.2
+    }
   }
 ]
