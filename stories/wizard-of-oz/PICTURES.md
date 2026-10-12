@@ -4,16 +4,21 @@ Instructions for Claude in Chrome. Make 15 square pictures in **Google Gemini** 
 Google account) and upload them to GitHub. All 15 must look like one book: the same characters, the same faces, the
 same clothes and the same painting style on every page.
 
+The characters come from L. Frank Baum's book *The Wonderful Wizard of Oz* (1900), which is free for anyone to use.
+They are drawn our own way, from the book's descriptions, and not like the 1939 film: silver shoes (not ruby
+slippers), no ribbon pigtails, no bow on the Lion, no green-faced witch and no pink bubble.
+
 ## How to keep every picture the same
 
 1. Do everything in **one Gemini chat**. Don't start a new chat partway through.
 2. **First make the character sheet (step 0 below)** and keep it. Every page prompt starts by pointing back to it.
 3. Every prompt contains the same **STYLE** block and the **CHARACTERS** block, copied word for word. Don't shorten
    them or reword them.
-4. Before saving a page, compare it with the character sheet. Check Dorothy's pigtails and blue gingham dress, the
-   ruby slippers, Toto being small and black, the Scarecrow's blue shirt and hat, the Tin Man's funnel hat and the
-   Lion's red bow. If any of these is off, or the style has drifted (photo-like, 3D, anime, flat vector), ask Gemini
-   to redo the picture: "Same picture, but keep the characters exactly like the character sheet."
+4. Before saving a page, compare it with the character sheet. Check Dorothy's short brown curls, pink sunbonnet and
+   blue-and-white checked dress, the silver shoes, Toto being small and black with long silky hair, the Scarecrow's
+   blue Munchkin hat, the Tin Woodman's funnel hat and Glinda's red hair and white gown. If any of these is off, or
+   the style has drifted (photo-like, 3D, anime, flat vector), or anything looks like the 1939 film, ask Gemini to redo
+   the picture: "Same picture, but keep the characters exactly like the character sheet."
 5. Pictures must be square (1:1). No words, letters, captions or speech bubbles in any picture.
 6. If Gemini says the daily limit is reached, stop. Report how many pages are done, and continue in the same chat
    the next day.
@@ -26,18 +31,25 @@ same clothes and the same painting style on every page.
 
 ## CHARACTERS (copy into every prompt)
 
-> Dorothy: a 10-year-old girl with brown hair in two pigtails tied with blue ribbons, freckles, a blue-and-white
-> gingham pinafore dress over a white puffed-sleeve blouse, white socks, and sparkly red ruby slippers (plain black
-> shoes before page 4).
-> Toto: a small, scruffy black Cairn terrier with perky ears.
-> Scarecrow: a floppy, smiling scarecrow with a burlap face, straw poking out of his sleeves and collar, a light-blue
-> patched shirt, brown trousers and a pointed brown hat.
-> Tin Man: a shiny silver tin man with a funnel hat, round body, kind eyes and an oil can.
-> Lion: a big, gentle golden lion with a huge fluffy brown mane and a red bow in his mane, standing on two legs.
-> Glinda: a kind good witch with curly golden hair, a tall silver crown, a big sparkly pink gown and a star wand.
-> Wicked Witch: a silly, not-too-scary green-faced witch in a black dress and tall pointed black hat, with a broom.
-> The Wizard: a kindly, ordinary old man with white hair, a mustache and a green waistcoat.
-> Aunt Em and Uncle Henry: a gentle farm couple in plain 1930s farm clothes.
+> Dorothy: an 8-year-old girl with short, curly chestnut-brown hair, freckles, a pink sunbonnet hanging down her back,
+> a simple blue-and-white checked cotton dress with short sleeves and a white collar, and shining silver shoes
+> (plain brown boots before page 4).
+> Toto: a tiny black dog with long silky hair and small twinkling black eyes.
+> Scarecrow: a cheerful scarecrow whose head is a small stuffed sack with a painted face, wearing a tall pointed
+> sky-blue hat with a wide brim, a faded blue suit, old blue-topped boots, with straw poking out at the wrists, ankles
+> and neck.
+> Tin Woodman: a man made entirely of shining tin, with a tin funnel for a hat, riveted joints, a little axe and an
+> oil can.
+> Lion: a big, gentle, round-faced golden lion on all fours, with a shaggy honey-colored mane and worried eyes. No
+> clothes, no bow.
+> Glinda: a beautiful, kind good witch with long wavy red hair, blue eyes and a flowing pure-white gown, with a small
+> star on a slender silver wand.
+> Wicked Witch: a silly, not-too-scary old witch with one big eye and a patch over the other, a long pointy nose, a
+> patched purple dress, a floppy purple hat and a striped umbrella.
+> The Wizard: a little old man with a bald, shiny head, a wrinkled kind face, round spectacles and a brown checked
+> coat.
+> Aunt Em and Uncle Henry: a gentle, gray-haired prairie farm couple in plain, faded farm clothes.
+> Munchkins: small round folk in blue, with blue pointed hats with little bells around the brims.
 
 ## Prompts
 
@@ -46,22 +58,22 @@ Scene: …"**. Only the characters named in the scene should be in the picture.
 
 | File | Scene |
 |---|---|
-| step 0 (keep it, don't upload it) | A character reference sheet: Dorothy, Toto, Scarecrow, Tin Man, Lion, Glinda, the Wicked Witch, the Wizard, Aunt Em and Uncle Henry standing side by side on a plain cream background, full body, facing forward. |
-| `00.png` (cover) | Dorothy in her ruby slippers holding Toto, with the Scarecrow, Tin Man and Lion beside her on the yellow brick road. The glowing green Emerald City is far behind them under a rainbow. |
-| `01.png` | Dorothy holding Toto by a wooden fence on a dusty, grayish-brown Kansas farm with a small farmhouse and windmill. She looks up dreamily at a faint rainbow in the sky. |
-| `02.png` | A dark, swirling gray twister lifting the little wooden farmhouse into the sky. Dorothy and Toto peek out of the window, surprised but safe. |
-| `03.png` | Dorothy, holding Toto, steps out of the gray farmhouse door into a land bursting with color: giant flowers, a blue stream, round cottages and tiny smiling Munchkins waving. |
-| `04.png` | Glinda floats down inside a shiny pink bubble and gives Dorothy a pair of glittering ruby slippers. The yellow brick road spirals away behind them, and Munchkins watch happily. |
-| `05.png` | Dorothy helps the Scarecrow down from his wooden pole in a golden cornfield beside the yellow brick road. Toto wags his tail. |
-| `06.png` | Dorothy oils the Tin Man's elbow with his oil can in a sunny apple forest, while the Scarecrow and Toto watch. |
-| `07.png` | The Lion sits on the yellow brick road crying and holding his tail, while Dorothy kindly pats his mane. Toto barks, and the Scarecrow and Tin Man peek out from behind a tree. |
-| `08.png` | Dorothy, the Scarecrow, the Tin Man and the Lion skip arm in arm down the yellow brick road through a field of red poppies, with Toto running ahead. The shining green Emerald City is ahead of them. |
-| `09.png` | In a grand green throne room, a giant glowing green face of the Wizard floats in puffs of smoke. Dorothy, Toto, the Scarecrow, the Tin Man and the Lion huddle together, shaking. |
-| `10.png` | At dusk, the Scarecrow, Tin Man and Lion bravely climb a rocky path toward the Wicked Witch's dark castle on a cliff. Cute winged monkeys in little red vests fly in a purple sky. |
-| `11.png` | Inside the castle, Dorothy splashes a bucket of water. The Wicked Witch melts into a puddle in a funny, cartoonish way, with only her hat and broom left. The Scarecrow, Tin Man, Lion and Toto cheer. |
-| `12.png` | Toto pulls back a green curtain to show the Wizard, an ordinary old man working levers on a funny machine. Dorothy, the Scarecrow, the Tin Man and the Lion look surprised and smile. |
-| `13.png` | Dorothy clicks the heels of her ruby slippers together while holding Toto, with sparkles swirling around her feet. The Scarecrow, Tin Man and Lion wave goodbye, and Glinda glows in pink light. |
-| `14.png` | Dorothy wakes in her cozy farmhouse bed and hugs Aunt Em and Uncle Henry, with Toto on the quilt and warm morning sun coming through the window. |
+| step 0 (keep it, don't upload it) | A character reference sheet: Dorothy, Toto, Scarecrow, Tin Woodman, Lion, Glinda, the Wicked Witch, the Wizard, Aunt Em and Uncle Henry standing side by side on a plain cream background, full body, facing forward. |
+| `00.png` (cover) | Dorothy in her silver shoes holding Toto, with the Scarecrow, Tin Woodman and Lion beside her on a road of yellow bricks. A glowing green city with tall spires is far behind them on the horizon. |
+| `01.png` | Dorothy holding Toto by a wooden fence on a flat, dusty, gray Kansas prairie with a tiny one-room farmhouse. She looks up dreamily at a soft pink and gold sunset sky. |
+| `02.png` | A dark, swirling gray cyclone lifting the tiny one-room farmhouse into the sky. Dorothy and Toto peek out of the window, surprised but safe. |
+| `03.png` | Dorothy, holding Toto, steps out of the little gray farmhouse door into a land bursting with color: giant flowers, fruit trees, a sparkling brook and smiling Munchkins in blue waving hello. |
+| `04.png` | Glinda floats down on a soft white cloud and hands Dorothy a pair of shining silver shoes. A road of yellow bricks winds away through blue fields behind them, and Munchkins watch happily. |
+| `05.png` | Dorothy helps the Scarecrow down from his wooden pole in a golden cornfield beside the road of yellow bricks. Toto wags his tail. |
+| `06.png` | Dorothy oils the Tin Woodman's elbow with his oil can in a sunny forest, while the Scarecrow and Toto watch. |
+| `07.png` | The Lion sits on the road of yellow bricks crying and rubbing his nose with his paw, while Dorothy kindly pats his mane. Toto barks, and the Scarecrow and Tin Woodman peek out from behind a tree. |
+| `08.png` | Dorothy, the Scarecrow, the Tin Woodman and the Lion walk happily together down the road of yellow bricks past a field of red poppies, with Toto running ahead. A shining green city is ahead of them. |
+| `09.png` | In a grand green throne room, an enormous friendly-but-stern bald head floats above a green marble throne. Dorothy, Toto, the Scarecrow, the Tin Woodman and the Lion huddle together, wide-eyed. |
+| `10.png` | At dusk, the Scarecrow, Tin Woodman and Lion bravely walk toward a yellow castle on a hill, while friendly winged monkeys fly overhead in a purple sky. |
+| `11.png` | Inside the castle kitchen, Dorothy splashes a bucket of water. The Wicked Witch melts into a puddle in a funny, cartoonish way, with only her floppy hat and umbrella left. Toto and the Lion cheer. |
+| `12.png` | Toto knocks over a folding screen in the corner of the throne room, showing the Wizard, a little old man, among funny gadgets and a big papier-mâché head. Dorothy, the Scarecrow, the Tin Woodman and the Lion look surprised and smile. |
+| `13.png` | Dorothy, in a white sparkle of light, clicks the heels of her silver shoes together while holding Toto. The Scarecrow, Tin Woodman and Lion wave goodbye, and Glinda smiles beside them. |
+| `14.png` | Dorothy runs across the green Kansas grass into Aunt Em's open arms beside a brand-new little farmhouse, with Uncle Henry milking a cow nearby and Toto barking happily in warm morning sun. |
 
 ## When the pictures are done
 
