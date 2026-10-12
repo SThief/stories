@@ -1,0 +1,88 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:Fredoka;font-weight:600;src:url(fonts/fredoka-latin-600-normal.woff2)}
+html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="cv" width="1920" height="1080"></canvas>
+<script src="chars.js"></script><script src="world.js"></script><script src="scenes.js"></script>
+<script src="timeline.js"></script><script src="dialogue.js"></script>
+<script>
+// The cartoon: each page's scene, acted out to the characters' own voices. The camera starts wide on each page and
+// cuts in close on whoever is talking, like The Boy Who Changed His Stars; a character's name shows the first time
+// they speak.
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const mk = () => { const o = document.createElement('canvas'); o.width = 1920; o.height = 1080; return o; };
+const off = [mk(), mk()], raw = mk();
+const DL = DIALOGUE, OLD = TIMELINE.pages, HEADS_BY = DL.scenes.map(() => ({}));
+const FIRST = {}; DL.scenes.forEach((s, i) => s.lines.forEach((l, j) => { if (l.who !== 'narrator' && !FIRST[l.who]) FIRST[l.who] = [i, j]; }));
+// watercolor paper: fine grain and a few soft uneven washes, multiplied over every frame
+const paper = mk(); (() => { const g = paper.getContext('2d'), R = rng(42); g.fillStyle = '#fbf6ec'; g.fillRect(0, 0, 1920, 1080);
+  for (let i = 0; i < 160; i++) { const x = R() * 1920, y = R() * 1080, r = 60 + R() * 300; g.fillStyle = rad(g, x, y, 0, r, [[0, `rgba(${200 + R() * 40},${170 + R() * 40},${130 + R() * 40},.07)`], [1, 'rgba(255,255,255,0)']]); g.fillRect(x - r, y - r, r * 2, r * 2); }
+  const im = g.getImageData(0, 0, 1920, 1080), d = im.data; for (let i = 0; i < d.length; i += 4) { const n = (R() - .5) * 16; d[i] += n; d[i + 1] += n; d[i + 2] += n; } g.putImageData(im, 0, 0);
+  g.globalAlpha = .08; g.strokeStyle = '#8a7050'; g.lineWidth = 1; for (let i = 0; i < 900; i++) { const x = R() * 1920, y = R() * 1080, a = R() * TAU, l = 6 + R() * 18; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke(); } })();
+
+const WIDE = { x: 960, y: 540, z: 1 };
+function shotFor(i, who) {   // a gentle lean toward whoever is talking, never a tight close-up
+  const h = HEADS_BY[i][who];
+  if (!who || who === 'narrator' || !h) return WIDE;
+  return { x: lerp(960, h.x, .55), y: lerp(540, h.y + 150 * h.s, .55), z: 1.2 };
+}
+function frameShot(s) {   // keep the view inside the picture
+  const hw = 960 / s.z, hh = 540 / s.z;
+  return { x: clamp(s.x, hw, 1920 - hw), y: clamp(s.y, hh, 1080 - hh), z: s.z };
+}
+function lineAt(sc, u) { let k = -1; sc.lines.forEach((l, j) => { if (u >= l.start) k = j; }); return k; }
+function camera(i, u) {
+  // calm camera: it only moves when the framing really changes, and then slowly (2 seconds), with no drifting
+  const sc = DL.scenes[i]; let shot = WIDE, from = WIDE, at = 0;
+  for (const l of sc.lines) { if (l.start > u) break;
+    const s = frameShot(shotFor(i, l.who)), far = Math.hypot(s.x - shot.x, s.y - shot.y) > 160 || Math.abs(s.z - shot.z) > .05;
+    if (far) { const k = ease((l.start - at) / 2);   // start from wherever the camera is at that moment
+      from = { x: lerp(from.x, shot.x, k), y: lerp(from.y, shot.y, k), z: lerp(from.z, shot.z, k) }; shot = s; at = l.start; } }
+  const e = ease((u - at) / 2);
+  return { x: lerp(from.x, shot.x, e), y: lerp(from.y, shot.y, e), z: lerp(from.z, shot.z, e) };
+}
+// key moments of each scene's action, pinned to the line they belong with: [line number, time in the scene's own action]
+const ANCHORS = { 2: [[2, 1.5]], 3: [[1, 2.6], [2, 3.6]], 4: [[0, 2.1], [1, 2.6], [2, 5.6]], 5: [[1, 3.8]], 6: [[2, 2.0], [3, 6.1]],
+  7: [[1, 1.2], [2, 2.6], [5, 8.7]], 10: [[1, .4], [2, 1.2], [3, 2.2], [4, 6.2]], 11: [[1, 3.8], [2, 4.6], [3, 5.2], [4, 7.7]],
+  12: [[0, .8], [1, 2.6], [2, 3.4]], 13: [[3, 6.2]], 14: [[0, 2.2], [1, 4.4]] };
+function oldTime(i, u) {
+  const sc = DL.scenes[i], old = OLD[i].dur, pts = [[0, 0], ...(ANCHORS[i] || []).map(([k, o]) => [sc.lines[k].start, o]), [sc.dur, old]];
+  for (let j = 1; j < pts.length; j++) if (u <= pts[j][0] || j === pts.length - 1) {
+    const [a0, b0] = pts[j - 1], [a1, b1] = pts[j]; return b0 + (b1 - b0) * clamp((u - a0) / Math.max(.01, a1 - a0), 0, 1e9); }
+}
+function drawPage(cnv, i, t, live) {
+  const sc = DL.scenes[i], u = t - sc.start, k = lineAt(sc, u), L = k >= 0 ? sc.lines[k] : null;
+  const speaking = live && L && u < L.start + L.dur;
+  SPEAK.who = speaking ? L.who : null; SPEAK.roar = speaking && /ROAR/.test(L.text);
+  SPEAK.amp = speaking ? (L.env[Math.floor((u - L.start) * 30)] || 0) : 0;
+  const cam = camera(i, u), r = raw.getContext('2d');
+  r.setTransform(1, 0, 0, 1, 0, 0); r.translate(960, 540); r.scale(cam.z, cam.z); r.translate(-cam.x, -cam.y);
+  CAM_INV = r.getTransform().inverse(); CAM_Z = cam.z; HEADS = HEADS_BY[i];
+  // the scene's own action keeps its original pacing, stretched to the new length of the page
+  const old = OLD[i].dur; SCENES[i](r, t, oldTime(i, u), old);
+  r.setTransform(1, 0, 0, 1, 0, 0); CAM_INV = null;
+  const g = cnv.getContext('2d'); g.setTransform(1, 0, 0, 1, 0, 0);
+  g.filter = 'saturate(1.18) contrast(1.04) brightness(1.03)'; g.drawImage(raw, 0, 0); g.filter = 'none';
+  g.globalCompositeOperation = 'multiply'; g.drawImage(paper, 0, 0); g.globalCompositeOperation = 'source-over';
+  // the character's name, the first time they speak
+  if (L && FIRST[L.who] && FIRST[L.who][0] === i && FIRST[L.who][1] === k && HEADS_BY[i][L.who]) {
+    const h = HEADS_BY[i][L.who], a = Math.min(clamp((u - L.start) / .3), clamp((L.start + 2.4 - u) / .4));
+    if (a > 0) { const sx = (h.x - cam.x) * cam.z + 960, sy = (h.y - 120 * h.s - cam.y) * cam.z + 540;
+      g.save(); g.globalAlpha = a; g.font = '600 52px Fredoka'; g.textAlign = 'center'; g.lineJoin = 'round';
+      g.lineWidth = 10; g.strokeStyle = 'rgba(60,35,15,.75)'; g.strokeText(DL.names[L.who], clamp(sx, 200, 1720), clamp(sy, 70, 900));
+      g.fillStyle = '#fffaf0'; g.fillText(DL.names[L.who], clamp(sx, 200, 1720), clamp(sy, 70, 900)); g.restore(); }
+  }
+  if (L && i > 0) { const next = k + 1 < sc.lines.length ? sc.lines[k + 1].start : sc.dur - .2;
+    const text = L.who === 'narrator' ? L.text : `“${L.text}”`;
+    caption(g, text, Math.min(clamp((u - L.start) / .25), clamp((next - u) / .25))); }
+}
+window.frame = t => {
+  const ss = DL.scenes; let i = ss.length - 1; while (i > 0 && t < ss[i].start) i--;
+  const fading = i > 0 && t < ss[i].start + DL.fade;
+  drawPage(off[0], i, Math.min(t, ss[i].start + ss[i].dur), true);
+  ctx.globalAlpha = 1; ctx.drawImage(off[0], 0, 0);
+  if (fading) { drawPage(off[1], i - 1, t, false); ctx.globalAlpha = 1 - (t - ss[i].start) / DL.fade; ctx.drawImage(off[1], 0, 0); ctx.globalAlpha = 1; }
+  const end = DL.total - t; if (end < 1.2) { ctx.fillStyle = `rgba(0,0,0,${1 - end / 1.2})`; ctx.fillRect(0, 0, 1920, 1080); }
+  return cv.toDataURL('image/jpeg', .9);
+};
+window.ready = document.fonts.load('600 44px Fredoka').then(() => true);
+</script></body></html>
