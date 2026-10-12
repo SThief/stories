@@ -1,0 +1,329 @@
+{
+ "cast": {
+  "narrator": {
+   "name": "",
+   "voice": "bm_fable",
+   "speed": 0.92,
+   "lang": "en-gb"
+  },
+  "dorothy": {
+   "name": "Dorothy",
+   "voice": "af_heart",
+   "speed": 1.0,
+   "lang": "en-us",
+   "pitch": 1.18
+  },
+  "toto": {
+   "name": "Toto",
+   "voice": "am_puck",
+   "speed": 1.1,
+   "lang": "en-us",
+   "pitch": 1.7
+  },
+  "uncleHenry": {
+   "name": "Uncle Henry",
+   "voice": "am_eric",
+   "speed": 1.0,
+   "lang": "en-us"
+  },
+  "auntEm": {
+   "name": "Aunt Em",
+   "voice": "af_sarah",
+   "speed": 0.95,
+   "lang": "en-us",
+   "pitch": 0.96
+  },
+  "munchkin": {
+   "name": "The Munchkins",
+   "voice": "af_sky",
+   "speed": 1.05,
+   "lang": "en-us",
+   "pitch": 1.45,
+   "fx": "chorus"
+  },
+  "glinda": {
+   "name": "Glinda",
+   "voice": "af_bella",
+   "speed": 0.95,
+   "lang": "en-us"
+  },
+  "scarecrow": {
+   "name": "Scarecrow",
+   "voice": "am_puck",
+   "speed": 1.05,
+   "lang": "en-us",
+   "pitch": 1.12
+  },
+  "tinWoodman": {
+   "name": "Tin Woodman",
+   "voice": "am_michael",
+   "speed": 0.95,
+   "lang": "en-us",
+   "fx": "tin"
+  },
+  "lion": {
+   "name": "Lion",
+   "voice": "am_fenrir",
+   "speed": 0.92,
+   "lang": "en-us",
+   "pitch": 0.82
+  },
+  "wizardHead": {
+   "name": "The Great Oz",
+   "voice": "bm_george",
+   "speed": 0.85,
+   "lang": "en-gb",
+   "pitch": 0.76,
+   "fx": "echo"
+  },
+  "witch": {
+   "name": "Wicked Witch",
+   "voice": "bf_alice",
+   "speed": 1.05,
+   "lang": "en-gb",
+   "pitch": 1.12
+  },
+  "wizardMan": {
+   "name": "The Wizard",
+   "voice": "bm_lewis",
+   "speed": 1.0,
+   "lang": "en-gb"
+  }
+ },
+ "scenes": [
+  [
+   [
+    "narrator",
+    "There's No Place Like Home."
+   ]
+  ],
+  [
+   [
+    "narrator",
+    "Dorothy lived on the wide gray prairie of Kansas, with Aunt Em, Uncle Henry, and her little dog, Toto."
+   ],
+   [
+    "dorothy",
+    "Everything here is so gray, Toto. But you always make me laugh!"
+   ],
+   [
+    "toto",
+    "Arf! Arf!"
+   ]
+  ],
+  [
+   [
+    "uncleHenry",
+    "A cyclone is coming! Everybody inside!"
+   ],
+   [
+    "dorothy",
+    "Toto, come back!"
+   ],
+   [
+    "narrator",
+    "The wind lifted the whole house, up, up, up into the sky!"
+   ],
+   [
+    "dorothy",
+    "Whoa! Hold on, Toto!"
+   ]
+  ],
+  [
+   [
+    "narrator",
+    "Bump! The house landed."
+   ],
+   [
+    "dorothy",
+    "Oh, Toto. I don't think we're in Kansas anymore!"
+   ],
+   [
+    "munchkin",
+    "Hooray! Welcome to the land of Oz!"
+   ]
+  ],
+  [
+   [
+    "glinda",
+    "Hello, Dorothy. I am Glinda, the Good Witch."
+   ],
+   [
+    "dorothy",
+    "Please, how can I get home?"
+   ],
+   [
+    "glinda",
+    "Wear these silver shoes, and follow the road of yellow bricks to the Emerald City. The great Wizard of Oz can help you."
+   ],
+   [
+    "dorothy",
+    "Oh, thank you!"
+   ]
+  ],
+  [
+   [
+    "scarecrow",
+    "Excuse me! Could you help me down?"
+   ],
+   [
+    "dorothy",
+    "Of course!"
+   ],
+   [
+    "scarecrow",
+    "Thank you! I wish I had a brain. My head is full of straw."
+   ],
+   [
+    "dorothy",
+    "Come with us! Maybe the Wizard can give you one."
+   ]
+  ],
+  [
+   [
+    "tinWoodman",
+    "Oil... can..."
+   ],
+   [
+    "dorothy",
+    "An oil can? Here you go!"
+   ],
+   [
+    "tinWoodman",
+    "Ahh, I can move again! Thank you. I wish I had a heart."
+   ],
+   [
+    "scarecrow",
+    "Then come with us to see the Wizard!"
+   ]
+  ],
+  [
+   [
+    "lion",
+    "ROAR!"
+   ],
+   [
+    "toto",
+    "Arf! Arf! Arf!"
+   ],
+   [
+    "lion",
+    "Oh, please don't bark at me! I'm just a scaredy-cat. I wish I had courage."
+   ],
+   [
+    "dorothy",
+    "Don't cry, Lion. Come with us! The Wizard can help you too."
+   ]
+  ],
+  [
+   [
+    "narrator",
+    "Side by side, the friends walked down the road of yellow bricks."
+   ],
+   [
+    "scarecrow",
+    "Look! The Emerald City!"
+   ],
+   [
+    "lion",
+    "Wow! It's so shiny!"
+   ]
+  ],
+  [
+   [
+    "wizardHead",
+    "I am Oz, the Great and Mighty! Why have you come?"
+   ],
+   [
+    "dorothy",
+    "Please, I want to go home. And my friends want a brain, a heart, and courage."
+   ],
+   [
+    "wizardHead",
+    "First, make the Wicked Witch of the West go away!"
+   ],
+   [
+    "lion",
+    "Gulp!"
+   ]
+  ],
+  [
+   [
+    "witch",
+    "Fly, my monkeys! Bring me that girl and her silver shoes!"
+   ],
+   [
+    "narrator",
+    "The Winged Monkeys carried Dorothy and Toto away to the yellow castle."
+   ],
+   [
+    "scarecrow",
+    "I have a clever plan!"
+   ],
+   [
+    "lion",
+    "And I'll be brave, for Dorothy!"
+   ]
+  ],
+  [
+   [
+    "witch",
+    "Hee hee! That silver shoe is mine!"
+   ],
+   [
+    "dorothy",
+    "Give it back!"
+   ],
+   [
+    "narrator",
+    "Splash!"
+   ],
+   [
+    "witch",
+    "Oh no! I'm melting away!"
+   ],
+   [
+    "lion",
+    "Hooray! We did it!"
+   ]
+  ],
+  [
+   [
+    "narrator",
+    "Toto knocked over a screen, and there was the Wizard: just a little old man!"
+   ],
+   [
+    "wizardMan",
+    "I'm sorry, my friends. But you don't need me. Scarecrow, you made a clever plan. Tin Woodman, you cried for your friend. Lion, you were so brave."
+   ],
+   [
+    "wizardMan",
+    "You had it inside you all along!"
+   ]
+  ],
+  [
+   [
+    "glinda",
+    "Dorothy, your silver shoes can take you home. Just click your heels three times."
+   ],
+   [
+    "dorothy",
+    "Goodbye, my friends. I'll miss you so much!"
+   ],
+   [
+    "dorothy",
+    "Take me home to Aunt Em!"
+   ]
+  ],
+  [
+   [
+    "auntEm",
+    "Dorothy! You're home!"
+   ],
+   [
+    "dorothy",
+    "Oh, Aunt Em! Oz was wonderful... but there's no place like home."
+   ]
+  ]
+ ]
+}

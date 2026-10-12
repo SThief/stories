@@ -185,7 +185,7 @@ const SCENES = [
     rr(c, 800, 700, 320, 50, 12); fillStroke(c, '#2a9a58'); for (const x of [790, 1090]) { rr(c, x, 660, 40, 180, 10); fillStroke(c, em); }
     ell(c, 960, 560, 26, 30); fillStroke(c, '#c9f7da', 3); rr(c, 780, 820, 360, 30, 6); fillStroke(c, '#f0c24a', 3);
     const appear = ease(u / 1.5);
-    c.save(); c.globalAlpha = appear; c.translate(960, 360 + Math.sin(t * 1.3) * 14); c.scale(.95 + Math.sin(t * 9) * .005, .95); bigHead(c, u > 2 && u < 9 ? t : 0); c.restore();
+    c.save(); c.globalAlpha = appear; c.translate(960, 360 + Math.sin(t * 1.3) * 14); c.scale(.95 + Math.sin(t * 9) * .005, .95); live('wizardHead', c, {}, 0, 60); bigHead(c, t); c.restore();
     for (let i = 0; i < 8; i++) { const q = t * .6 + i; ell(c, 960 + Math.cos(q) * 300, 380 + Math.sin(q * 1.3) * 150, 60, 30); c.fillStyle = 'rgba(200,255,220,.08)'; c.fill(); }
     const shiver = u > 2 && u < 10 ? Math.sin(t * 50) * 3 : 0;
     [[scarecrow, 600, .9], [tinWoodman, 760, .9], [dorothy, 1160, .95], [lion, 1400, .85]].forEach(([f, x, s], i) =>
@@ -209,6 +209,7 @@ const SCENES = [
     for (let i = 0; i < 6; i++) { const k = ease((u - i * .15) / grab), path = i < 2 ? 1 : 0;
       const mx = u < grab ? lerp(-200 - i * 140, 1000 + i * 60, k) : (path ? dx + (i ? 60 : -60) : lerp(1000 + i * 60, 2200, away)), my = u < grab ? lerp(200, 640 + (i % 3) * 30, k) + Math.sin(t * 3 + i) * 20 : (path ? dy - 330 * ds : lerp(640, 200, away) + Math.sin(t * 3 + i) * 20);
       c.save(); c.translate(mx, my); c.scale(path && u > grab ? ds * 1.2 : .9, path && u > grab ? ds * 1.2 : .9); monkey(c, t, i); c.restore(); }
+    if (u < 3) put(c, witch, 1450, 300, .38, { armF: 2.4, blink: blinkAt(t, 5) }, t, true);   // the Witch calls from her tower
     const walkIn = clamp((u - 6) / (d - 6));
     if (u > 6) [[scarecrow, 260], [tinWoodman, 440], [lion, 690]].forEach(([f, x], i) =>
       put(c, f, x + walkIn * 260, 890, .82, { ph: u * 5 + i, walk: 1, blink: blinkAt(t, i), mood: f === lion ? 'happy' : null }, t));

@@ -7,6 +7,16 @@ const TAU = Math.PI * 2;
 
 function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
   t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+// Who is talking right now (set by cartoon.html from the dialogue), and where each character's head was last drawn,
+// in scene coordinates, so the camera can frame whoever speaks.
+const SPEAK = { who: null, amp: 0 };
+let HEADS = {}, CAM_INV = null, CAM_Z = 1;
+function live(name, c, p, hx, hy) {
+  if (CAM_INV) { const m = c.getTransform(), q = CAM_INV.transformPoint(m.transformPoint(new DOMPoint(hx, hy)));
+    HEADS[name] = { x: q.x, y: q.y, s: Math.hypot(m.a, m.b) / CAM_Z }; }
+  const on = SPEAK.who === name;
+  return { ...p, mouth: on ? SPEAK.amp : 0, bark: on ? SPEAK.amp > .2 : false };
+}
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
 const ease = x => { x = clamp(x); return x * x * (3 - 2 * x); };
 const lerp = (a, b, k) => a + (b - a) * k;
@@ -63,6 +73,7 @@ const checks = c => pattern(c, 'checks', 22, (g, n) => { g.fillStyle = '#9a6a3f'
 function legsPose(p) { const w = p.walk ?? 1, sw = Math.sin(p.ph || 0); return { w, sw, a: sw * w, bob: -(1 - Math.abs(sw)) * w }; }
 
 function dorothy(c, p, t = 0) {
+  p = live('dorothy', c, p, 4, -272);
   const { a, bob } = legsPose(p), armSw = a * .55;
   shadow(c, 62);
   c.save(); c.translate(0, bob * 9);
@@ -108,6 +119,7 @@ function dorothy(c, p, t = 0) {
 }
 
 function toto(c, p, t = 0) {
+  p = live('toto', c, p, 34, -62);
   const hop = p.sit ? 0 : Math.abs(Math.sin(p.ph || 0)) * 26 * (p.walk ?? 1), wag = Math.sin((p.ph || t * 3) * 4) * .6;
   if (!p.sit) { c.save(); c.scale(1 - hop / 400, 1); shadow(c, 34); c.restore(); }
   c.save(); c.translate(0, -hop);
@@ -130,6 +142,7 @@ function toto(c, p, t = 0) {
 }
 
 function scarecrow(c, p, t = 0) {
+  p = live('scarecrow', c, p, 6, -282);
   const { a, bob, w } = legsPose(p), flop = Math.sin((p.ph || t * 2) - .8);
   shadow(c, 64);
   c.save(); c.translate(0, bob * 13);
@@ -167,6 +180,7 @@ function scarecrow(c, p, t = 0) {
 }
 
 function tinWoodman(c, p, t = 0) {
+  p = live('tinWoodman', c, p, 4, -300);
   const { a, bob } = legsPose(p), rust = p.rust || 0;
   const tin = (x0, x1) => lin(c, x0, 0, x1, 0, [[0, '#8c97a8'], [.35, '#eef3fa'], [.55, '#c3cddb'], [1, '#7b8698']]);
   const rivet = (x, y) => { ell(c, x, y, 3, 3); c.fillStyle = '#6c778a'; c.fill(); };
@@ -201,6 +215,7 @@ function tinWoodman(c, p, t = 0) {
 }
 
 function lion(c, p, t = 0) {
+  p = live('lion', c, p, p.sit ? 40 : 150, p.sit ? -260 : -206);
   const w = p.walk ?? 1, sw = Math.sin(p.ph || 0) * w, bob = -Math.abs(sw) * 5, sit = p.sit;
   shadow(c, 150);
   c.save(); c.translate(0, bob);
@@ -225,6 +240,7 @@ function lion(c, p, t = 0) {
   eyes(c, 2, -12, 21, 12, { ...p, mood: p.mood === 'sad' ? null : p.mood }, 2);
   ell(c, -13, 26, 18, 14); fillStroke(c, '#fff3d9', 3); ell(c, 15, 26, 18, 14); fillStroke(c, '#fff3d9', 3);
   c.beginPath(); c.moveTo(-10, 10); c.lineTo(12, 10); c.lineTo(1, 22); c.closePath(); fillStroke(c, '#6b3a22', 3);
+  if (SPEAK.who === 'lion' && SPEAK.roar) p = { ...p, roar: Math.max(.4, SPEAK.amp) };
   if (p.roar) { ell(c, 1, 48, 24, 20 * p.roar); fillStroke(c, '#8a2b2b', 3); for (const s of [-1, 1]) { c.beginPath(); c.moveTo(s * 14, 34); c.lineTo(s * 10, 44); c.lineTo(s * 6, 34); fillStroke(c, '#fff', 2); } }
   else mouth(c, 1, 46, 10, { ...p, mood: p.mood === 'happy' ? 'happy' : 'sad' });
   for (const s of [-1, 1]) tear(c, s * 26, 2, p.tears || 0);
@@ -232,6 +248,7 @@ function lion(c, p, t = 0) {
 }
 
 function glinda(c, p, t = 0) {
+  p = live('glinda', c, p, 0, -292);
   const fl = Math.sin(t * 1.6) * 6;
   c.save(); c.translate(0, fl);
   // long red hair behind
@@ -259,6 +276,7 @@ function glinda(c, p, t = 0) {
 }
 
 function witch(c, p, t = 0) {
+  p = live('witch', c, p, 4, -262);
   const melt = p.melt || 0;
   c.save();
   if (melt > 0) { // a purple puddle grows as she sinks into it
@@ -293,6 +311,7 @@ function witch(c, p, t = 0) {
 }
 
 function wizardMan(c, p, t = 0) {
+  p = live('wizardMan', c, p, 2, -236);
   shadow(c, 50);
   c.save(); c.translate(0, Math.sin(t * 2) * 1.5);
   for (const s of [-1, 1]) limb(c, s * 12, -96, 92, 0, 18, '#5a4632');
@@ -326,11 +345,12 @@ function bigHead(c, t, glow = 1) {
   c.beginPath(); c.moveTo(-130, 30); c.bezierCurveTo(-150, 200, -60, 290, 0, 300); c.bezierCurveTo(60, 290, 150, 200, 130, 30); c.quadraticCurveTo(70, 80, 0, 60); c.quadraticCurveTo(-70, 80, -130, 30); fillStroke(c, '#f6f3ec', 5);
   c.strokeStyle = 'rgba(150,140,125,.5)'; c.lineWidth = 3; for (let i = -4; i <= 4; i++) { c.beginPath(); c.moveTo(i * 24, 90); c.quadraticCurveTo(i * 30, 180, i * 16, 270); c.stroke(); }
   for (const s of [-1, 1]) { c.beginPath(); c.moveTo(0, 62); c.bezierCurveTo(s * 40, 40, s * 90, 60, s * 110, 96); c.bezierCurveTo(s * 70, 90, s * 40, 84, 0, 80); fillStroke(c, '#ffffff', 4); }
-  const o = Math.abs(Math.sin(t * 9)) * .7; ell(c, 0, 116, 34, 6 + 18 * o); fillStroke(c, '#8a3b3b', 5);
+  const o = SPEAK.who === 'wizardHead' ? SPEAK.amp : 0; ell(c, 0, 116, 34, 6 + 18 * o); fillStroke(c, '#8a3b3b', 5);
   c.restore();
 }
 
 function auntEm(c, p, t = 0) {
+  p = live('auntEm', c, p, 2, -270);
   shadow(c, 54);
   c.save(); const { a, bob } = legsPose(p); c.translate(0, bob * 7);
   for (const [s, k] of [[-1, a * .4], [1, -a * .4]]) { const [x, y] = limb(c, s * 12, -100, 96, k, 16, '#6b5544'); ell(c, x + 6, y, 16, 8); fillStroke(c, '#3a2a1c', 3); }
@@ -346,6 +366,7 @@ function auntEm(c, p, t = 0) {
 }
 
 function uncleHenry(c, p, t = 0) {
+  p = live('uncleHenry', c, p, 2, -282);
   shadow(c, 54);
   c.save(); const { a, bob } = legsPose(p); c.translate(0, bob * 7);
   for (const [s, k] of [[-1, a * .4], [1, -a * .4]]) { const [x, y] = limb(c, s * 14, -110, 106, k, 20, '#4f6f9a'); ell(c, x + 6, y, 18, 9); fillStroke(c, '#3a2a1c', 3); }
@@ -362,6 +383,7 @@ function uncleHenry(c, p, t = 0) {
 }
 
 function munchkin(c, p, t = 0, hue = 0) {
+  p = live('munchkin', c, p, 0, -130);
   const hop = Math.abs(Math.sin(t * 5 + hue)) * (p.hop ?? 10);
   shadow(c, 30);
   c.save(); c.translate(0, -hop); c.scale(.62, .62);
