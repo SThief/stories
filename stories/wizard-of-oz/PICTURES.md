@@ -23,6 +23,8 @@ Wizard behind his screen) looks better, and so does its Wizard head. So:
   silver shoes. The first set got pages 05–07 wrong; check this on every page.
 - **The Wizard's giant head (page 09)** must be the head from page 12: a huge head of a wise old man with long wavy
   white hair and a big white beard, floating above the green throne.
+- **Kid-friendly check (ages 4–8):** the round-2 character sheet is good. Keep the Witch silly rather than spooky
+  (no snarl, no scary close-ups), keep the Lion gentle, and let Aunt Em and Uncle Henry smile.
 - Upload the new pictures over the old ones in the same `art/` folder on the same branch.
 
 ## How to keep every picture the same
@@ -88,12 +90,12 @@ Scene: …"**. Only the characters named in the scene should be in the picture.
 | `06.png` | Dorothy oils the Tin Woodman's elbow with his oil can in a sunny forest, while the Scarecrow and Toto watch. |
 | `07.png` | The Lion sits on the road of yellow bricks crying and rubbing his nose with his paw, while Dorothy kindly pats his mane. Toto barks, and the Scarecrow and Tin Woodman peek out from behind a tree. |
 | `08.png` | Dorothy, the Scarecrow, the Tin Woodman and the Lion walk happily together down the road of yellow bricks past a field of red poppies, with Toto running ahead. A shining green city is ahead of them. |
-| `09.png` | In a grand green throne room, the enormous head of a wise old man with long wavy white hair and a big white beard floats above a green marble throne. Dorothy, Toto, the Scarecrow, the Tin Woodman and the Lion huddle together, wide-eyed. |
+| `09.png` | In a grand green throne room, the enormous head of a wise old man with long wavy white hair and a big white beard floats above a green marble throne; it looks grand and stern but not frightening, more like a grumpy grandfather. Dorothy, Toto, the Scarecrow, the Tin Woodman and the Lion huddle together, wide-eyed. |
 | `10.png` | At dusk, the Scarecrow, Tin Woodman and Lion bravely walk toward a yellow castle on a hill, while friendly winged monkeys fly overhead in a purple sky. |
-| `11.png` | Inside the castle kitchen, Dorothy splashes a bucket of water. The Wicked Witch melts into a puddle in a funny, cartoonish way, with only her floppy hat and umbrella left. Toto and the Lion cheer. |
+| `11.png` | Inside the castle kitchen, Dorothy splashes a bucket of water. The Wicked Witch melts into a puddle in a funny, cartoonish way, with only her floppy hat and umbrella left. Her face looks surprised and silly, like a cartoon, never snarling or frightening. Toto and the Lion cheer. |
 | `12.png` | Toto knocks over a folding screen in the corner of the throne room, showing the Wizard, a little old man, among funny gadgets and a big papier-mâché head. Dorothy, the Scarecrow, the Tin Woodman and the Lion look surprised and smile. |
 | `13.png` | Dorothy, in a white sparkle of light, clicks the heels of her silver shoes together while holding Toto. The Scarecrow, Tin Woodman and Lion wave goodbye, and Glinda smiles beside them. |
-| `14.png` | Dorothy runs across the green Kansas grass into Aunt Em's open arms beside a brand-new little farmhouse, with Uncle Henry milking a cow nearby and Toto barking happily in warm morning sun. |
+| `14.png` | Dorothy runs across the green Kansas grass into Aunt Em's open arms beside a brand-new little farmhouse, with Uncle Henry milking a cow nearby and Toto barking happily in warm morning sun. Everyone is smiling. |
 
 ## When the pictures are done
 
