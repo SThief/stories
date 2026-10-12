@@ -13,12 +13,15 @@ The folder needs:
 The voice is made once per page and kept in <story-dir>/build/storytell/voice/, so a re-run after swapping one
 picture only re-cuts the video. Delete a page's .wav to re-record it.
 """
-import json, os, subprocess, sys
+import json, os, shutil, subprocess, sys
 import numpy as np, soundfile as sf
 
-VOICE_LAB = "/Users/khavu/Project/voice-lab/models/"
-LIBRARY = "/Users/khavu/Project/story-library"
-FONT = "/System/Library/Fonts/Supplemental/ChalkboardSE.ttc"
+# override these with STORYTELL_MODELS, STORYTELL_LIBRARY and STORYTELL_FONT on another machine
+VOICE_LAB = os.environ.get("STORYTELL_MODELS", "/Users/khavu/Project/voice-lab/models/").rstrip("/") + "/"
+LIBRARY = os.environ.get("STORYTELL_LIBRARY", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+FONT = os.environ.get("STORYTELL_FONT", "/System/Library/Fonts/Supplemental/ChalkboardSE.ttc")
+# ImageMagick 7 is "magick"; ImageMagick 6 has "convert" and "identify" instead
+CONVERT, IDENTIFY = (["magick"], ["magick", "identify"]) if shutil.which("magick") else (["convert"], ["identify"])
 PAPER, INK, GUTTER = "#f8f1e3", "#4a3526", "#e9dcc3"
 LEAD, TAIL, FADE, END = 0.8, 1.6, 0.6, 2.5          # seconds: before the voice, after it, crossfade, last hold
 TEXT_W, TEXT_H, TEXT_PT = 760, 900, 50               # the words' box on the right page, and their largest size
@@ -63,12 +66,12 @@ def text_page(txt, out, title, tmp):
     # the words must fit their box: shrink from the largest size until the caption is no taller than the page
     pt = 92 if title else TEXT_PT
     while True:
-        run(["magick", "-size", f"{TEXT_W}x", "-background", "none", "-fill", INK, "-font", FONT, "-pointsize", str(pt),
+        run([*CONVERT, "-size", f"{TEXT_W}x", "-background", "none", "-fill", INK, "-font", FONT, "-pointsize", str(pt),
              "-interline-spacing", "10" if title else "14", "-gravity", "Center" if title else "West", f"caption:{txt}", tmp])
-        h = int(run(["magick", "identify", "-format", "%h", tmp]))
+        h = int(run([*IDENTIFY, "-format", "%h", tmp]))
         if h <= TEXT_H or pt <= 30: break
         pt -= 2
-    run(["magick", "-size", "1920x1080", f"xc:{PAPER}", "-fill", GUTTER, "-draw", "rectangle 1040,60 1044,1020",
+    run([*CONVERT, "-size", "1920x1080", f"xc:{PAPER}", "-fill", GUTTER, "-draw", "rectangle 1040,60 1044,1020",
          tmp, "-gravity", "NorthWest", "-geometry", f"+1110+{90 + (TEXT_H - h) // 2}", "-composite", out])
     return pt
 
