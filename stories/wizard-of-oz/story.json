@@ -1,0 +1,78 @@
+{
+ "title": "There's No Place Like Home",
+ "voice": "bf_emma",
+ "style": "warm painted children's storybook illustration, soft golden light, rounded friendly faces, rich color, square",
+ "scenes": [
+  {
+   "id": "01",
+   "text": "Dorothy lived on a gray farm in Kansas with Aunt Em, Uncle Henry and her little dog, Toto. She loved to sing and dream about a happy place far away, somewhere over the rainbow.",
+   "art": "a young girl with brown pigtails in a blue gingham dress and a small black terrier on a dusty gray Kansas farm, a faint rainbow in the sky"
+  },
+  {
+   "id": "02",
+   "text": "One day the sky turned dark. \"Twister!\" shouted Uncle Henry. Dorothy ran inside with Toto, but the wind was too strong. The whole house spun up, up, up into the sky!",
+   "art": "a wooden farmhouse spinning up inside a big swirling gray twister, the girl and her dog peeking out of a window, not scary"
+  },
+  {
+   "id": "03",
+   "text": "Bump! The house landed. Dorothy opened the door and gasped. Everything was full of color! Bright flowers, a blue river and tiny, happy Munchkins. \"Toto, I don't think we're in Kansas anymore.\"",
+   "art": "the girl stepping out of a gray doorway into a bursting colorful land of giant flowers, a blue stream and tiny smiling Munchkins"
+  },
+  {
+   "id": "04",
+   "text": "Glinda, the Good Witch, floated down in a shiny pink bubble. She gave Dorothy a pair of sparkly ruby slippers. \"To go home, follow the yellow brick road to the Emerald City. The Wizard of Oz can help you.\"",
+   "art": "a kind good witch in a sparkly pink gown and crown floating in a pink bubble, giving the girl glittering ruby slippers, a yellow brick road spiraling away"
+  },
+  {
+   "id": "05",
+   "text": "On the road, Dorothy met a Scarecrow stuck on a pole. She helped him down. \"I wish I had a brain,\" he said. \"Come with us,\" said Dorothy. \"Maybe the Wizard can give you one!\"",
+   "art": "the girl helping a floppy friendly scarecrow with straw sticking out down from a pole in a cornfield beside the yellow brick road"
+  },
+  {
+   "id": "06",
+   "text": "In the forest they found a Tin Man, stiff and rusty. Dorothy oiled his squeaky arms. \"Thank you!\" he said. \"I wish I had a heart.\" So the Tin Man came along too.",
+   "art": "the girl oiling a shiny tin man with a funnel hat in a sunny apple forest, the scarecrow and the dog watching"
+  },
+  {
+   "id": "07",
+   "text": "Then, ROAR! A big Lion jumped out. Toto barked, and the Lion began to cry. \"I'm just a scaredy-cat. I wish I had courage.\" Dorothy patted his mane. \"Come with us!\"",
+   "art": "a big shy cowardly lion with a fluffy mane crying with a tail in his paws, the girl kindly patting his mane, the little dog barking"
+  },
+  {
+   "id": "08",
+   "text": "Arm in arm, the friends skipped down the yellow brick road: Dorothy, Scarecrow, Tin Man and Lion, and Toto too! At last they saw the Emerald City, shining green.",
+   "art": "the girl, scarecrow, tin man and lion skipping arm in arm down the yellow brick road through red poppies, a glowing green emerald city on the horizon"
+  },
+  {
+   "id": "09",
+   "text": "The Wizard was a giant floating head with a booming voice. \"First, bring me the broomstick of the Wicked Witch of the West!\" The friends shook with fear. But they would go together.",
+   "art": "inside a grand green throne room, a giant glowing green wizard's face in smoke and flames, the four friends and the dog huddled together"
+  },
+  {
+   "id": "10",
+   "text": "The Witch sent her flying monkeys. They carried Dorothy and Toto away to her dark castle. But Scarecrow made a clever plan, Tin Man cried for his friend, and Lion bravely led the way.",
+   "art": "the scarecrow, tin man and lion climbing toward a dark castle on a cliff, cute winged monkeys in little vests flying in a purple evening sky"
+  },
+  {
+   "id": "11",
+   "text": "The Witch reached for the ruby slippers, and her broom caught fire! Dorothy threw a bucket of water. Splash! It hit the Witch too. \"I'm melting!\" she cried, and she was gone. Everyone cheered!",
+   "art": "the girl splashing a bucket of water, a green-faced witch in a black hat melting into a puddle in a funny way, the friends and castle guards cheering"
+  },
+  {
+   "id": "12",
+   "text": "Toto pulled back a curtain. The Wizard was just an ordinary man! \"You don't need me,\" he smiled. \"Scarecrow, you made a clever plan. Tin Man, you cried for a friend. Lion, you were brave. You had it inside you all along.\"",
+   "art": "the little dog pulling back a green curtain to reveal a kindly ordinary old man at a machine of levers, the four friends smiling in surprise"
+  },
+  {
+   "id": "13",
+   "text": "Glinda came back. \"Dorothy, you could always go home. Just click your heels three times.\" Dorothy hugged her friends goodbye. Click, click, click. \"There's no place like home...\"",
+   "art": "the girl in ruby slippers clicking her heels together, holding the dog, the scarecrow, tin man and lion waving goodbye, the good witch glowing pink, sparkles swirling"
+  },
+  {
+   "id": "14",
+   "text": "Dorothy opened her eyes. She was in her own bed, with Aunt Em, Uncle Henry and Toto right beside her. Dorothy hugged them tight. \"Oz was wonderful,\" she said, \"but there's no place like home.\"",
+   "art": "the girl waking up in a cozy farmhouse bedroom, hugging her aunt and uncle, the little dog on the bed, warm morning sunlight through the window"
+  }
+ ],
+ "cover_art": "the girl in a blue gingham dress and ruby slippers holding her little dog with the scarecrow, tin man and lion on the yellow brick road, the emerald city glowing behind"
+}
