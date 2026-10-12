@@ -8,16 +8,33 @@ The characters come from L. Frank Baum's book *The Wonderful Wizard of Oz* (1900
 They are drawn our own way, from the book's descriptions, and not like the 1939 film: silver shoes (not ruby
 slippers), no ribbon pigtails, no bow on the Lion, no green-faced witch and no pink bubble.
 
+## Round 2 (October 12): repaint in the style of page 12
+
+The person read the first set and said it looks too much like AI art next to the other books, but that page 12 (the
+Wizard behind his screen) looks better, and so does its Wizard head. So:
+
+- **Keep `12.png` as it is** and use it as the style reference. Download it from
+  https://raw.githubusercontent.com/SThief/stories/claude/wizard-oz-story-2p87i9/stories/wizard-of-oz/art/12.png and
+  attach it to the first message of a **new** Gemini chat with: "Paint every picture in this chat in exactly the style
+  of this picture." If attaching a file isn't possible, rely on the STYLE block below.
+- Make a new character sheet in that style first, then **repaint `00.png`–`11.png`, `13.png` and `14.png`** with the
+  same scenes as below.
+- **Shoes:** Dorothy wears plain brown boots on pages 01–04 only. On the cover and on pages 05–14 she wears shining
+  silver shoes. The first set got pages 05–07 wrong; check this on every page.
+- **The Wizard's giant head (page 09)** must be the head from page 12: a huge head of a wise old man with long wavy
+  white hair and a big white beard, floating above the green throne.
+- Upload the new pictures over the old ones in the same `art/` folder on the same branch.
+
 ## How to keep every picture the same
 
 1. Do everything in **one Gemini chat**. Don't start a new chat partway through.
 2. **First make the character sheet (step 0 below)** and keep it. Every page prompt starts by pointing back to it.
 3. Every prompt contains the same **STYLE** block and the **CHARACTERS** block, copied word for word. Don't shorten
    them or reword them.
-4. Before saving a page, compare it with the character sheet. Check Dorothy's short brown curls, pink sunbonnet and
+4. Before saving a page, compare it with the character sheet. Check Dorothy's brown curls, pink sunbonnet and
    blue-and-white checked dress, the silver shoes, Toto being small and black with long silky hair, the Scarecrow's
    blue Munchkin hat, the Tin Woodman's funnel hat and Glinda's red hair and white gown. If any of these is off, or
-   the style has drifted (photo-like, 3D, anime, flat vector), or anything looks like the 1939 film, ask Gemini to redo
+   the style has drifted from page 12 (glossy, sparkly, photo-like, 3D, anime, flat vector), or anything looks like the 1939 film, ask Gemini to redo
    the picture: "Same picture, but keep the characters exactly like the character sheet."
 5. Pictures must be square (1:1). No words, letters, captions or speech bubbles in any picture.
 6. If Gemini says the daily limit is reached, stop. Report how many pages are done, and continue in the same chat
@@ -25,9 +42,11 @@ slippers), no ribbon pigtails, no bow on the Lion, no green-faced witch and no p
 
 ## STYLE (copy into every prompt)
 
-> Warm, glowing children's storybook painting in a soft digital-watercolor style. Rich saturated colors, soft golden
-> light, gentle sparkles, rounded friendly characters with big shiny eyes and rosy cheeks. Cozy and happy, never
-> scary. Square picture, full scene, no text, no letters, no borders.
+> Classic hand-painted children's picture-book illustration in pen-and-ink with watercolor, like the picture of the
+> Wizard behind his screen (art/12.png). Fine brown ink outlines, soft natural watercolor washes, visible paper texture,
+> warm golden light, and rich, detailed backgrounds full of small lived-in things. Friendly, simple faces drawn like a
+> real illustrator would draw them. Not glossy, not airbrushed, not 3D, no oversized shiny eyes, no glowing sparkles,
+> no lens flare. Cozy and happy, never scary. Square picture, full scene, no text, no letters, no borders.
 
 ## CHARACTERS (copy into every prompt)
 
@@ -46,8 +65,9 @@ slippers), no ribbon pigtails, no bow on the Lion, no green-faced witch and no p
 > star on a slender silver wand.
 > Wicked Witch: a silly, not-too-scary old witch with one big eye and a patch over the other, a long pointy nose, a
 > patched purple dress, a floppy purple hat and a striped umbrella.
-> The Wizard: a little old man with a bald, shiny head, a wrinkled kind face, round spectacles and a brown checked
-> coat.
+> The Wizard: a little old man with a bald, shiny head, a fringe of white hair, a wrinkled kind face, round
+> spectacles and a brown checked coat. His giant head (page 09) is a huge head of a wise old man with long wavy white
+> hair and a big white beard.
 > Aunt Em and Uncle Henry: a gentle, gray-haired prairie farm couple in plain, faded farm clothes.
 > Munchkins: small round folk in blue, with blue pointed hats with little bells around the brims.
 
@@ -68,7 +88,7 @@ Scene: …"**. Only the characters named in the scene should be in the picture.
 | `06.png` | Dorothy oils the Tin Woodman's elbow with his oil can in a sunny forest, while the Scarecrow and Toto watch. |
 | `07.png` | The Lion sits on the road of yellow bricks crying and rubbing his nose with his paw, while Dorothy kindly pats his mane. Toto barks, and the Scarecrow and Tin Woodman peek out from behind a tree. |
 | `08.png` | Dorothy, the Scarecrow, the Tin Woodman and the Lion walk happily together down the road of yellow bricks past a field of red poppies, with Toto running ahead. A shining green city is ahead of them. |
-| `09.png` | In a grand green throne room, an enormous friendly-but-stern bald head floats above a green marble throne. Dorothy, Toto, the Scarecrow, the Tin Woodman and the Lion huddle together, wide-eyed. |
+| `09.png` | In a grand green throne room, the enormous head of a wise old man with long wavy white hair and a big white beard floats above a green marble throne. Dorothy, Toto, the Scarecrow, the Tin Woodman and the Lion huddle together, wide-eyed. |
 | `10.png` | At dusk, the Scarecrow, Tin Woodman and Lion bravely walk toward a yellow castle on a hill, while friendly winged monkeys fly overhead in a purple sky. |
 | `11.png` | Inside the castle kitchen, Dorothy splashes a bucket of water. The Wicked Witch melts into a puddle in a funny, cartoonish way, with only her floppy hat and umbrella left. Toto and the Lion cheer. |
 | `12.png` | Toto knocks over a folding screen in the corner of the throne room, showing the Wizard, a little old man, among funny gadgets and a big papier-mâché head. Dorothy, the Scarecrow, the Tin Woodman and the Lion look surprised and smile. |
