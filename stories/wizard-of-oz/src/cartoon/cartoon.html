@@ -1,0 +1,42 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:Fredoka;font-weight:600;src:url(fonts/fredoka-latin-600-normal.woff2)}
+html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="cv" width="1920" height="1080"></canvas>
+<svg width="0" height="0" style="position:absolute"><defs>
+<filter id="boil0" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="1"/><feDisplacementMap in="SourceGraphic" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter>
+<filter id="boil1" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter>
+<filter id="boil2" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="13"/><feDisplacementMap in="SourceGraphic" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter>
+</defs></svg>
+<script src="chars.js"></script><script src="world.js"></script><script src="scenes.js"></script><script src="timeline.js"></script>
+<script>
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const mk = () => { const o = document.createElement('canvas'); o.width = 1920; o.height = 1080; return o; };
+const off = [mk(), mk()], raw = mk();
+// watercolor paper: fine grain, a few soft uneven washes, multiplied over every frame
+const paper = mk(); (() => { const g = paper.getContext('2d'), R = rng(42); g.fillStyle = '#fbf6ec'; g.fillRect(0, 0, 1920, 1080);
+  for (let i = 0; i < 160; i++) { const x = R() * 1920, y = R() * 1080, r = 60 + R() * 300; g.fillStyle = rad(g, x, y, 0, r, [[0, `rgba(${200 + R() * 40},${170 + R() * 40},${130 + R() * 40},.13)`], [1, 'rgba(255,255,255,0)']]); g.fillRect(x - r, y - r, r * 2, r * 2); }
+  const im = g.getImageData(0, 0, 1920, 1080), d = im.data; for (let i = 0; i < d.length; i += 4) { const n = (R() - .5) * 22; d[i] += n; d[i + 1] += n; d[i + 2] += n; } g.putImageData(im, 0, 0);
+  g.globalAlpha = .08; g.strokeStyle = '#8a7050'; g.lineWidth = 1; for (let i = 0; i < 900; i++) { const x = R() * 1920, y = R() * 1080, a = R() * TAU, l = 6 + R() * 18; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke(); } })();
+const TL = TIMELINE;
+function drawPage(cnv, i, t) {
+  const p = TL.pages[i], u = t - p.start, g = cnv.getContext('2d'); g.setTransform(1, 0, 0, 1, 0, 0);
+  // a slow push-in on every page
+  const z = 1 + .04 * clamp(u / p.dur);
+  const r = raw.getContext('2d'); r.setTransform(1, 0, 0, 1, 0, 0); r.translate(960, 540); r.scale(z, z); r.translate(-960, -540);
+  SCENES[i](r, t, u, p.dur); r.setTransform(1, 0, 0, 1, 0, 0);
+  // hand-drawn finish: lines that wobble a little (a new wobble 8 times a second), softer color, paper underneath
+  g.setTransform(1, 0, 0, 1, 0, 0); g.drawImage(raw, 0, 0); g.filter = `url(#boil${Math.floor(t * 8) % 3}) saturate(0.92) sepia(0.08) brightness(1.05)`; g.drawImage(raw, 0, 0); g.filter = 'none';
+  g.globalCompositeOperation = 'multiply'; g.drawImage(paper, 0, 0); g.globalCompositeOperation = 'source-over';
+  caption(g, p.text, Math.min(clamp((u - .3) / .4), clamp((p.dur - u) / .3)));
+}
+window.frame = t => {
+  const ps = TL.pages; let i = ps.length - 1; while (i > 0 && t < ps[i].start) i--;
+  const fading = i > 0 && t < ps[i].start + TL.fade;
+  drawPage(off[0], i, Math.min(t, ps[i].start + ps[i].dur));
+  ctx.globalAlpha = 1; ctx.drawImage(off[0], 0, 0);
+  if (fading) { drawPage(off[1], i - 1, t); ctx.globalAlpha = 1 - (t - ps[i].start) / TL.fade; ctx.drawImage(off[1], 0, 0); ctx.globalAlpha = 1; }
+  const end = TL.total - t; if (end < 1.2) { ctx.fillStyle = `rgba(0,0,0,${1 - end / 1.2})`; ctx.fillRect(0, 0, 1920, 1080); }
+  return cv.toDataURL('image/jpeg', .9);
+};
+window.ready = document.fonts.load('600 44px Fredoka').then(() => true);
+</script></body></html>
