@@ -67,5 +67,28 @@
       "thumb": "storytelling-thumb.jpg",
       "minutes": 4.2
     }
+  },
+  {
+    "id": "wizard-of-oz",
+    "title": "There's No Place Like Home",
+    "from": "The Wonderful Wizard of Oz (1900)",
+    "source": "book",
+    "age": "4-8",
+    "lesson": "What you need was inside you all along.",
+    "made": "2026-10-12",
+    "cartoon": {
+      "file": "cartoon.mp4",
+      "thumb": "cartoon-thumb.jpg",
+      "minutes": 3.2,
+      "blurb": "Watch the story move — a spinning cyclone, a melting witch and the road of yellow bricks!"
+    },
+    "book": "book/book.json",
+    "pages": 15,
+    "bookThumb": "book/08.jpg",
+    "storytelling": {
+      "file": "storytelling.mp4",
+      "thumb": "storytelling-thumb.jpg",
+      "minutes": 3.2
+    }
   }
 ]

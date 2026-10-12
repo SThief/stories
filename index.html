@@ -107,7 +107,7 @@ function shelf() {
 function story(s) {
   app.innerHTML = `<a class="back" href="#/">‹ Library</a>
   <section class="story"><div class="cover" style="background-image:url('${base(s.id)}cover.jpg')"></div>
-  <div><h2>${esc(s.title)}</h2><div class="from">From the movie ${esc(s.from)}</div><div class="lesson">★ ${esc(s.lesson)}</div>
+  <div><h2>${esc(s.title)}</h2><div class="from">From the ${esc(s.source || 'movie')} ${esc(s.from)}</div><div class="lesson">★ ${esc(s.lesson)}</div>
   <div class="ways">
     <a class="way c1" href="#/watch/${s.id}/cartoon"><div class="th" style="background-image:url('${base(s.id)}${s.cartoon.thumb}')"></div><div><h3>Cartoon</h3><p>${esc(s.cartoon.blurb || 'Watch the story move.')}</p></div><span class="tag">${Math.round(s.cartoon.minutes)} min</span></a>
     ${s.puppets ? `<a class="way c4" href="#/watch/${s.id}/puppets"><div class="th" style="background-image:url('${base(s.id)}${s.puppets.thumb}')"></div><div><h3>Puppet cartoon</h3><p>The same story with painted puppets in big painted places.</p></div><span class="tag">${Math.round(s.puppets.minutes)} min</span></a>` : ''}
