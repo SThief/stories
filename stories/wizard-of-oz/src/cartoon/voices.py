@@ -7,7 +7,7 @@ sc = json.load(open(os.path.join(here, "script.json"))); os.makedirs(out, exist_
 k = Kokoro(os.path.join(models, "kokoro-v1.0.onnx"), os.path.join(models, "voices-v1.0.bin"))
 FX = {"chorus": "chorus=0.6:0.9:50|60:0.4|0.32:0.25|0.4:2|2.3", "tin": "flanger=delay=2:depth=2:regen=20:width=60:speed=0.6,volume=0.95",
       "echo": "aecho=0.8:0.7:120|240:0.35|0.2"}
-LEAD, GAP, TAIL, FADE = 0.9, 0.6, 1.4, 0.5
+LEAD, GAP, TAIL, FADE = 1.6, 1.1, 2.4, 1.0
 scenes, start = [], 0.0
 for si, lines in enumerate(sc["scenes"]):
     t, items = LEAD + (0.6 if si == 0 else 0), []

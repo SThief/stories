@@ -3,40 +3,40 @@
   "narrator": {
    "name": "",
    "voice": "bm_fable",
-   "speed": 0.92,
+   "speed": 0.84,
    "lang": "en-gb"
   },
   "dorothy": {
    "name": "Dorothy",
    "voice": "af_heart",
-   "speed": 1.0,
+   "speed": 0.88,
    "lang": "en-us",
    "pitch": 1.18
   },
   "toto": {
    "name": "Toto",
    "voice": "am_puck",
-   "speed": 1.1,
+   "speed": 1.0,
    "lang": "en-us",
    "pitch": 1.7
   },
   "uncleHenry": {
    "name": "Uncle Henry",
    "voice": "am_eric",
-   "speed": 1.0,
+   "speed": 0.88,
    "lang": "en-us"
   },
   "auntEm": {
    "name": "Aunt Em",
    "voice": "af_sarah",
-   "speed": 0.95,
+   "speed": 0.85,
    "lang": "en-us",
    "pitch": 0.96
   },
   "munchkin": {
    "name": "The Munchkins",
    "voice": "af_sky",
-   "speed": 1.05,
+   "speed": 0.92,
    "lang": "en-us",
    "pitch": 1.45,
    "fx": "chorus"
@@ -44,34 +44,34 @@
   "glinda": {
    "name": "Glinda",
    "voice": "af_bella",
-   "speed": 0.95,
+   "speed": 0.85,
    "lang": "en-us"
   },
   "scarecrow": {
    "name": "Scarecrow",
    "voice": "am_puck",
-   "speed": 1.05,
+   "speed": 0.9,
    "lang": "en-us",
    "pitch": 1.12
   },
   "tinWoodman": {
    "name": "Tin Woodman",
    "voice": "am_michael",
-   "speed": 0.95,
+   "speed": 0.84,
    "lang": "en-us",
    "fx": "tin"
   },
   "lion": {
    "name": "Lion",
    "voice": "am_fenrir",
-   "speed": 0.92,
+   "speed": 0.82,
    "lang": "en-us",
    "pitch": 0.82
   },
   "wizardHead": {
    "name": "The Great Oz",
    "voice": "bm_george",
-   "speed": 0.85,
+   "speed": 0.78,
    "lang": "en-gb",
    "pitch": 0.76,
    "fx": "echo"
@@ -79,14 +79,14 @@
   "witch": {
    "name": "Wicked Witch",
    "voice": "bf_alice",
-   "speed": 1.05,
+   "speed": 0.92,
    "lang": "en-gb",
    "pitch": 1.12
   },
   "wizardMan": {
    "name": "The Wizard",
    "voice": "bm_lewis",
-   "speed": 1.0,
+   "speed": 0.86,
    "lang": "en-gb"
   }
  },

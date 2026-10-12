@@ -20,11 +20,10 @@ const paper = mk(); (() => { const g = paper.getContext('2d'), R = rng(42); g.fi
   g.globalAlpha = .08; g.strokeStyle = '#8a7050'; g.lineWidth = 1; for (let i = 0; i < 900; i++) { const x = R() * 1920, y = R() * 1080, a = R() * TAU, l = 6 + R() * 18; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke(); } })();
 
 const WIDE = { x: 960, y: 540, z: 1 };
-function shotFor(i, who) {
+function shotFor(i, who) {   // a gentle lean toward whoever is talking, never a tight close-up
   const h = HEADS_BY[i][who];
   if (!who || who === 'narrator' || !h) return WIDE;
-  const z = clamp(1.5 / Math.max(h.s, .45), 1.3, 2.4) * (who === 'toto' ? 1.2 : 1);
-  return { x: h.x, y: h.y + 150 * h.s, z };
+  return { x: lerp(960, h.x, .55), y: lerp(540, h.y + 150 * h.s, .55), z: 1.2 };
 }
 function frameShot(s) {   // keep the view inside the picture
   const hw = 960 / s.z, hh = 540 / s.z;
@@ -32,11 +31,14 @@ function frameShot(s) {   // keep the view inside the picture
 }
 function lineAt(sc, u) { let k = -1; sc.lines.forEach((l, j) => { if (u >= l.start) k = j; }); return k; }
 function camera(i, u) {
-  const sc = DL.scenes[i], k = lineAt(sc, u);
-  if (k < 0) return { ...WIDE, z: 1 + .03 * u / sc.dur };
-  const cur = frameShot(shotFor(i, sc.lines[k].who)), prev = frameShot(k ? shotFor(i, sc.lines[k - 1].who) : WIDE);
-  const e = ease((u - sc.lines[k].start) / .55), drift = .025 * clamp((u - sc.lines[k].start) / 6);
-  return { x: lerp(prev.x, cur.x, e), y: lerp(prev.y, cur.y, e), z: lerp(prev.z, cur.z, e) * (1 + drift) };
+  // calm camera: it only moves when the framing really changes, and then slowly (2 seconds), with no drifting
+  const sc = DL.scenes[i]; let shot = WIDE, from = WIDE, at = 0;
+  for (const l of sc.lines) { if (l.start > u) break;
+    const s = frameShot(shotFor(i, l.who)), far = Math.hypot(s.x - shot.x, s.y - shot.y) > 160 || Math.abs(s.z - shot.z) > .05;
+    if (far) { const k = ease((l.start - at) / 2);   // start from wherever the camera is at that moment
+      from = { x: lerp(from.x, shot.x, k), y: lerp(from.y, shot.y, k), z: lerp(from.z, shot.z, k) }; shot = s; at = l.start; } }
+  const e = ease((u - at) / 2);
+  return { x: lerp(from.x, shot.x, e), y: lerp(from.y, shot.y, e), z: lerp(from.z, shot.z, e) };
 }
 // key moments of each scene's action, pinned to the line they belong with: [line number, time in the scene's own action]
 const ANCHORS = { 2: [[2, 1.5]], 3: [[1, 2.6], [2, 3.6]], 4: [[0, 2.1], [2, 2.6], [3, 5.6]], 5: [[1, 3.8]], 6: [[1, 2.4], [2, 6.1]],
