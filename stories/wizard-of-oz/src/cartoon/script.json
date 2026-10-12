@@ -104,17 +104,25 @@
    ],
    [
     "dorothy",
-    "Everything here is so gray, Toto. But you always make me laugh!"
+    "Toto, one day, let's go somewhere full of colors!"
    ],
    [
     "toto",
     "Arf! Arf!"
+   ],
+   [
+    "auntEm",
+    "Dorothy! Supper time!"
+   ],
+   [
+    "dorothy",
+    "Coming, Aunt Em!"
    ]
   ],
   [
    [
     "uncleHenry",
-    "A cyclone is coming! Everybody inside!"
+    "A cyclone is coming! Everybody, down to the cellar!"
    ],
    [
     "dorothy",
@@ -122,11 +130,11 @@
    ],
    [
     "narrator",
-    "The wind lifted the whole house, up, up, up into the sky!"
+    "Before Dorothy could reach the cellar, the wind lifted the whole house, up, up, up into the sky!"
    ],
    [
     "dorothy",
-    "Whoa! Hold on, Toto!"
+    "Aunt Em! Uncle Henry!"
    ]
   ],
   [
@@ -136,11 +144,15 @@
    ],
    [
     "dorothy",
-    "Oh, Toto. I don't think we're in Kansas anymore!"
+    "Oh, Toto. I don't think we're in Kansas anymore."
    ],
    [
     "munchkin",
     "Hooray! Welcome to the land of Oz!"
+   ],
+   [
+    "dorothy",
+    "Thank you. But please, I need to get home."
    ]
   ],
   [
@@ -149,16 +161,20 @@
     "Hello, Dorothy. I am Glinda, the Good Witch."
    ],
    [
+    "glinda",
+    "These silver shoes are for you. They are very special. But be careful: the Wicked Witch of the West wants them!"
+   ],
+   [
     "dorothy",
-    "Please, how can I get home?"
+    "How can I get home?"
    ],
    [
     "glinda",
-    "Wear these silver shoes, and follow the road of yellow bricks to the Emerald City. The great Wizard of Oz can help you."
+    "Follow the road of yellow bricks to the Emerald City. The great Wizard of Oz can help you."
    ],
    [
     "dorothy",
-    "Oh, thank you!"
+    "Come on, Toto. Let's go!"
    ]
   ],
   [
@@ -172,29 +188,33 @@
    ],
    [
     "scarecrow",
-    "Thank you! I wish I had a brain. My head is full of straw."
+    "Thank you! I wish I had a brain. My head is only full of straw."
    ],
    [
     "dorothy",
-    "Come with us! Maybe the Wizard can give you one."
+    "Come with us! The Wizard can help you. We'll go together!"
    ]
   ],
   [
    [
     "tinWoodman",
-    "Oil... can..."
+    "Mmm... mmm..."
    ],
    [
     "dorothy",
-    "An oil can? Here you go!"
-   ],
-   [
-    "tinWoodman",
-    "Ahh, I can move again! Thank you. I wish I had a heart."
+    "He's trying to say something!"
    ],
    [
     "scarecrow",
-    "Then come with us to see the Wizard!"
+    "I know! He needs that oil can, by his foot!"
+   ],
+   [
+    "tinWoodman",
+    "Ahh, I can move again! Thank you, clever friend. I wish I had a heart."
+   ],
+   [
+    "dorothy",
+    "Come with us. We'll go together!"
    ]
   ],
   [
@@ -211,8 +231,20 @@
     "Oh, please don't bark at me! I'm just a scaredy-cat. I wish I had courage."
    ],
    [
+    "tinWoodman",
+    "Oh, poor Lion!"
+   ],
+   [
+    "scarecrow",
+    "Careful, Tin Woodman! Your tears will make you rusty!"
+   ],
+   [
     "dorothy",
-    "Don't cry, Lion. Come with us! The Wizard can help you too."
+    "Don't be sad, Lion. Come with us. We'll go together!"
+   ],
+   [
+    "lion",
+    "Together? Okay!"
    ]
   ],
   [
@@ -225,8 +257,8 @@
     "Look! The Emerald City!"
    ],
    [
-    "lion",
-    "Wow! It's so shiny!"
+    "dorothy",
+    "The Wizard will help all of us!"
    ]
   ],
   [
@@ -244,25 +276,33 @@
    ],
    [
     "lion",
-    "Gulp!"
+    "G-g-gulp!"
+   ],
+   [
+    "dorothy",
+    "Don't worry. We can do it, together!"
    ]
   ],
   [
    [
     "witch",
-    "Fly, my monkeys! Bring me that girl and her silver shoes!"
+    "Those silver shoes will be mine! Fly, my monkeys!"
    ],
    [
     "narrator",
-    "The Winged Monkeys carried Dorothy and Toto away to the yellow castle."
-   ],
-   [
-    "scarecrow",
-    "I have a clever plan!"
+    "The Winged Monkeys swooped down."
    ],
    [
     "lion",
-    "And I'll be brave, for Dorothy!"
+    "Leave Dorothy alone! ROAR!"
+   ],
+   [
+    "narrator",
+    "But the monkeys carried Dorothy and Toto away to the yellow castle."
+   ],
+   [
+    "scarecrow",
+    "Don't worry, I have a plan! Follow me!"
    ]
   ],
   [
@@ -280,25 +320,37 @@
    ],
    [
     "witch",
-    "Oh no! I'm melting away!"
+    "Oh no! I'm melting, melting away!"
    ],
    [
     "lion",
-    "Hooray! We did it!"
+    "Dorothy! We came to save you!"
+   ],
+   [
+    "dorothy",
+    "You came! Thank you, my friends!"
    ]
   ],
   [
    [
     "narrator",
-    "Toto knocked over a screen, and there was the Wizard: just a little old man!"
+    "Back in the Emerald City, Toto knocked over a screen."
+   ],
+   [
+    "dorothy",
+    "You're just a little old man!"
    ],
    [
     "wizardMan",
-    "I'm sorry, my friends. But you don't need me. Scarecrow, you made a clever plan. Tin Woodman, you cried for your friend. Lion, you were so brave."
+    "Yes, I'm sorry. But listen. Who thought of the oil can? Who cried for the Lion? Who roared at the monkeys to save Dorothy?"
+   ],
+   [
+    "scarecrow",
+    "We did!"
    ],
    [
     "wizardMan",
-    "You had it inside you all along!"
+    "You had a brain, a heart, and courage all along!"
    ]
   ],
   [
@@ -308,7 +360,11 @@
    ],
    [
     "dorothy",
-    "Goodbye, my friends. I'll miss you so much!"
+    "Goodbye, my friends. I'll never forget you!"
+   ],
+   [
+    "scarecrow",
+    "Goodbye, Dorothy!"
    ],
    [
     "dorothy",

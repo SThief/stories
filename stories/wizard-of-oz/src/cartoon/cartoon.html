@@ -41,9 +41,9 @@ function camera(i, u) {
   return { x: lerp(from.x, shot.x, e), y: lerp(from.y, shot.y, e), z: lerp(from.z, shot.z, e) };
 }
 // key moments of each scene's action, pinned to the line they belong with: [line number, time in the scene's own action]
-const ANCHORS = { 2: [[2, 1.5]], 3: [[1, 2.6], [2, 3.6]], 4: [[0, 2.1], [2, 2.6], [3, 5.6]], 5: [[1, 3.8]], 6: [[1, 2.4], [2, 6.1]],
-  7: [[1, 1.2], [2, 2.6], [3, 8.7]], 10: [[1, 2.2], [2, 6.2]], 11: [[1, 3.8], [2, 4.6], [3, 5.2], [4, 7.7]], 12: [[0, .8], [1, 3.4]],
-  13: [[2, 6.2]], 14: [[0, 2.2], [1, 4.4]] };
+const ANCHORS = { 2: [[2, 1.5]], 3: [[1, 2.6], [2, 3.6]], 4: [[0, 2.1], [1, 2.6], [2, 5.6]], 5: [[1, 3.8]], 6: [[2, 2.0], [3, 6.1]],
+  7: [[1, 1.2], [2, 2.6], [5, 8.7]], 10: [[1, .4], [2, 1.2], [3, 2.2], [4, 6.2]], 11: [[1, 3.8], [2, 4.6], [3, 5.2], [4, 7.7]],
+  12: [[0, .8], [1, 2.6], [2, 3.4]], 13: [[3, 6.2]], 14: [[0, 2.2], [1, 4.4]] };
 function oldTime(i, u) {
   const sc = DL.scenes[i], old = OLD[i].dur, pts = [[0, 0], ...(ANCHORS[i] || []).map(([k, o]) => [sc.lines[k].start, o]), [sc.dur, old]];
   for (let j = 1; j < pts.length; j++) if (u <= pts[j][0] || j === pts.length - 1) {
@@ -52,7 +52,7 @@ function oldTime(i, u) {
 function drawPage(cnv, i, t, live) {
   const sc = DL.scenes[i], u = t - sc.start, k = lineAt(sc, u), L = k >= 0 ? sc.lines[k] : null;
   const speaking = live && L && u < L.start + L.dur;
-  SPEAK.who = speaking ? L.who : null; SPEAK.roar = speaking && /^ROAR/.test(L.text);
+  SPEAK.who = speaking ? L.who : null; SPEAK.roar = speaking && /ROAR/.test(L.text);
   SPEAK.amp = speaking ? (L.env[Math.floor((u - L.start) * 30)] || 0) : 0;
   const cam = camera(i, u), r = raw.getContext('2d');
   r.setTransform(1, 0, 0, 1, 0, 0); r.translate(960, 540); r.scale(cam.z, cam.z); r.translate(-cam.x, -cam.y);

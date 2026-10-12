@@ -139,7 +139,8 @@ const SCENES = [
     put(c, dorothy, 1060, 860, 1, { walk: 0, blink: blinkAt(t, 1), shoes: 'silver', armF: u > 2 && u < 6 ? 1.7 + Math.sin(u * 6) * .15 : .2 }, t, true);
     if (u > 2 && u < 6) { c.save(); c.translate(940, 620); c.rotate(-.5); rr(c, -12, -20, 24, 34, 6); fillStroke(c, '#c3cddb', 3); c.beginPath(); c.moveTo(0, -20); c.lineTo(-30, -40); ink(c, 5); c.stroke(); c.restore();
       for (let i = 0; i < 3; i++) { const k = ((u * 1.5 + i / 3) % 1); ell(c, 905, 580 + k * 60, 4, 6); c.fillStyle = 'rgba(200,170,60,.9)'; c.fill(); } }
-    put(c, scarecrow, 1300, 860, .95, { walk: 0, blink: blinkAt(t, 3), mood: free && u < 8 ? 'wow' : null }, t, true);
+    if (u <= 2) { c.save(); c.translate(910, 845); c.rotate(.2); rr(c, -14, -22, 28, 36, 6); fillStroke(c, '#c3cddb', 3); c.beginPath(); c.moveTo(0, -22); c.lineTo(-32, -44); ink(c, 5); c.stroke(); c.restore(); }
+    put(c, scarecrow, 1300, 860, .95, { walk: 0, blink: blinkAt(t, 3), armF: SPEAK.who === 'scarecrow' ? 1.7 : undefined, mood: free && u < 8 ? 'wow' : null }, t, true);
     put(c, toto, 560, 870, 1.2, { walk: 0, blink: blinkAt(t, 4) }, t);
     if (free && u < 7.5) for (let i = 0; i < 6; i++) sparkle(c, 780 + Math.cos(i) * 120, 530 + Math.sin(i * 2) * 140, 18 * (1 - (u - 6) / 1.5), t * 2 + i);
     twinkles(c, t, DUST.slice(0, 16), 'rgba(255,255,220,.9)');
@@ -158,7 +159,8 @@ const SCENES = [
     const pat = u > 8.6;
     put(c, dorothy, 1140, 890, 1, { walk: 0, blink: blinkAt(t, 1), shoes: 'silver', armF: pat ? 2 + Math.sin(u * 5) * .2 : .2, mood: u < 2.2 ? 'wow' : null, mouth: talk(u, 9.6, d - .6) }, t, true);
     put(c, scarecrow, 1440, 860, .9, { walk: 0, blink: blinkAt(t, 3), mood: u < 4 ? 'wow' : null }, t, true);
-    put(c, tinWoodman, 1620, 860, .9, { walk: 0, blink: blinkAt(t, 4), mood: u < 4 ? 'wow' : null }, t, true);
+    const tinCry = SPEAK.who === 'tinWoodman' || SPEAK.who === 'scarecrow';
+    put(c, tinWoodman, 1620, 860, .9, { walk: 0, blink: blinkAt(t, 4), mood: u < 4 ? 'wow' : (tinCry ? 'sad' : null), tears: tinCry ? (t * .8) % 1 : 0 }, t, true);
     vignette(c);
   },
   // 08 down the road of yellow bricks
@@ -210,9 +212,12 @@ const SCENES = [
       const mx = u < grab ? lerp(-200 - i * 140, 1000 + i * 60, k) : (path ? dx + (i ? 60 : -60) : lerp(1000 + i * 60, 2200, away)), my = u < grab ? lerp(200, 640 + (i % 3) * 30, k) + Math.sin(t * 3 + i) * 20 : (path ? dy - 330 * ds : lerp(640, 200, away) + Math.sin(t * 3 + i) * 20);
       c.save(); c.translate(mx, my); c.scale(path && u > grab ? ds * 1.2 : .9, path && u > grab ? ds * 1.2 : .9); monkey(c, t, i); c.restore(); }
     if (u < 3) put(c, witch, 1450, 300, .38, { armF: 2.4, blink: blinkAt(t, 5) }, t, true);   // the Witch calls from her tower
-    const walkIn = clamp((u - 6) / (d - 6));
-    if (u > 6) [[scarecrow, 260], [tinWoodman, 440], [lion, 690]].forEach(([f, x], i) =>
-      put(c, f, x + walkIn * 260, 890, .82, { ph: u * 5 + i, walk: 1, blink: blinkAt(t, i), mood: f === lion ? 'happy' : null }, t));
+    const walkIn = clamp((u - 6) / (d - 6)), moving = u > 6;
+    [[scarecrow, 330], [tinWoodman, 510]].forEach(([f, x], i) =>
+      put(c, f, x + walkIn * 300, 890, .82, { ph: u * 5 + i, walk: moving ? 1 : 0, blink: blinkAt(t, i), mood: u < 5 ? 'wow' : null }, t));
+    // the Lion faces the monkeys and roars to protect Dorothy
+    put(c, lion, 860 + walkIn * 300, 890, .82, { ph: u * 5, walk: moving ? 1 : 0, blink: blinkAt(t, 2), mood: u > 6 ? 'happy' : null }, t, !moving);
+    bubble(c, 700, 470, 'ROAR!', SPEAK.who === 'lion' ? clamp(SPEAK.amp * 3) : 0, 64);
     twinkles(c, t, scatter(17, 20, 0, W, 0, 400, 3, 7));
     vignette(c, .03);
   },
