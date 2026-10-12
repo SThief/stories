@@ -8,6 +8,38 @@ The characters come from L. Frank Baum's book *The Wonderful Wizard of Oz* (1900
 They are drawn our own way, from the book's descriptions, and not like the 1939 film: silver shoes (not ruby
 slippers), no ribbon pigtails, no bow on the Lion, no green-faced witch and no pink bubble.
 
+## Round 3 (October 13): match page 12 everywhere, keep Dorothy the same
+
+The person's favourite picture is `12.png` (the Wizard behind his screen). Some round-2 pages drifted from it, and
+Dorothy's face, age and hair change from page to page. Page `01.png` also gives Dorothy three legs.
+
+**The method: same reference images on every picture, no drifting chat.** For each picture below, start a **new**
+Gemini chat (or clear the context) and attach two images:
+
+1. `12.png` (the style and character reference):
+   https://raw.githubusercontent.com/SThief/stories/main/stories/wizard-of-oz/art/12.png
+2. The current picture being fixed (the layout reference): `https://raw.githubusercontent.com/SThief/stories/main/stories/wizard-of-oz/art/NN.png`
+
+Then ask: "Repaint the second picture as the same scene with the same layout, but in exactly the painting style of the
+first picture, and with Dorothy, Toto, the Scarecrow, the Tin Woodman and the Lion looking exactly like they do in
+the first picture: same faces, same age, same hair, same clothes. No border: paint to the edges. No text."
+
+| File | Fix |
+|---|---|
+| `01.png` | Only remove the extra leg: Dorothy has exactly two legs in brown boots. Keep everything else the same (ask Gemini to edit, not repaint). |
+| `03.png` | Repaint (Munchkins at the house). Dorothy in brown boots. |
+| `04.png` | Repaint (Glinda gives the silver shoes). Dorothy still in brown boots, holding Toto. |
+| `05.png` | Repaint (the Scarecrow). Dorothy in silver shoes from here on. |
+| `06.png` | Repaint (the Tin Woodman). |
+| `07.png` | Repaint (the Lion). |
+| `08.png` | Repaint (the road of yellow bricks and poppies). |
+| `11.png` | Repaint (the melting Witch). Keep her silly and surprised, not scary. |
+
+Keep `00`, `02`, `09`, `10`, `12`, `13` and `14` as they are. Before saving each picture, check Dorothy against
+`12.png` (face, age, long wavy brown hair, pink bonnet on her back, blue gingham dress, the right shoes) and count her
+legs and arms. Upload all 8 in one commit over the old files in `art/` on the `claude/wizard-oz-story-2p87i9`
+branch. If Gemini's daily limit stops you, upload nothing, and say how many are done.
+
 ## Round 2 (October 12): repaint in the style of page 12
 
 The person read the first set and said it looks too much like AI art next to the other books, but that page 12 (the
