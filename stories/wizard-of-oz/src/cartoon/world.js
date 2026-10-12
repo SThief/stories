@@ -7,8 +7,19 @@ function hills(c, off, base, amp, col, k) {
   c.beginPath(); c.moveTo(0, H);
   for (let x = 0; x <= W; x += 20) { const u = x + off; c.lineTo(x, base - Math.sin(u * k) * amp - Math.sin(u * k * 2.3 + 1) * amp * .4); }
   c.lineTo(W, H); c.closePath(); c.fillStyle = col; c.fill();
+  // a soft watercolor shadow along the top of each hill
+  c.save(); c.clip(); c.fillStyle = lin(c, 0, base - amp * 1.4, 0, base + 120, [[0, 'rgba(255,255,230,.18)'], [.4, 'rgba(0,40,0,0)'], [1, 'rgba(0,40,0,.12)']]); c.fillRect(0, base - amp * 1.5, W, 260); c.restore();
 }
-function ground(c, y, top, bot) { c.fillStyle = lin(c, 0, y, 0, H, [[0, top], [1, bot]]); c.fillRect(0, y, W, H - y); }
+const BLADES = (() => { const R = rng(31); return Array.from({ length: 260 }, () => ({ x: R() * W, v: R(), s: .5 + R() * .9, k: R() })); })();
+function ground(c, y, top, bot) {
+  c.fillStyle = lin(c, 0, y, 0, H, [[0, top], [1, bot]]); c.fillRect(0, y, W, H - y);
+  // painted grass: little strokes in a darker and a lighter shade, thicker toward the front
+  c.save(); c.lineCap = 'round';
+  for (const b of BLADES) { const yy = y + 10 + b.v * b.v * (H - y), sz = 6 + (yy - y) / (H - y) * 16 * b.s;
+    c.strokeStyle = b.k < .7 ? 'rgba(30,60,20,.22)' : 'rgba(255,255,230,.25)'; c.lineWidth = 2 + sz * .12;
+    c.beginPath(); c.moveTo(b.x, yy); c.lineTo(b.x - sz * .3, yy - sz); c.moveTo(b.x + 4, yy); c.lineTo(b.x + 6, yy - sz * 1.1); c.moveTo(b.x + 8, yy); c.lineTo(b.x + 14, yy - sz * .8); c.stroke(); }
+  c.restore();
+}
 function puff(c, x, y, s, a = .92, col = '255,255,255') {
   c.save(); c.translate(x, y); c.scale(s, s); c.fillStyle = `rgba(${col},${a})`;
   for (const [dx, dy, r] of [[0, 0, 48], [50, -18, 58], [104, 0, 46], [52, 18, 50], [-40, 12, 34], [140, 14, 32]]) { ell(c, dx, dy, r, r * .85); c.fill(); }
