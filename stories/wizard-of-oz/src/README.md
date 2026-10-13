@@ -1,4 +1,4 @@
-# How There's No Place Like Home was made
+# How The Wizard's Secret was made
 
 - `art/`: lifts Gemini's corner sparkle off the pictures. `clean.py` makes an inpainted guess, `unmark.py` works out
   the mark's exact shape from all the pictures and undoes it, and `edge.py` tidies the last thin outline.

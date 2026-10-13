@@ -70,11 +70,11 @@
   },
   {
     "id": "wizard-of-oz",
-    "title": "There's No Place Like Home",
+    "title": "The Wizard's Secret",
     "from": "The Wonderful Wizard of Oz (1900)",
     "source": "book",
     "age": "4-8",
-    "lesson": "What you need was inside you all along.",
+    "lesson": "The magic was in you all along.",
     "made": "2026-10-12",
     "cartoon": {
       "file": "cartoon.mp4",

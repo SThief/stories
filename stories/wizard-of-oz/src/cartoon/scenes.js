@@ -25,8 +25,8 @@ const SCENES = [
     c.fillStyle = lin(c, 0, -170, 0, 120, [[0, '#f5cd4f'], [1, '#d9982a']]); c.fill(); c.restore();
     const k = ease(u / 1.2);
     c.save(); c.globalAlpha = k; c.translate(W / 2, 250 - (1 - k) * 40); c.textAlign = 'center';
-    c.font = '600 112px Fredoka'; c.lineWidth = 16; c.strokeStyle = 'rgba(90,45,10,.55)'; c.lineJoin = 'round'; c.strokeText("There's No Place Like Home", 0, 0);
-    c.fillStyle = '#fffaf0'; c.fillText("There's No Place Like Home", 0, 0);
+    c.font = '600 112px Fredoka'; c.lineWidth = 16; c.strokeStyle = 'rgba(90,45,10,.55)'; c.lineJoin = 'round'; c.strokeText("The Wizard's Secret", 0, 0);
+    c.fillStyle = '#fffaf0'; c.fillText("The Wizard's Secret", 0, 0);
     c.font = '600 48px Fredoka'; c.fillStyle = '#5a3418'; c.fillText('The Wonderful Wizard of Oz', 0, 80); c.restore();
     const wk = t * 5.2; [[lion, 640, 0], [tinWoodman, 820, 1.2], [scarecrow, 980, 2.1], [dorothy, 1130, .3], [toto, 1280, 0]].forEach(([f, x, o], i) =>
       put(c, f, x + u * 18, 930, f === toto ? .7 : .48, { ph: wk + o, blink: blinkAt(t, i), shoes: 'silver' }, t));

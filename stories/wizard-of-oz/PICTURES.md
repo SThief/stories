@@ -1,4 +1,4 @@
-# Pictures for "There's No Place Like Home" (The Wizard of Oz)
+# Pictures for "The Wizard's Secret" (The Wizard of Oz)
 
 Instructions for Claude in Chrome. Make 15 square pictures in **Google Gemini** (gemini.google.com, the person's own
 Google account) and upload them to GitHub. All 15 must look like one book: the same characters, the same faces, the
