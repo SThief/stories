@@ -79,8 +79,8 @@
     "cartoon": {
       "file": "cartoon.mp4",
       "thumb": "cartoon-thumb.jpg",
-      "minutes": 4.9,
-      "blurb": "Watch the story move — Dorothy and her friends talk in their own voices!"
+      "minutes": 5.0,
+      "blurb": "Follow the road of yellow bricks with Dorothy and her friends!"
     },
     "book": "book/book.json",
     "pages": 15,

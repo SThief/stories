@@ -10,12 +10,14 @@ function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let
 // Who is talking right now (set by cartoon.html from the dialogue), and where each character's head was last drawn,
 // in scene coordinates, so the camera can frame whoever speaks.
 const SPEAK = { who: null, amp: 0 };
+// What the script asks of the scene for the current line: a mood per character ({ lion: 'sad' }) and named cues.
+const CUE = { mood: {}, on: {} };
 let HEADS = {}, CAM_INV = null, CAM_Z = 1;
 function live(name, c, p, hx, hy) {
   if (CAM_INV) { const m = c.getTransform(), q = CAM_INV.transformPoint(m.transformPoint(new DOMPoint(hx, hy)));
     HEADS[name] = { x: q.x, y: q.y, s: Math.hypot(m.a, m.b) / CAM_Z }; }
   const on = SPEAK.who === name;
-  return { ...p, mouth: on ? SPEAK.amp : 0, bark: on ? SPEAK.amp > .2 : false };
+  return { ...p, ...(CUE.mood[name] ? { mood: CUE.mood[name] } : {}), mouth: on ? SPEAK.amp : 0, bark: on ? SPEAK.amp > .2 : false };
 }
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
 const ease = x => { x = clamp(x); return x * x * (3 - 2 * x); };

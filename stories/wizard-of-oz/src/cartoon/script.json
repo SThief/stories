@@ -3,7 +3,7 @@
   "narrator": {
    "name": "",
    "voice": "bm_fable",
-   "speed": 0.84,
+   "speed": 0.9,
    "lang": "en-gb"
   },
   "dorothy": {
@@ -94,291 +94,785 @@
   [
    [
     "narrator",
-    "The Wizard's Secret."
+    "The Wizard's Secret.",
+    {
+     "shot": "wide"
+    }
    ]
   ],
   [
    [
     "narrator",
-    "Dorothy lived on the wide gray prairie of Kansas, with Aunt Em, Uncle Henry, and her little dog, Toto."
+    "Dorothy lived on the gray prairie of Kansas, with Aunt Em, Uncle Henry, and her little dog, Toto.",
+    {
+     "shot": "wide"
+    }
+   ],
+   [
+    "narrator",
+    "Their house was tiny, and everything around it was gray.",
+    {
+     "shot": "mid",
+     "on": "dorothy"
+    }
+   ],
+   [
+    "narrator",
+    "But Toto made Dorothy laugh, every single day.",
+    {
+     "shot": "close",
+     "on": "dorothy",
+     "mood": {
+      "dorothy": "happy"
+     }
+    }
    ],
    [
     "dorothy",
-    "Toto, one day, let's go somewhere full of colors!"
-   ],
-   [
-    "toto",
-    "Arf! Arf!"
-   ],
-   [
-    "auntEm",
-    "Dorothy! Supper time!"
-   ],
-   [
-    "dorothy",
-    "Coming, Aunt Em!"
+    "Oh, Toto. You silly puppy!",
+    {
+     "mood": {
+      "dorothy": "happy"
+     },
+     "pause": 0.4
+    }
    ]
   ],
   [
+   [
+    "narrator",
+    "One day, the sky turned dark.",
+    {
+     "shot": "wide",
+     "act": 0.2
+    }
+   ],
    [
     "uncleHenry",
-    "A cyclone is coming! Everybody, down to the cellar!"
-   ],
-   [
-    "dorothy",
-    "Toto, come back!"
+    "A cyclone is coming!",
+    {
+     "shot": "mid",
+     "on": "uncleHenry",
+     "act": 0.9
+    }
    ],
    [
     "narrator",
-    "Before Dorothy could reach the cellar, the wind lifted the whole house, up, up, up into the sky!"
+    "Dorothy ran to catch Toto, but the wind was too fast.",
+    {
+     "shot": "wide",
+     "act": 1.5
+    }
    ],
-   [
-    "dorothy",
-    "Aunt Em! Uncle Henry!"
-   ]
-  ],
-  [
    [
     "narrator",
-    "Bump! The house landed."
+    "The whole house spun up, up, up, into the sky!",
+    {
+     "shot": "at",
+     "x": 1000,
+     "y": 520,
+     "z": 1.3,
+     "move": 3,
+     "act": 2.4
+    }
    ],
    [
     "dorothy",
-    "Oh, Toto. I don't think we're in Kansas anymore."
-   ],
-   [
-    "munchkin",
-    "Hooray! Welcome to the land of Oz!"
-   ],
-   [
-    "dorothy",
-    "Thank you. But please, I need to get home."
-   ]
-  ],
-  [
-   [
-    "glinda",
-    "Hello, Dorothy. I am Glinda, the Good Witch."
-   ],
-   [
-    "glinda",
-    "These silver shoes are for you. They are very special. But be careful: the Wicked Witch of the West wants them!"
-   ],
-   [
-    "dorothy",
-    "How can I get home?"
-   ],
-   [
-    "glinda",
-    "Follow the road of yellow bricks to the Emerald City. The great Wizard of Oz can help you."
-   ],
-   [
-    "dorothy",
-    "Come on, Toto. Let's go!"
-   ]
-  ],
-  [
-   [
-    "scarecrow",
-    "Excuse me! Could you help me down?"
-   ],
-   [
-    "dorothy",
-    "Of course!"
-   ],
-   [
-    "scarecrow",
-    "Thank you! I wish I had a brain. My head is only full of straw."
-   ],
-   [
-    "dorothy",
-    "Come with us! The Wizard can help you. We'll go together!"
-   ]
-  ],
-  [
-   [
-    "tinWoodman",
-    "Mmm... mmm..."
-   ],
-   [
-    "dorothy",
-    "He's trying to say something!"
-   ],
-   [
-    "scarecrow",
-    "I know! He needs that oil can, by his foot!"
-   ],
-   [
-    "tinWoodman",
-    "Ahh, I can move again! Thank you, clever friend. I wish I had a heart."
-   ],
-   [
-    "dorothy",
-    "Come with us. We'll go together!"
-   ]
-  ],
-  [
-   [
-    "lion",
-    "ROAR!"
-   ],
-   [
-    "toto",
-    "Arf! Arf! Arf!"
-   ],
-   [
-    "lion",
-    "Oh, please don't bark at me! I'm just a scaredy-cat. I wish I had courage."
-   ],
-   [
-    "tinWoodman",
-    "Oh, poor Lion!"
-   ],
-   [
-    "scarecrow",
-    "Careful, Tin Woodman! Your tears will make you rusty!"
-   ],
-   [
-    "dorothy",
-    "Don't be sad, Lion. Come with us. We'll go together!"
-   ],
-   [
-    "lion",
-    "Together? Okay!"
+    "Aunt Em! Uncle Henry!",
+    {
+     "shot": "close",
+     "on": "dorothy",
+     "z": 2.6,
+     "mood": {
+      "dorothy": "wow"
+     },
+     "pause": 0.6,
+     "track": true
+    }
    ]
   ],
   [
    [
     "narrator",
-    "Side by side, the friends walked down the road of yellow bricks."
+    "Bump! The house landed.",
+    {
+     "shot": "wide",
+     "act": 0.5
+    }
    ],
    [
-    "scarecrow",
-    "Look! The Emerald City!"
+    "narrator",
+    "Dorothy opened the door, and gasped.",
+    {
+     "act": 2.2
+    }
+   ],
+   [
+    "narrator",
+    "Everything was full of color! Flowers, trees, and little Munchkins in blue.",
+    {
+     "act": 3.0
+    }
    ],
    [
     "dorothy",
-    "The Wizard will help all of us!"
+    "Toto... I don't think we're in Kansas anymore.",
+    {
+     "shot": "close",
+     "on": "dorothy",
+     "act": 4.6,
+     "pause": 0.4
+    }
    ]
   ],
   [
+   [
+    "narrator",
+    "Then Glinda, the Good Witch, floated down on a soft white cloud.",
+    {
+     "shot": "wide",
+     "act": 0.2
+    }
+   ],
+   [
+    "glinda",
+    "Hello, Dorothy. These silver shoes are for you. But be careful: the Wicked Witch wants them!",
+    {
+     "shot": "two",
+     "on": [
+      "glinda",
+      "dorothy"
+     ],
+     "act": 2.4
+    }
+   ],
+   [
+    "narrator",
+    "The shoes sparkled on Dorothy's feet.",
+    {
+     "shot": "close",
+     "on": "dorothy",
+     "dy": 430,
+     "z": 2.2,
+     "act": 5.2
+    }
+   ],
+   [
+    "glinda",
+    "Follow the road of yellow bricks to the Emerald City. The Wizard can help you get home.",
+    {
+     "shot": "close",
+     "on": "glinda",
+     "act": 7.0
+    }
+   ]
+  ],
+  [
+   [
+    "narrator",
+    "On the road, Dorothy met a Scarecrow, stuck on a pole.",
+    {
+     "shot": "wide"
+    }
+   ],
+   [
+    "scarecrow",
+    "Excuse me! Could you help me down?",
+    {
+     "shot": "mid",
+     "on": "scarecrow",
+     "act": 1.4
+    }
+   ],
+   [
+    "narrator",
+    "So Dorothy helped him down.",
+    {
+     "shot": "wide",
+     "act": 3.9
+    }
+   ],
+   [
+    "scarecrow",
+    "Thank you! But I wish I had a brain.",
+    {
+     "shot": "close",
+     "on": "scarecrow",
+     "mood": {
+      "scarecrow": "sad"
+     },
+     "act": 5.6,
+     "pause": 0.4
+    }
+   ],
+   [
+    "dorothy",
+    "Come with us to the Wizard. We'll go together!",
+    {
+     "shot": "two",
+     "on": [
+      "scarecrow",
+      "dorothy"
+     ],
+     "mood": {
+      "scarecrow": "happy"
+     }
+    }
+   ]
+  ],
+  [
+   [
+    "narrator",
+    "In the forest, they found a Tin Woodman, stiff and rusty.",
+    {
+     "shot": "wide",
+     "act": 0.2
+    }
+   ],
+   [
+    "scarecrow",
+    "I know! The oil can, by his foot!",
+    {
+     "shot": "mid",
+     "on": "scarecrow",
+     "act": 2.0
+    }
+   ],
+   [
+    "narrator",
+    "Dorothy oiled his squeaky arms.",
+    {
+     "shot": "mid",
+     "on": "tinWoodman",
+     "move": 2,
+     "act": 2.6
+    }
+   ],
+   [
+    "tinWoodman",
+    "Ahh! Thank you, my clever friends.",
+    {
+     "act": 6.0
+    }
+   ],
+   [
+    "tinWoodman",
+    "But I'm empty inside. I wish I had a heart.",
+    {
+     "shot": "close",
+     "on": "tinWoodman",
+     "mood": {
+      "tinWoodman": "sad"
+     },
+     "act": 8.0,
+     "pause": 0.5
+    }
+   ],
+   [
+    "dorothy",
+    "Come with us. We'll go together.",
+    {
+     "shot": "two",
+     "on": [
+      "tinWoodman",
+      "dorothy"
+     ],
+     "mood": {
+      "tinWoodman": "happy"
+     }
+    }
+   ]
+  ],
+  [
+   [
+    "lion",
+    "ROAR!",
+    {
+     "shot": "wide",
+     "act": 0.4
+    }
+   ],
+   [
+    "narrator",
+    "A big Lion jumped out! Toto barked and barked.",
+    {
+     "act": 1.0
+    }
+   ],
+   [
+    "narrator",
+    "And the Lion sat down... and began to cry.",
+    {
+     "shot": "close",
+     "on": "lion",
+     "move": 2.5,
+     "act": 2.2,
+     "pause": 0.3
+    }
+   ],
+   [
+    "lion",
+    "I'm just a scaredy-cat. I wish I had courage.",
+    {
+     "act": 4.4,
+     "pause": 0.8
+    }
+   ],
+   [
+    "narrator",
+    "The Tin Woodman cried too.",
+    {
+     "shot": "close",
+     "on": "tinWoodman",
+     "cue": [
+      "tinCry"
+     ],
+     "mood": {
+      "tinWoodman": "sad"
+     },
+     "act": 6.0
+    }
+   ],
+   [
+    "narrator",
+    "Dorothy gently patted his soft mane.",
+    {
+     "shot": "two",
+     "on": [
+      "lion",
+      "dorothy"
+     ],
+     "act": 8.6
+    }
+   ],
+   [
+    "dorothy",
+    "Come with us. We'll go together.",
+    {
+     "shot": "close",
+     "on": "dorothy"
+    }
+   ],
+   [
+    "lion",
+    "Together? Okay!",
+    {
+     "shot": "close",
+     "on": "lion",
+     "mood": {
+      "lion": "happy"
+     },
+     "pause": 0.4
+    }
+   ]
+  ],
+  [
+   [
+    "narrator",
+    "Side by side, the friends walked down the road of yellow bricks.",
+    {
+     "shot": "at",
+     "x": 900,
+     "y": 640,
+     "z": 1.3,
+     "move": 4
+    }
+   ],
+   [
+    "narrator",
+    "At last, they saw the Emerald City, shining green.",
+    {
+     "shot": "wide",
+     "pause": 0.4
+    }
+   ]
+  ],
+  [
+   [
+    "narrator",
+    "Inside, a giant head floated above a green throne.",
+    {
+     "shot": "wide"
+    }
+   ],
    [
     "wizardHead",
-    "I am Oz, the Great and Mighty! Why have you come?"
+    "I am Oz, the Great and Mighty! First, make the Wicked Witch of the West go away!",
+    {
+     "shot": "close",
+     "on": "wizardHead",
+     "z": 1.5,
+     "act": 1.8
+    }
    ],
    [
-    "dorothy",
-    "Please, I want to go home. And my friends want a brain, a heart, and courage."
-   ],
-   [
-    "wizardHead",
-    "First, make the Wicked Witch of the West go away!"
+    "narrator",
+    "The friends shook with fear.",
+    {
+     "shot": "wide",
+     "act": 5.0
+    }
    ],
    [
     "lion",
-    "G-g-gulp!"
+    "G-g-gulp!",
+    {
+     "shot": "close",
+     "on": "lion"
+    }
    ],
    [
     "dorothy",
-    "Don't worry. We can do it, together!"
+    "We'll go together.",
+    {
+     "shot": "mid",
+     "on": "dorothy",
+     "pause": 0.4
+    }
    ]
   ],
   [
    [
     "witch",
-    "Those silver shoes will be mine! Fly, my monkeys!"
+    "Fly, my monkeys! Get those silver shoes!",
+    {
+     "shot": "wide",
+     "act": 0
+    }
    ],
    [
     "narrator",
-    "The Winged Monkeys swooped down."
+    "The Winged Monkeys swooped down.",
+    {
+     "act": 0.5
+    }
    ],
    [
     "lion",
-    "Leave Dorothy alone! ROAR!"
+    "Leave Dorothy alone! ROAR!",
+    {
+     "shot": "mid",
+     "on": "lion",
+     "act": 1.2
+    }
    ],
    [
     "narrator",
-    "But the monkeys carried Dorothy and Toto away to the yellow castle."
+    "They carried Dorothy and Toto away, to the Witch's yellow castle.",
+    {
+     "shot": "wide",
+     "act": 2.2
+    }
+   ],
+   [
+    "narrator",
+    "But the friends would not leave her.",
+    {
+     "act": 5.6
+    }
    ],
    [
     "scarecrow",
-    "Don't worry, I have a plan! Follow me!"
+    "I have a plan! Follow me!",
+    {
+     "shot": "mid",
+     "on": "scarecrow",
+     "act": 6.3
+    }
    ]
   ],
   [
    [
+    "narrator",
+    "The Witch tricked Dorothy, and grabbed one silver shoe!",
+    {
+     "shot": "wide",
+     "act": 0.8
+    }
+   ],
+   [
     "witch",
-    "Hee hee! That silver shoe is mine!"
+    "Hee hee! It's mine!",
+    {
+     "shot": "close",
+     "on": "witch",
+     "act": 3.0
+    }
    ],
    [
     "dorothy",
-    "Give it back!"
+    "Give it back!",
+    {
+     "shot": "close",
+     "on": "dorothy",
+     "act": 3.8
+    }
    ],
    [
     "narrator",
-    "Splash!"
+    "Splash!",
+    {
+     "shot": "wide",
+     "act": 4.5
+    }
    ],
    [
     "witch",
-    "Oh no! I'm melting, melting away!"
+    "Oh no! I'm melting... melting away!",
+    {
+     "shot": "mid",
+     "on": "witch",
+     "act": 5.2
+    }
    ],
    [
     "lion",
-    "Dorothy! We came to save you!"
+    "Dorothy! We came to save you!",
+    {
+     "act": 7.7
+    }
    ],
    [
     "dorothy",
-    "You came! Thank you, my friends!"
+    "You came! My friends!",
+    {
+     "shot": "close",
+     "on": "dorothy",
+     "mood": {
+      "dorothy": "happy"
+     },
+     "fx": [
+      "hearts"
+     ],
+     "pause": 0.6
+    }
    ]
   ],
   [
    [
     "narrator",
-    "Back in the Emerald City, Toto knocked over a screen."
+    "Back in the Emerald City, Toto knocked over a screen.",
+    {
+     "shot": "wide",
+     "act": 0.4
+    }
    ],
    [
-    "dorothy",
-    "You're just a little old man!"
+    "narrator",
+    "There was the Wizard. Just a little old man!",
+    {
+     "shot": "close",
+     "on": "wizardMan",
+     "move": 2,
+     "act": 2.0,
+     "pause": 0.4
+    }
    ],
    [
     "wizardMan",
-    "Yes, I'm sorry. But listen. Who thought of the oil can? Who cried for the Lion? Who roared at the monkeys to save Dorothy?"
-   ],
-   [
-    "scarecrow",
-    "We did!"
+    "You don't need me.",
+    {
+     "shot": "mid",
+     "on": "wizardMan",
+     "act": 3.4
+    }
    ],
    [
     "wizardMan",
-    "You had a brain, a heart, and courage all along!"
+    "Scarecrow, you thought of the oil can. So clever!",
+    {
+     "shot": "close",
+     "on": "scarecrow",
+     "memory": {
+      "page": 6,
+      "u": 4.0
+     },
+     "act": 8.0,
+     "pause": 0.5
+    }
+   ],
+   [
+    "wizardMan",
+    "Tin Woodman, you cried for the Lion. Such a kind heart!",
+    {
+     "shot": "close",
+     "on": "tinWoodman",
+     "memory": {
+      "page": 7,
+      "u": 5.2,
+      "cue": [
+       "tinCry"
+      ]
+     },
+     "act": 9.4,
+     "pause": 0.5
+    }
+   ],
+   [
+    "wizardMan",
+    "And Lion, you roared to save Dorothy. So brave!",
+    {
+     "shot": "close",
+     "on": "lion",
+     "memory": {
+      "page": 10,
+      "u": 1.5,
+      "speak": "lion"
+     },
+     "act": 10.8,
+     "pause": 0.5
+    }
+   ],
+   [
+    "wizardMan",
+    "You had it inside you, all along.",
+    {
+     "shot": "at",
+     "x": 1400,
+     "y": 700,
+     "z": 1.35,
+     "move": 3,
+     "act": 12.5,
+     "pause": 0.8
+    }
+   ],
+   [
+    "narrator",
+    "The friends looked at each other, and smiled.",
+    {
+     "fx": [
+      "hearts"
+     ],
+     "pause": 0.6,
+     "heartsOn": [
+      "dorothy",
+      "scarecrow",
+      "tinWoodman",
+      "lion"
+     ]
+    }
    ]
   ],
   [
    [
     "glinda",
-    "Dorothy, your silver shoes can take you home. Just click your heels three times."
+    "Your silver shoes can take you home, Dorothy. Just click your heels, three times.",
+    {
+     "shot": "wide"
+    }
+   ],
+   [
+    "narrator",
+    "Dorothy hugged her friends goodbye.",
+    {
+     "act": 4.4
+    }
    ],
    [
     "dorothy",
-    "Goodbye, my friends. I'll never forget you!"
+    "I'll never forget you.",
+    {
+     "shot": "close",
+     "on": "dorothy",
+     "mood": {
+      "dorothy": "sad"
+     },
+     "act": 4.8,
+     "pause": 0.4
+    }
    ],
    [
-    "scarecrow",
-    "Goodbye, Dorothy!"
+    "narrator",
+    "The Tin Woodman cried, just a little.",
+    {
+     "shot": "close",
+     "on": "tinWoodman",
+     "act": 5.4
+    }
+   ],
+   [
+    "narrator",
+    "Click, click, click.",
+    {
+     "shot": "mid",
+     "on": "dorothy",
+     "z": 1.45,
+     "act": 6.2
+    }
    ],
    [
     "dorothy",
-    "Take me home to Aunt Em!"
+    "Take me home to Aunt Em!",
+    {
+     "shot": "mid",
+     "on": "dorothy",
+     "act": 8.8
+    }
    ]
   ],
   [
+   [
+    "narrator",
+    "Whoosh! Dorothy rolled onto the soft Kansas grass.",
+    {
+     "shot": "wide",
+     "act": 0.2
+    }
+   ],
+   [
+    "narrator",
+    "And there was Aunt Em, with open arms.",
+    {
+     "act": 2.0
+    }
+   ],
    [
     "auntEm",
-    "Dorothy! You're home!"
+    "Dorothy! You're home!",
+    {
+     "shot": "mid",
+     "on": "auntEm",
+     "act": 3.4
+    }
+   ],
+   [
+    "narrator",
+    "Dorothy hugged her tight, and didn't want to let go.",
+    {
+     "shot": "two",
+     "on": [
+      "dorothy",
+      "auntEm"
+     ],
+     "z": 1.9,
+     "move": 2.5,
+     "fx": [
+      "hearts"
+     ],
+     "act": 4.4,
+     "pause": 1.0
+    }
    ],
    [
     "dorothy",
-    "Oh, Aunt Em! Oz was wonderful... but there's no place like home."
+    "Oz was wonderful... but there's no place like home.",
+    {
+     "shot": "close",
+     "on": "dorothy",
+     "mood": {
+      "dorothy": "happy"
+     },
+     "pause": 0.8
+    }
+   ],
+   [
+    "narrator",
+    "And Dorothy knew. The magic was inside her, all along.",
+    {
+     "shot": "wide",
+     "move": 4,
+     "pause": 1.5
+    }
    ]
   ]
  ]

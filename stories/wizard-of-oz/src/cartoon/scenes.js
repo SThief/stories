@@ -159,7 +159,7 @@ const SCENES = [
     const pat = u > 8.6;
     put(c, dorothy, 1140, 890, 1, { walk: 0, blink: blinkAt(t, 1), shoes: 'silver', armF: pat ? 2 + Math.sin(u * 5) * .2 : .2, mood: u < 2.2 ? 'wow' : null, mouth: talk(u, 9.6, d - .6) }, t, true);
     put(c, scarecrow, 1440, 860, .9, { walk: 0, blink: blinkAt(t, 3), mood: u < 4 ? 'wow' : null }, t, true);
-    const tinCry = SPEAK.who === 'tinWoodman' || SPEAK.who === 'scarecrow';
+    const tinCry = CUE.on.tinCry;
     put(c, tinWoodman, 1620, 860, .9, { walk: 0, blink: blinkAt(t, 4), mood: u < 4 ? 'wow' : (tinCry ? 'sad' : null), tears: tinCry ? (t * .8) % 1 : 0 }, t, true);
     vignette(c);
   },
