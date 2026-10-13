@@ -64,6 +64,12 @@ function oldTime(i, u) {
   for (let j = 1; j < pts.length; j++) if (u <= pts[j][0] || j === pts.length - 1) {
     const [a0, b0] = pts[j - 1], [a1, b1] = pts[j]; return b0 + (b1 - b0) * clamp((u - a0) / Math.max(.01, a1 - a0), 0, 1e9); }
 }
+const FILM_AT = {};   // the film time (from the scene's start) at which the scene's action reaches moment o
+function filmAt(i, o) {
+  const key = i + ':' + o; if (key in FILM_AT) return FILM_AT[key];
+  let a = 0, b = DL.scenes[i].dur; for (let n = 0; n < 40; n++) { const m = (a + b) / 2; if (oldTime(i, m) < o) a = m; else b = m; }
+  return FILM_AT[key] = b;
+}
 function setCue(o) { CUE.mood = o.mood || {}; CUE.on = Object.fromEntries((o.cue || []).map(n => [n, true])); }
 function heartShape(c, x, y, r) {
   c.beginPath(); c.moveTo(x, y + r * .9);
@@ -100,6 +106,7 @@ function drawPage(cnv, i, t, live) {
   const cam = camera(i, u), r = raw.getContext('2d');
   r.setTransform(1, 0, 0, 1, 0, 0); r.translate(960, 540); r.scale(cam.z, cam.z); r.translate(-cam.x, -cam.y);
   CAM_INV = r.getTransform().inverse(); CAM_Z = cam.z; HEADS = HEADS_BY[i];
+  since = o => u - filmAt(i, o);
   setCue(opts(L)); SCENES[i](r, t, oldTime(i, u), OLD[i].dur);
   if (L && (opts(L).fx || []).includes('hearts')) hearts(r, i, k, L, u);
   r.setTransform(1, 0, 0, 1, 0, 0); CAM_INV = null;

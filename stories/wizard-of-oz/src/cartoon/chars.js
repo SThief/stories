@@ -71,18 +71,38 @@ function pattern(c, key, size, paint) {
 const gingham = c => pattern(c, 'gingham', 26, (g, n) => { g.fillStyle = '#fbfdff'; g.fillRect(0, 0, n, n); g.fillStyle = 'rgba(70,120,210,.5)'; g.fillRect(0, 0, n / 2, n); g.fillRect(0, 0, n, n / 2); });
 const checks = c => pattern(c, 'checks', 22, (g, n) => { g.fillStyle = '#9a6a3f'; g.fillRect(0, 0, n, n); g.fillStyle = 'rgba(70,40,15,.45)'; g.fillRect(0, 0, n / 2, n); g.fillRect(0, 0, n, n / 2); });
 
-// legs walking, or standing with a little weight shift
-function legsPose(p) { const w = p.walk ?? 1, sw = Math.sin(p.ph || 0); return { w, sw, a: sw * w, bob: -(1 - Math.abs(sw)) * w }; }
+// Every character faces right, turned three-quarters toward us, so in every pose (standing or walking):
+//   - the arm on the BACK shoulder (x < 0) is the near arm: it is drawn IN FRONT of the body;
+//   - the arm on the FRONT shoulder (x > 0) is the far arm: it is drawn BEHIND the body;
+//   - likewise the near leg hangs from the back hip and is drawn over the far leg.
+// armB / armF in a pose are the back-shoulder and front-shoulder arms (0 = hanging down, + = forward).
+//
+// The walk cycle (ph rising as the character goes forward). For legs, s is +1 for the near leg and -1 for the far one;
+// for arms and shoulders, s is the side of the body: -1 the back shoulder, +1 the front. Each leg swings forward with
+// its knee bent and its foot off the ground, then pushes back straight along the ground; each arm swings against the leg
+// on its own side (the near arm against the near leg). While walking the hips and shoulders pull in toward the middle.
+function legsPose(p) {
+  const w = p.walk ?? 1, sw = Math.sin(p.ph || 0), cw = Math.cos(p.ph || 0);
+  return { w, sw, a: sw * w, bob: -(1 - Math.abs(sw)) * w,
+    leg: s => s * sw * w, knee: s => -Math.max(0, s * cw) * w, lift: s => Math.max(0, s * cw) * w,
+    arm: s => s * sw * w, hip: (s, x, k = .25) => -s * x * lerp(1, k, w), shoulder: (s, x, k = .65) => s * x * lerp(1, k, w) };
+}
+// the far limbs a little darker, so it reads which leg and arm are which
+const FAR = { skin: '#efc29c', stocking: '#e6ddcc' };
 
 function dorothy(c, p, t = 0) {
   p = live('dorothy', c, p, 4, -272);
-  const { a, bob } = legsPose(p), armSw = a * .55;
+  const g = legsPose(p), { bob } = g;
   shadow(c, 62);
   c.save(); c.translate(0, bob * 9);
-  const armB = p.armB ?? (p.hold ? .9 : -armSw), armF = p.armF ?? (p.hold ? 1.1 : armSw);
-  limb(c, -30, -206, 84, armB, 17, SKIN, p.hold ? -1.3 : -.25);
-  for (const [s, k] of [[-1, a * .5], [1, -a * .5]]) {
-    const [fx, fy] = limb(c, s * 11, -120, 108, k, 18, '#fffaf2', -Math.max(0, k) * .5);
+  // carrying Toto: the near arm cradles him from below, the far hand steadies him from behind
+  const armB = p.armB ?? (p.hold ? .63 : g.arm(-1) * .55), armF = p.armF ?? (p.hold ? 1.1 : g.arm(1) * .55);
+  const shB = p.armB != null || p.hold ? -30 : g.shoulder(-1, 30), shF = p.armF != null || p.hold ? 30 : g.shoulder(1, 30);
+  const elbow = a => lerp(-.25, .35 + Math.max(0, a) * .9, g.w);   // walking: elbow back, hand forward
+  const [fhx, fhy] = limb(c, shF, -206, 84, armF, 17, FAR.skin, p.hold ? -1.5 : p.armF != null ? -.25 : elbow(armF));
+  hand(c, fhx, fhy, 11, FAR.skin);
+  for (const s of [-1, 1]) {
+    const [fx, fy] = limb(c, g.hip(s, 11), -120, 108, g.leg(s) * .5, 18, s < 0 && g.w ? FAR.stocking : '#fffaf2', g.knee(s) * .9);
     c.save(); c.translate(fx + 8, fy + 2);
     if (p.shoes === 'silver') {
       ell(c, 0, 0, 21, 11); c.fillStyle = lin(c, -20, -10, 20, 10, [[0, '#ffffff'], [.4, '#c9d3e6'], [.7, '#9aa8c4'], [1, '#eef2fa']]); c.fill(); ink(c, 3.5); c.stroke();
@@ -103,7 +123,7 @@ function dorothy(c, p, t = 0) {
   for (const s of [-1, 1]) { ell(c, s * 34, -206, 16, 14); fillStroke(c, '#ffffff', 3); }   // puffed sleeves
   for (const s of [-1, 1]) { c.beginPath(); c.moveTo(0, -214); c.quadraticCurveTo(s * 28, -222, s * 24, -202); c.quadraticCurveTo(s * 12, -198, 0, -206); fillStroke(c, '#fff', 3); }
   if (p.hold) { c.save(); c.translate(40, -150); c.scale(.82, .82); toto(c, { ph: 0, blink: p.blink, sit: true }, t); c.restore(); }
-  const [hx, hy] = limb(c, 30, -206, 84, armF, 17, SKIN, p.hold ? -1.5 : -.25);
+  const [hx, hy] = limb(c, shB, -206, 84, armB, 17, SKIN, p.hold ? .65 : p.armB != null ? -.25 : elbow(armB));
   hand(c, hx, hy);
   if (p.wand) p.wand(c, hx, hy);
   const hyH = -272 + Math.sin((p.ph || 0) * 2) * 1.5;
@@ -145,15 +165,15 @@ function toto(c, p, t = 0) {
 
 function scarecrow(c, p, t = 0) {
   p = live('scarecrow', c, p, 6, -282);
-  const { a, bob, w } = legsPose(p), flop = Math.sin((p.ph || t * 2) - .8);
+  const g = legsPose(p), { bob } = g, flop = Math.sin((p.ph || t * 2) - .8);
   shadow(c, 64);
   c.save(); c.translate(0, bob * 13);
   const straw = (x, y, ang, n = 6) => { for (let i = 0; i < n; i++) { const q = ang + (i - n / 2) * .22 + Math.sin(t * 3 + i) * .05;
     c.beginPath(); c.moveTo(x, y); c.lineTo(x + Math.sin(q) * 24, y + Math.cos(q) * 24); c.lineWidth = 4; c.strokeStyle = i % 2 ? '#e8c254' : '#d4a632'; c.stroke(); } };
-  const [bx, by] = limb(c, -34, -222, 96, p.armB ?? (-a * .7 - .2 + flop * .25), 16, '#6c94c2', .4);
-  straw(bx, by, -.4, 5);
-  for (const [s, k] of [[-1, a * .62], [1, -a * .62]]) {
-    const [fx, fy] = limb(c, s * 13, -128, 118, k, 20, '#8a6440', -Math.max(0, k) * .8);
+  const [fx0, fy0] = limb(c, p.armF != null ? 34 : g.shoulder(1, 34), -222, 96, p.armF ?? (g.arm(1) * .7 + .2 - flop * .25), 16, '#6c94c2', .4);
+  straw(fx0, fy0, -.2 + flop * .2, 5);
+  for (const s of [-1, 1]) {
+    const [fx, fy] = limb(c, g.hip(s, 13), -128, 118, g.leg(s) * .62, 20, s < 0 && g.w ? '#76552f' : '#8a6440', g.knee(s) * 1.1);
     straw(fx, fy - 10, Math.PI * .5 * s, 4);
     c.save(); c.translate(fx + 8, fy); rr(c, -16, -18, 34, 22, 9); fillStroke(c, '#6b4428', 3.5); rr(c, -14, -24, 26, 10, 4); fillStroke(c, '#5b8fd1', 3); c.restore();
   }
@@ -162,8 +182,8 @@ function scarecrow(c, p, t = 0) {
   fillStroke(c, lin(c, -50, 0, 50, 0, [[0, '#5f88b8'], [.5, '#82a9d4'], [1, '#5b83b2']]));
   rr(c, -30, -176, 22, 20, 4); fillStroke(c, '#c9a36b', 3); rr(c, 14, -146, 18, 16, 3); fillStroke(c, '#a77b4c', 3);
   c.beginPath(); c.moveTo(-46, -132); c.quadraticCurveTo(0, -124, 46, -132); c.lineWidth = 6; c.strokeStyle = '#c9a66b'; c.stroke();
-  const [hx, hy] = limb(c, 34, -222, 96, p.armF ?? (a * .7 + .2 - flop * .25), 16, '#82a9d4', .4);
-  straw(hx, hy, -.2 + flop * .2, 6);
+  const [hx, hy] = limb(c, p.armB != null ? -34 : g.shoulder(-1, 34), -222, 96, p.armB ?? (g.arm(-1) * .7 - .2 + flop * .25), 16, '#82a9d4', .4);
+  straw(hx, hy, -.4, 6);
   straw(0, -234, Math.PI, 8);
   c.save(); c.translate(6, -282 + flop * 3); c.rotate(Math.sin(t * 2.4) * .05 + .04);
   ell(c, 0, 0, 46, 50); fillStroke(c, rad(c, -12, -14, 5, 60, [[0, '#f6e2b8'], [1, '#d9bd88']]));
@@ -183,15 +203,18 @@ function scarecrow(c, p, t = 0) {
 
 function tinWoodman(c, p, t = 0) {
   p = live('tinWoodman', c, p, 4, -300);
-  const { a, bob } = legsPose(p), rust = p.rust || 0;
+  const g = legsPose(p), { bob } = g, rust = p.rust || 0;
   const tin = (x0, x1) => lin(c, x0, 0, x1, 0, [[0, '#8c97a8'], [.35, '#eef3fa'], [.55, '#c3cddb'], [1, '#7b8698']]);
   const rivet = (x, y) => { ell(c, x, y, 3, 3); c.fillStyle = '#6c778a'; c.fill(); };
   const rusty = () => { if (rust > 0) { c.save(); c.clip(); c.globalAlpha = rust * .55; c.fillStyle = '#b5652e'; c.fillRect(-200, -400, 400, 420); c.restore(); } };
   shadow(c, 62);
   c.save(); c.translate(0, bob * 5);
-  c.save(); c.translate(-44, -232); c.rotate(p.armB ?? a * .3); rr(c, -12, 0, 24, 92, 11); fillStroke(c, tin(-12, 12)); rusty(); rivet(0, 46); c.restore();
-  for (const [s, k] of [[-1, a * .3], [1, -a * .3]]) {
-    c.save(); c.translate(s * 18, -132); c.rotate(-k); rr(c, -14, 0, 28, 124, 12); fillStroke(c, tin(-14, 14)); rusty(); rivet(0, 62);
+  // his free arm is the far one, on the front shoulder behind his body; the axe is in his near arm (see below)
+  c.save(); c.translate(p.armB != null ? 44 : g.shoulder(1, 44, .5), -232); c.rotate(-(p.armB ?? g.arm(1) * .7)); rr(c, -12, 0, 24, 92, 11); fillStroke(c, tin(-12, 12)); rusty();
+  c.fillStyle = 'rgba(40,50,75,.18)'; c.fill(); rivet(0, 46); c.restore();
+  for (const s of [-1, 1]) {   // stiff tin legs: no knees, so the swinging leg lifts from the hip
+    c.save(); c.translate(g.hip(s, 18), -132 - g.lift(s) * 12); c.rotate(-g.leg(s) * .36); rr(c, -14, 0, 28, 124, 12); fillStroke(c, tin(-14, 14)); rusty();
+    if (s < 0 && g.w) { c.fillStyle = 'rgba(40,50,75,.22)'; c.fill(); } rivet(0, 62);
     rr(c, -16, 110, 40, 22, 9); fillStroke(c, tin(-16, 24)); c.restore();
   }
   rr(c, -50, -250, 100, 128, 34); fillStroke(c, tin(-50, 50)); rusty();
@@ -199,9 +222,12 @@ function tinWoodman(c, p, t = 0) {
   c.beginPath(); c.moveTo(gx - 60, -260); c.lineTo(gx - 30, -260); c.lineTo(gx - 90, -110); c.lineTo(gx - 120, -110); c.fill(); c.restore();
   for (let i = 0; i < 6; i++) rivet(-40 + i * 16, -236);
   ell(c, 8, -196, 12, 11); fillStroke(c, '#f2b6c4', 3);
-  c.save(); c.translate(48, -232); c.rotate(-(p.armF ?? a * .3) - .9);
+  // the axe arm: the near arm, on the back shoulder in front of his body (armF is its angle); whatever the arm does,
+  // the axe stands up and a little forward from his hand, blade facing forward, clear of his face
+  const axeArm = -(p.armF ?? g.arm(-1) * .3) - .9;
+  c.save(); c.translate(p.armF != null ? -44 : g.shoulder(-1, 44, .5), -232); c.rotate(axeArm);
   rr(c, -12, 0, 24, 86, 11); fillStroke(c, tin(-12, 12)); rusty();
-  if (!p.noAxe) { c.save(); c.translate(0, 86); c.rotate(1.9); rr(c, -6, -10, 12, 150, 6); fillStroke(c, lin(c, -6, 0, 6, 0, [[0, '#8b5a2b'], [1, '#b47b42']]), 3.5);
+  if (!p.noAxe) { c.save(); c.translate(0, 86); c.rotate(-2.65 - axeArm); rr(c, -6, -10, 12, 150, 6); fillStroke(c, lin(c, -6, 0, 6, 0, [[0, '#8b5a2b'], [1, '#b47b42']]), 3.5);
     c.beginPath(); c.moveTo(-6, 118); c.quadraticCurveTo(-46, 120, -50, 150); c.quadraticCurveTo(-24, 146, -6, 148); c.closePath(); fillStroke(c, tin(-50, -6), 3.5); c.restore(); }
   ell(c, 0, 86, 13, 13); fillStroke(c, tin(-13, 13), 3); c.restore();
   c.save(); c.translate(4, -300 + Math.sin((p.ph || 0) * 2) * 1.2);
@@ -218,19 +244,20 @@ function tinWoodman(c, p, t = 0) {
 
 function lion(c, p, t = 0) {
   p = live('lion', c, p, p.sit ? 40 : 150, p.sit ? -260 : -206);
-  const w = p.walk ?? 1, sw = Math.sin(p.ph || 0) * w, bob = -Math.abs(sw) * 5, sit = p.sit;
+  const w = p.walk ?? 1, sw = Math.sin(p.ph || 0) * w, cw = Math.cos(p.ph || 0) * w, bob = -Math.abs(sw) * 5, sit = p.sit;
+  const up = k => sit ? 0 : Math.max(0, k) * 16;   // a paw lifts while it swings forward
   shadow(c, 150);
   c.save(); c.translate(0, bob);
   const gold = lin(c, 0, -230, 0, -60, [[0, '#f7c35b'], [1, '#d99631']]);
-  const leg = (x, k, dark) => { c.save(); c.translate(x, -110); c.rotate(-k); rr(c, -17, 0, 34, 104, 16); fillStroke(c, dark ? '#c98425' : '#e9a944'); ell(c, 4, 104, 22, 12); fillStroke(c, dark ? '#c98425' : '#f2b552', 3.5); c.restore(); };
-  if (!sit) { leg(-90, -sw * .45, true); leg(78, sw * .45, true); }
+  const leg = (x, k, dark, lift = 0) => { c.save(); c.translate(x, -110 - lift); c.rotate(-k); rr(c, -17, 0, 34, 104, 16); fillStroke(c, dark ? '#c98425' : '#e9a944'); ell(c, 4, 104, 22, 12); fillStroke(c, dark ? '#c98425' : '#f2b552', 3.5); c.restore(); };
+  if (!sit) { leg(-90, -sw * .45, true, up(-cw)); leg(78, sw * .45, true, up(cw)); }
   const ta = Math.sin(t * 2.4) * .3;
   c.beginPath(); c.moveTo(-130, -150); c.bezierCurveTo(-190, -150 + ta * 40, -200, -230, -170 + ta * 60, -250);
   ink(c, 18); c.stroke(); c.lineWidth = 10; c.strokeStyle = '#e1a03d'; c.stroke();
   ell(c, -170 + ta * 60, -254, 18, 22, ta); fillStroke(c, '#9b5a1e', 3.5);
   if (sit) { ell(c, -40, -120, 120, 90, -.35); fillStroke(c, gold); ell(c, -60, -30, 70, 34); fillStroke(c, '#e9a944'); }
   else { ell(c, -10, -150, 150, 66); fillStroke(c, gold); ell(c, 10, -112, 100, 22); c.fillStyle = 'rgba(255,236,190,.5)'; c.fill(); }
-  if (sit) { leg(10, .05, false); leg(60, -.05, false); } else { leg(-60, sw * .45); leg(108, -sw * .45); }
+  if (sit) { leg(10, .05, false); leg(60, -.05, false); } else { leg(-60, sw * .45, false, up(cw)); leg(108, -sw * .45, false, up(-cw)); }
   c.save(); c.translate(sit ? 40 : 150, (sit ? -260 : -206) + Math.sin(t * 4) * 2);
   if (p.paw) { c.save(); c.translate(-20, 30); c.rotate(-.6); rr(c, -16, 0, 32, 70, 15); fillStroke(c, '#f2b552'); c.restore(); }
   const n = 20; for (let i = 0; i < n; i++) { const an = i / n * TAU + Math.sin(t * 2 + i) * .02; ell(c, Math.cos(an) * 66, Math.sin(an) * 70, 30, 30); fillStroke(c, i % 2 ? '#b8661f' : '#c97a2a', 3.5); }
@@ -256,12 +283,12 @@ function glinda(c, p, t = 0) {
   // long red hair behind
   c.beginPath(); c.moveTo(-50, -330); c.bezierCurveTo(-90, -250, -70, -200, -86 + Math.sin(t * 2) * 6, -150); c.lineTo(80 + Math.sin(t * 2 + 1) * 6, -150); c.bezierCurveTo(70, -220, 90, -260, 50, -330); c.closePath();
   fillStroke(c, lin(c, 0, -340, 0, -150, [[0, '#d9552e'], [1, '#b8401f']]));
+  const [hx, hy] = limb(c, 26, -236, 90, p.armF ?? 1.6 + Math.sin(t * 2) * .1, 16, '#eef0f7', -.2);
   // flowing white gown
   c.beginPath(); c.moveTo(-30, -250); c.bezierCurveTo(-60, -160, -110, -60, -120 + Math.sin(t * 2) * 8, 0); c.quadraticCurveTo(0, 22, 120 + Math.sin(t * 2 + 1) * 8, 0); c.bezierCurveTo(110, -60, 60, -160, 30, -250); c.closePath();
   fillStroke(c, lin(c, -100, 0, 100, 0, [[0, '#e8ecf6'], [.45, '#ffffff'], [1, '#dfe4f2']]));
   c.save(); c.clip(); c.strokeStyle = 'rgba(170,180,210,.5)'; c.lineWidth = 3; for (let i = -3; i <= 3; i++) { c.beginPath(); c.moveTo(i * 8, -230); c.quadraticCurveTo(i * 22, -120, i * 34, 10); c.stroke(); } c.restore();
-  limb(c, -26, -236, 90, -.2, 16, '#fff', .1);
-  const [hx, hy] = limb(c, 26, -236, 90, p.armF ?? 1.6 + Math.sin(t * 2) * .1, 16, '#fff', -.2);
+  const [nx, ny] = limb(c, -26, -236, 90, -.2, 16, '#fff', .1); hand(c, nx, ny, 10);
   hand(c, hx, hy, 10);
   // star wand
   c.save(); c.translate(hx, hy); c.rotate(-.5); c.beginPath(); c.moveTo(0, 0); c.lineTo(0, -80); c.lineWidth = 5; c.strokeStyle = '#c9d3e6'; c.stroke();
@@ -286,16 +313,17 @@ function witch(c, p, t = 0) {
     c.beginPath(); c.rect(-300, -600, 600, 600); c.clip(); c.translate(0, melt * 330); c.scale(1 + melt * .3, 1 - melt * .2);
   }
   shadow(c, 60);
+  // striped umbrella in her far hand (front shoulder, behind her dress)
+  const [hx, hy] = limb(c, 26, -206, 86, p.armF ?? .6, 15, '#7a4cb0', -.4);
+  c.save(); c.translate(hx, hy); c.rotate(-.3); c.beginPath(); c.moveTo(0, 0); c.lineTo(0, 120); c.lineWidth = 5; c.strokeStyle = '#5a3a1e'; c.stroke();
+  c.beginPath(); c.moveTo(-18, 10); c.lineTo(0, 100); c.lineTo(18, 10); c.closePath(); fillStroke(c, '#c95fa0', 3);
+  c.beginPath(); c.moveTo(-6, 10); c.lineTo(0, 100); c.lineTo(6, 10); c.closePath(); c.fillStyle = '#ffe36b'; c.fill(); c.restore();
+  hand(c, hx, hy, 10, '#e9e2c9');
   // patched purple dress
   c.beginPath(); c.moveTo(-30, -220); c.quadraticCurveTo(-60, -110, -78, 0); c.quadraticCurveTo(0, 14, 78, 0); c.quadraticCurveTo(60, -110, 30, -220); c.closePath();
   fillStroke(c, lin(c, -70, 0, 70, 0, [[0, '#6a3f9a'], [.5, '#8c5cc4'], [1, '#633a92']]));
   rr(c, -36, -90, 26, 24, 4); fillStroke(c, '#b08ad6', 3); rr(c, 20, -60, 22, 20, 4); fillStroke(c, '#5a8a4a', 3);
-  // striped umbrella in her hand
-  const [hx, hy] = limb(c, 26, -206, 86, p.armF ?? .6, 15, '#8c5cc4', -.4);
-  c.save(); c.translate(hx, hy); c.rotate(.3); c.beginPath(); c.moveTo(0, 0); c.lineTo(0, 120); c.lineWidth = 5; c.strokeStyle = '#5a3a1e'; c.stroke();
-  c.beginPath(); c.moveTo(-18, 10); c.lineTo(0, 100); c.lineTo(18, 10); c.closePath(); fillStroke(c, '#c95fa0', 3);
-  c.beginPath(); c.moveTo(-6, 10); c.lineTo(0, 100); c.lineTo(6, 10); c.closePath(); c.fillStyle = '#ffe36b'; c.fill(); c.restore();
-  hand(c, hx, hy, 10, '#e9e2c9');
+  { const [x, y] = limb(c, -26, -206, 86, -.15, 15, '#8c5cc4', .3); hand(c, x, y, 10, '#e9e2c9'); }   // her near arm
   c.save(); c.translate(4, -262);
   for (const [x, y, r] of [[-38, 10, 20], [36, 12, 18], [-30, 34, 14], [32, 36, 13]]) { ell(c, x, y, r, r); fillStroke(c, '#c9c9c9', 3); }
   ell(c, 0, 0, 40, 44); fillStroke(c, '#efe6cf');
@@ -316,11 +344,12 @@ function wizardMan(c, p, t = 0) {
   p = live('wizardMan', c, p, 2, -236);
   shadow(c, 50);
   c.save(); c.translate(0, Math.sin(t * 2) * 1.5);
-  for (const s of [-1, 1]) limb(c, s * 12, -96, 92, 0, 18, '#5a4632');
+  { const [x, y] = limb(c, 40, -186, 76, p.armF ?? .5, 16, '#8a5c34', -.4); hand(c, x, y, 10); }
+  for (const s of [1, -1]) limb(c, -s * 12, -96, 92, 0, 18, '#5a4632');
   for (const s of [-1, 1]) { ell(c, s * 12 + 8, -4, 18, 9); fillStroke(c, '#3a2a1c', 3); }
   rr(c, -46, -196, 92, 106, 30); fillStroke(c, checks(c));
   c.beginPath(); c.moveTo(0, -196); c.lineTo(0, -96); ink(c, 3); c.stroke();
-  for (const s of [-1, 1]) { const [x, y] = limb(c, s * 40, -186, 76, s > 0 ? (p.armF ?? .5) : -.2, 16, '#9a6a3f', -.4); hand(c, x, y, 10); }
+  { const [x, y] = limb(c, -40, -186, 76, -.2, 16, '#9a6a3f', -.4); hand(c, x, y, 10); }
   c.save(); c.translate(2, -236);
   ell(c, 0, 0, 40, 42); fillStroke(c, rad(c, -10, -16, 4, 54, [[0, '#fff2e6'], [1, '#f6d2b4']]));
   ell(c, -10, -22, 12, 7, -.4); c.fillStyle = 'rgba(255,255,255,.7)'; c.fill();
@@ -354,11 +383,16 @@ function bigHead(c, t, glow = 1) {
 function auntEm(c, p, t = 0) {
   p = live('auntEm', c, p, 2, -270);
   shadow(c, 54);
-  c.save(); const { a, bob } = legsPose(p); c.translate(0, bob * 7);
-  for (const [s, k] of [[-1, a * .4], [1, -a * .4]]) { const [x, y] = limb(c, s * 12, -100, 96, k, 16, '#6b5544'); ell(c, x + 6, y, 16, 8); fillStroke(c, '#3a2a1c', 3); }
+  c.save(); const g = legsPose(p); c.translate(0, g.bob * 7);
+  for (const s of [-1, 1]) { const [x, y] = limb(c, g.hip(s, 12), -100, 96, g.leg(s) * .4, 16, '#6b5544', g.knee(s) * .8); ell(c, x + 6, y, 16, 8); fillStroke(c, '#3a2a1c', 3); }
+  // reach: both arms forward (open arms, a hug), from shoulders turned like a walker's
+  const swing = p.arms == null && (g.w > 0 || p.reach != null), arm = s => { const [x, y] = swing
+    ? limb(c, g.shoulder(s, 34, .4), -220, 86, p.reach != null ? p.reach + s * .15 : lerp(s * .3, 0, g.w) + g.arm(s) * .45, 15, s > 0 ? '#767b8a' : '#8a8f9e', p.reach != null ? .35 : lerp(s * -.3, .35, g.w))
+    : limb(c, s * 34, -220, 86, s * (p.arms ?? .3), 15, s > 0 ? '#7e8392' : '#8a8f9e', s * -.3); hand(c, x, y, 10); };
+  arm(1);
   c.beginPath(); c.moveTo(-36, -230); c.quadraticCurveTo(-56, -120, -64, -90); c.quadraticCurveTo(0, -80, 64, -90); c.quadraticCurveTo(56, -120, 36, -230); c.closePath(); fillStroke(c, '#8a8f9e');
   c.beginPath(); c.moveTo(-26, -200); c.lineTo(-38, -96); c.quadraticCurveTo(0, -88, 38, -96); c.lineTo(26, -200); c.closePath(); fillStroke(c, '#f3ead6', 3);
-  for (const s of [-1, 1]) { const [x, y] = limb(c, s * 34, -220, 86, s * (p.arms ?? .3), 15, '#8a8f9e', s * -.3); hand(c, x, y, 10); }
+  arm(-1);
   c.save(); c.translate(2, -270);
   ell(c, 0, -46, 22, 18); fillStroke(c, '#bdbdbd', 3);
   ell(c, 0, 0, 42, 44); fillStroke(c, rad(c, -8, -10, 4, 52, [[0, '#ffe8d6'], [1, '#f2c8a8']]));
@@ -370,12 +404,16 @@ function auntEm(c, p, t = 0) {
 function uncleHenry(c, p, t = 0) {
   p = live('uncleHenry', c, p, 2, -282);
   shadow(c, 54);
-  c.save(); const { a, bob } = legsPose(p); c.translate(0, bob * 7);
-  for (const [s, k] of [[-1, a * .4], [1, -a * .4]]) { const [x, y] = limb(c, s * 14, -110, 106, k, 20, '#4f6f9a'); ell(c, x + 6, y, 18, 9); fillStroke(c, '#3a2a1c', 3); }
+  c.save(); const g = legsPose(p); c.translate(0, g.bob * 7);
+  for (const s of [-1, 1]) { const [x, y] = limb(c, g.hip(s, 14), -110, 106, g.leg(s) * .4, 20, '#4f6f9a', g.knee(s) * .8); ell(c, x + 6, y, 18, 9); fillStroke(c, '#3a2a1c', 3); }
+  const swing = p.arms == null && g.w > 0, arm = s => { const wave = s > 0 ? Math.sin(t * 6) * (p.wave || 0) : 0, [x, y] = swing
+    ? limb(c, g.shoulder(s, 40, .4), -226, 90, lerp(s * .2, 0, g.w) + g.arm(s) * .45 + wave, 16, s > 0 ? '#b39f7a' : '#c9b48e', lerp(s * -.3, .35, g.w))
+    : limb(c, s * 40, -226, 90, s * (p.arms ?? .2) + wave, 16, s > 0 ? '#b8a37f' : '#c9b48e', s * -.3); hand(c, x, y, 11); };
+  arm(1);
   rr(c, -42, -240, 84, 140, 24); fillStroke(c, '#c9b48e');
   rr(c, -32, -190, 64, 96, 10); fillStroke(c, '#4f6f9a', 3);
   for (const s of [-1, 1]) { c.beginPath(); c.moveTo(s * 24, -190); c.lineTo(s * 28, -236); ink(c, 6); c.strokeStyle = '#4f6f9a'; c.stroke(); }
-  for (const s of [-1, 1]) { const [x, y] = limb(c, s * 40, -226, 90, s * (p.arms ?? .2) + (s > 0 ? Math.sin(t * 6) * (p.wave || 0) : 0), 16, '#c9b48e', s * -.3); hand(c, x, y, 11); }
+  arm(-1);
   c.save(); c.translate(2, -282);
   ell(c, 0, 0, 40, 44); fillStroke(c, rad(c, -8, -10, 4, 52, [[0, '#ffe2cc'], [1, '#eebd98']]));
   c.beginPath(); c.moveTo(-34, 10); c.quadraticCurveTo(-30, 64, 0, 66); c.quadraticCurveTo(30, 64, 34, 10); c.quadraticCurveTo(0, 30, -34, 10); fillStroke(c, '#d0d0d0', 3);
@@ -390,8 +428,9 @@ function munchkin(c, p, t = 0, hue = 0) {
   shadow(c, 30);
   c.save(); c.translate(0, -hop); c.scale(.62, .62);
   for (const s of [-1, 1]) { const [x, y] = limb(c, s * 10, -80, 74, 0, 14, '#2f5fa8'); ell(c, x + 4, y, 14, 7); fillStroke(c, '#5a3a1e', 3); }
+  { const [x, y] = limb(c, 32, -160, 64, Math.PI * .9 + Math.sin(t * 8 + hue) * .3, 13, '#3568b8', 0); hand(c, x, y, 9); }
   rr(c, -36, -170, 72, 100, 30); fillStroke(c, lin(c, -36, 0, 36, 0, [[0, '#3f73c4'], [1, '#2a5aa6']]));
-  for (const s of [-1, 1]) { const [x, y] = limb(c, s * 32, -160, 64, s > 0 ? Math.PI * .9 + Math.sin(t * 8 + hue) * .3 : -.2, 13, '#3f73c4', 0); hand(c, x, y, 9); }
+  { const [x, y] = limb(c, -32, -160, 64, -.2, 13, '#3f73c4', 0); hand(c, x, y, 9); }
   c.save(); c.translate(0, -204);
   ell(c, 0, 0, 34, 34); fillStroke(c, rad(c, -6, -8, 3, 42, [[0, '#ffe6cf'], [1, '#f6c9a6']]));
   cheeks(c, 0, 12, 20, 9); eyes(c, 2, 0, 12, 7, p, 1); mouth(c, 2, 16, 8, { mood: 'happy' });

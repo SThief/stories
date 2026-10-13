@@ -6,6 +6,10 @@
 - `cartoon/`: the cartoon, drawn in code. `cartoon.html` draws any moment of the film; `scenes.js` has one scene per
   page, `chars.js` the characters and `world.js` the scenery. `timeline.js` is the first, narrated timing that each
   scene's action was drawn to.
+  - Walking: `legsPose` in `chars.js` is the walk cycle for everyone (the arm drawn in front hangs from the back
+    shoulder; arms swing against the legs). Time a walk with `since(moment)` (real film seconds, since the narration
+    stretches each scene's action clock) and set its phase with `stepPh(character, distance, size)` so the feet keep
+    pace with the ground.
   - `script.json` is the cartoon, told like The Boy Who Changed His Stars: the narrator carries the story and the
     characters speak their heart lines. Each line is `[who, words, {options}]`. The options:
     `shot` (`wide`, `mid`, `close`, `two`, or `at` with `x`/`y`/`z`), `on` (who the shot is on), `z`/`dy` (closer,

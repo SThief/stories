@@ -136,5 +136,12 @@ function caption(c, text, a) {
 }
 // put a character at (x, y), scaled, optionally facing left
 function put(c, fn, x, y, s, p, t, flip = false) { c.save(); c.translate(x, y); c.scale(flip ? -s : s, s); fn(c, p, t); c.restore(); }
+// Film seconds since the scene's action reached moment `o` (negative before it). The narration stretches or squeezes
+// each scene's action, so a walk timed in action time plays in slow motion or fast forward; walks are timed with this
+// instead so they always go at a real walking pace. cartoon.html sets it for the scene being drawn.
+let since = o => 0;
+// The walk phase for having gone `dist` (in scene pixels) at size `s`, so the foot on the ground keeps pace with it.
+const STRIDE = { dorothy: 34, scarecrow: 47, tinWoodman: 28, auntEm: 24, uncleHenry: 27, lion: 30 };
+const stepPh = (f, dist, s) => dist / (STRIDE[f.name] * s);
 const blinkAt = (t, k) => ((t + k * .7) % 3.4) < .14 ? 1 : 0;
 const talk = (u, a, b) => (u > a && u < b) ? Math.abs(Math.sin(u * 13)) * .8 : 0;

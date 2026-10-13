@@ -28,8 +28,8 @@ const SCENES = [
     c.font = '600 112px Fredoka'; c.lineWidth = 16; c.strokeStyle = 'rgba(90,45,10,.55)'; c.lineJoin = 'round'; c.strokeText("The Wizard's Secret", 0, 0);
     c.fillStyle = '#fffaf0'; c.fillText("The Wizard's Secret", 0, 0);
     c.font = '600 48px Fredoka'; c.fillStyle = '#5a3418'; c.fillText('The Wonderful Wizard of Oz', 0, 80); c.restore();
-    const wk = t * 5.2; [[lion, 640, 0], [tinWoodman, 820, 1.2], [scarecrow, 980, 2.1], [dorothy, 1130, .3], [toto, 1280, 0]].forEach(([f, x, o], i) =>
-      put(c, f, x + u * 18, 930, f === toto ? .7 : .48, { ph: wk + o, blink: blinkAt(t, i), shoes: 'silver' }, t));
+    const wk = t * 3.6; [[lion, 640, 0], [tinWoodman, 820, 1.2], [scarecrow, 980, 2.1], [dorothy, 1130, .3], [toto, 1280, 0]].forEach(([f, x, o], i) =>
+      put(c, f, x + u * 50, 930, f === toto ? .7 : .48, { ph: wk + o, blink: blinkAt(t, i), shoes: 'silver' }, t));
     vignette(c);
   },
   // 01 gray Kansas
@@ -58,8 +58,11 @@ const SCENES = [
       c.beginPath(); c.ellipse(x, y, w, 26, 0, Math.PI * ((t * 3 + i * .3) % 2), Math.PI * ((t * 3 + i * .3) % 2) + 1.6 * Math.PI); c.lineWidth = 12; c.strokeStyle = `rgba(${150 + i * 3},${150 + i * 3},${160 + i * 3},.55)`; c.stroke(); }
     c.restore();
     const rise = ease((u - 1.5) / (d - 2)), hy = lerp(860, 330, rise), spin = Math.sin(t * 2.5) * .25 * rise;
-    put(c, uncleHenry, 300 - u * 40, 900, .7, { ph: u * 8, walk: 1, blink: 0, arms: 1.2, wave: 1 }, t);
-    bubble(c, 330 - u * 40, 520, 'Cyclone!', clamp(1 - Math.abs(u - 1.2) / 1.2));
+    // Uncle Henry shouts at the cyclone, then turns and runs for it
+    const fled = Math.max(0, since(1.5)) * 90, hx = 300 - fled;
+    if (fled) put(c, uncleHenry, hx, 900, .7, { ph: stepPh(uncleHenry, fled, .7), walk: clamp(since(1.5) / .3), blink: 0 }, t, true);
+    else put(c, uncleHenry, hx, 900, .7, { walk: 0, blink: 0, arms: 1.2, wave: 1 }, t);
+    bubble(c, hx + 30, 520, 'Cyclone!', clamp(1 - Math.abs(u - 1.2) / 1.2));
     c.save(); c.translate(1000, hy); c.rotate(spin); farmhouse(c, 0, 0, .75, 1, 0);
     // Dorothy and Toto peek out of the window
     c.save(); rr(c, -82, -97, 48, 42, 4); c.clip(); c.fillStyle = '#3a3630'; c.fillRect(-82, -97, 48, 42);
@@ -83,8 +86,8 @@ const SCENES = [
     for (const f of FLOWERS) flower(c, f.x, f.y, f.s, Math.sin(t * 2 + f.p), f.col);
     farmhouse(c, 520, lerp(260, 840, land) + bump, .95, 1, clamp((u - 1.8) / .8));
     if (u > .9 && u < 2.2) for (let i = 0; i < 12; i++) { const k = (u - .9) / 1.3, q = i / 12 * Math.PI; ell(c, 520 + Math.cos(q) * (180 + k * 220) * (i % 2 ? 1 : -1), 840 - Math.sin(q) * 30 * k, 40 + k * 30, 20 + k * 10); c.fillStyle = `rgba(220,210,190,${.5 * (1 - k)})`; c.fill(); }
-    const out = ease((u - 2.4) / 1.2);
-    if (u > 2.2) put(c, dorothy, lerp(560, 820, out), GROUND + 10, .95, { ph: u * 5, walk: out < 1 ? 1 : 0, blink: blinkAt(t, 1), shoes: 'boots', mood: u > 3.6 ? 'wow' : null, hold: true }, t);
+    const out = ease(since(2.4) / 1.8), ox = lerp(560, 820, out);
+    if (u > 2.2) put(c, dorothy, ox, GROUND + 10, .95, { ph: stepPh(dorothy, ox - 560, .95), walk: clamp(since(2.4) / .3) * clamp((1 - out) * 4), blink: blinkAt(t, 1), shoes: 'boots', mood: u > 3.6 ? 'wow' : null, hold: true }, t);
     for (let i = 0; i < 5; i++) { const pop = ease((u - 3 - i * .35) / .5); if (pop <= 0) continue;
       put(c, munchkin, 1000 + i * 120, GROUND + 20 + (1 - pop) * 120, .95, { hop: 12, blink: blinkAt(t, i) }, t + i, true); }
     vignette(c);
@@ -135,7 +138,7 @@ const SCENES = [
     ground(c, 840, '#79b862', '#4f9a44');
     for (const f of FLOWERS.slice(0, 14)) flower(c, f.x, f.y + 60, f.s * .8, Math.sin(t * 2 + f.p), f.col);
     const oil = clamp((u - 2.5) / 3.5), free = u > 6;
-    put(c, tinWoodman, 820, 860, 1.08, { walk: 0, blink: oil < .3 ? 0 : blinkAt(t, 2), rust: 1 - oil, armF: free ? (.4 + Math.sin(u * 3) * .4) : 1.9, armB: free ? -.2 : .1, mouth: talk(u, 6.4, 9.8), mood: free && u < 7 ? 'wow' : null }, t);
+    put(c, tinWoodman, 820, 860, 1.08, { walk: 0, blink: oil < .3 ? 0 : blinkAt(t, 2), rust: 1 - oil, armF: free ? (.4 + Math.sin(u * 3) * .4) : 1.9, armB: free ? .2 : -.1, mouth: talk(u, 6.4, 9.8), mood: free && u < 7 ? 'wow' : null }, t);
     put(c, dorothy, 1060, 860, 1, { walk: 0, blink: blinkAt(t, 1), shoes: 'silver', armF: u > 2 && u < 6 ? 1.7 + Math.sin(u * 6) * .15 : .2 }, t, true);
     if (u > 2 && u < 6) { c.save(); c.translate(940, 620); c.rotate(-.5); rr(c, -12, -20, 24, 34, 6); fillStroke(c, '#c3cddb', 3); c.beginPath(); c.moveTo(0, -20); c.lineTo(-30, -40); ink(c, 5); c.stroke(); c.restore();
       for (let i = 0; i < 3; i++) { const k = ((u * 1.5 + i / 3) % 1); ell(c, 905, 580 + k * 60, 4, 6); c.fillStyle = 'rgba(200,170,60,.9)'; c.fill(); } }
@@ -170,8 +173,9 @@ const SCENES = [
     hills(c, cam * .45 + 400, 690, 24, '#6cb35a', .0026);
     poppies(c, t, POP, cam * .45);
     c.fillStyle = '#5ea84c'; c.fillRect(0, 712, W, 26); brickRoad(c, cam, 730, 880); ground(c, 880, '#5aa846', '#3f8a34');
-    const wk = u * 5.2;
-    [[lion, 400, wk * .8, .95], [tinWoodman, 720, wk + 1.2, .97], [scarecrow, 960, wk + 2.1, .98], [dorothy, 1190, wk + .3, 1], [toto, 1420, wk * 1.3, 1.5]].forEach(([f, x, ph, s], i) =>
+    // each steps at the pace that keeps the foot on the ground moving with the road (long legs, slower steps)
+    const ph = (f, s) => f === toto ? u * 6.8 : stepPh(f, cam, s * 1.18);
+    [[lion, 400, ph(lion, .95), .95], [tinWoodman, 720, ph(tinWoodman, .97) + 1.2, .97], [scarecrow, 960, ph(scarecrow, .98) + 2.1, .98], [dorothy, 1190, ph(dorothy, 1) + .3, 1], [toto, 1420, ph(toto), 1.5]].forEach(([f, x, ph, s], i) =>
       put(c, f, x + Math.sin(t * .6 + i) * 14, 828, s * 1.18, { ph, blink: blinkAt(t, i), shoes: 'silver', mood: f === lion ? 'happy' : null }, t));
     foreTufts(c, t, cam * 1.5); butterfly(c, t, 300, 520, '#ff9ed1', 1); butterfly(c, t, 1500, 300, '#ffd84d', .8);
     vignette(c);
@@ -214,9 +218,9 @@ const SCENES = [
     if (u < 3) put(c, witch, 1450, 300, .38, { armF: 2.4, blink: blinkAt(t, 5) }, t, true);   // the Witch calls from her tower
     const walkIn = clamp((u - 6) / (d - 6)), moving = u > 6;
     [[scarecrow, 330], [tinWoodman, 510]].forEach(([f, x], i) =>
-      put(c, f, x + walkIn * 300, 890, .82, { ph: u * 5 + i, walk: moving ? 1 : 0, blink: blinkAt(t, i), mood: u < 5 ? 'wow' : null }, t));
+      put(c, f, x + walkIn * 300, 890, .82, { ph: stepPh(f, walkIn * 300, .82) + i, walk: clamp(since(6) / .3), blink: blinkAt(t, i), mood: u < 5 ? 'wow' : null }, t));
     // the Lion faces the monkeys and roars to protect Dorothy
-    put(c, lion, 860 + walkIn * 300, 890, .82, { ph: u * 5, walk: moving ? 1 : 0, blink: blinkAt(t, 2), mood: u > 6 ? 'happy' : null }, t, !moving);
+    put(c, lion, 860 + walkIn * 300, 890, .82, { ph: stepPh(lion, walkIn * 300, .82), walk: clamp(since(6) / .3), blink: blinkAt(t, 2), mood: u > 6 ? 'happy' : null }, t, !moving);
     bubble(c, 700, 470, 'ROAR!', SPEAK.who === 'lion' ? clamp(SPEAK.amp * 3) : 0, 64);
     twinkles(c, t, scatter(17, 20, 0, W, 0, 400, 3, 7));
     vignette(c, .03);
@@ -284,10 +288,12 @@ const SCENES = [
     windmill(c, 1640, 720, .9, t); farmhouse(c, 1260, 740, .95, 0, 1);
     for (const f of FLOWERS.slice(0, 18)) flower(c, f.x, f.y + 40, f.s * .7, Math.sin(t * 2 + f.p), f.col);
     const flash = 1 - clamp(u / .8);
-    const roll = ease(u / 1.4), run = ease((u - 2) / 2.2), hug = u > 4.3;
-    const dx = u < 2 ? lerp(160, 380, roll) : lerp(380, 860, run);
-    put(c, auntEm, hug ? 960 : lerp(1180, 910, ease((u - 1.6) / 2.4)), 960, 1.05, { ph: u * 6, walk: u > 1.6 && !hug ? 1 : 0, blink: blinkAt(t, 2), arms: hug ? 1.6 : lerp(.3, 1.3, ease((u - 2) / 1)) }, t, true);
-    put(c, dorothy, dx, 890 - (u < 1.4 ? Math.abs(Math.sin(u * 7)) * 30 * (1 - roll) : 0), 1, { ph: u * 7, walk: u > 2 && !hug ? 1 : 0, blink: blinkAt(t, 1), shoes: 'boots', armF: hug ? 1.6 : null, mouth: talk(u, 9, d - .6) }, t);
+    const roll = ease(u / 1.4), toHug = -since(4.3), hug = toHug <= 0;
+    const run = ease(1 - toHug / 2), em = ease(1 - toHug / 2.4), going = k => clamp((k - toHug) / .25) * clamp(toHug / .25);
+    const dx = u < 2 ? lerp(160, 380, roll) : lerp(380, 860, run), ex = lerp(1180, 910, em);
+    // Aunt Em stands nearer the camera, so she's drawn after Dorothy; in the hug her arms go around her
+    put(c, dorothy, dx, 890 - (u < 1.4 ? Math.abs(Math.sin(u * 7)) * 30 * (1 - roll) : 0), 1, { ph: stepPh(dorothy, dx - 380, 1), walk: u < 2 ? 0 : going(2), blink: blinkAt(t, 1), shoes: 'boots', armF: hug ? 1.4 : null, mouth: talk(u, 9, d - .6) }, t);
+    put(c, auntEm, hug ? 960 : ex, 960, 1.05, { ph: stepPh(auntEm, 1180 - ex, 1.05), walk: going(2.4), blink: blinkAt(t, 2), arms: !hug && em <= 0 ? .3 : undefined, reach: hug ? 1.25 : lerp(.3, 1.3, clamp(em * 2)) }, t, true);
     put(c, uncleHenry, 1480, 800, .72, { walk: 0, blink: blinkAt(t, 3), wave: .8, arms: .2 }, t, true);
     put(c, toto, 640 + Math.sin(u * 2) * 60, 920 - Math.abs(Math.sin(u * 8)) * 26, 1.2, { walk: 0, blink: 0, bark: (u % 1.4) < .3 }, t);
     if (hug) for (let i = 0; i < 4; i++) { const k = ((u - 4.3) * .5 + i / 4) % 1; c.save(); c.globalAlpha = 1 - k; c.translate(910 + Math.sin(i * 2 + u) * 40, 570 - k * 160); c.scale(1.2, 1.2);
