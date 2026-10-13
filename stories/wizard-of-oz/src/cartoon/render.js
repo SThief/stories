@@ -1,5 +1,6 @@
 // node render.js <out.mp4> <seconds> [still-at-seconds...]
-const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+// PLAYWRIGHT points at playwright on another machine (the default is the cloud one)
+const { chromium } = require(process.env.PLAYWRIGHT || '/opt/node22/lib/node_modules/playwright');
 const { spawn } = require('child_process'); const fs = require('fs'); const path = require('path');
 (async () => {
   const [out, secs, ...stills] = process.argv.slice(2);
