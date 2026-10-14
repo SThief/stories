@@ -4,6 +4,7 @@ html,body{margin:0;background:#000}canvas{display:block}</style></head>
 <body><canvas id="cv" width="1920" height="1080"></canvas>
 <script src="chars.js"></script><script src="world.js"></script><script src="scenes.js"></script>
 <script src="timeline.js"></script><script src="dialogue.js"></script>
+<script src="look.js"></script>
 <script>
 // The cartoon: each page's scene, told by the narrator with the characters' own voices for their heart lines, like
 // The Boy Who Changed His Stars. The camera follows the story, not the speaker: each line in script.json may set a
@@ -105,7 +106,7 @@ function drawPage(cnv, i, t, live) {
   SPEAK.amp = speaking ? (L.env[Math.floor((u - L.start) * 30)] || 0) : 0;
   const cam = camera(i, u), r = raw.getContext('2d');
   r.setTransform(1, 0, 0, 1, 0, 0); r.translate(960, 540); r.scale(cam.z, cam.z); r.translate(-cam.x, -cam.y);
-  CAM_INV = r.getTransform().inverse(); CAM_Z = cam.z; HEADS = HEADS_BY[i];
+  CAM_INV = r.getTransform().inverse(); CAM_Z = cam.z; HEADS = HEADS_BY[i]; LOOK.page(i, r.getTransform());
   since = o => u - filmAt(i, o);
   setCue(opts(L)); SCENES[i](r, t, oldTime(i, u), OLD[i].dur);
   if (L && (opts(L).fx || []).includes('hearts')) hearts(r, i, k, L, u);
@@ -128,10 +129,11 @@ function drawPage(cnv, i, t, live) {
 }
 window.frame = t => {
   const ss = DL.scenes; let i = ss.length - 1; while (i > 0 && t < ss[i].start) i--;
-  const fading = i > 0 && t < ss[i].start + DL.fade;
+  const fading = i > 0 && t < ss[i].start + DL.fade; LOOK.frame(t);
   drawPage(off[0], i, Math.min(t, ss[i].start + ss[i].dur), true);
   ctx.globalAlpha = 1; ctx.drawImage(off[0], 0, 0);
   if (fading) { drawPage(off[1], i - 1, t, false); ctx.globalAlpha = 1 - (t - ss[i].start) / DL.fade; ctx.drawImage(off[1], 0, 0); ctx.globalAlpha = 1; }
+  LOOK.finish(ctx, t);
   const end = DL.total - t; if (end < 1.2) { ctx.fillStyle = `rgba(0,0,0,${1 - end / 1.2})`; ctx.fillRect(0, 0, 1920, 1080); }
   return cv.toDataURL('image/jpeg', .9);
 };

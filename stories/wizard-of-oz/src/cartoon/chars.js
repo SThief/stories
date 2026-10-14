@@ -293,7 +293,8 @@ function glinda(c, p, t = 0) {
   // star wand
   c.save(); c.translate(hx, hy); c.rotate(-.5); c.beginPath(); c.moveTo(0, 0); c.lineTo(0, -80); c.lineWidth = 5; c.strokeStyle = '#c9d3e6'; c.stroke();
   c.translate(0, -88); c.rotate(t); c.beginPath(); for (let i = 0; i < 10; i++) { const r = i % 2 ? 7 : 18; c.lineTo(Math.cos(i * Math.PI / 5) * r, Math.sin(i * Math.PI / 5) * r); } c.closePath(); fillStroke(c, '#fff6b0', 3);
-  c.fillStyle = 'rgba(255,250,200,.35)'; ell(c, 0, 0, 34 + Math.sin(t * 5) * 4, 34 + Math.sin(t * 5) * 4); c.fill(); c.restore();
+  if (!(typeof LOOK !== 'undefined' && LOOK.on)) { c.fillStyle = 'rgba(255,250,200,.35)'; ell(c, 0, 0, 34 + Math.sin(t * 5) * 4, 34 + Math.sin(t * 5) * 4); c.fill(); }   // the look draws a glow in the scene instead (a see-through glow would get the dark outline)
+  c.restore();
   c.save(); c.translate(0, -292);
   ell(c, 0, 0, 44, 46); fillStroke(c, rad(c, -8, -10, 4, 56, [[0, '#fff0e2'], [1, '#ffd9c2']]));
   c.beginPath(); c.moveTo(-46, -6); c.quadraticCurveTo(-40, -60, 0, -54); c.quadraticCurveTo(44, -60, 46, -6); c.quadraticCurveTo(20, -36, -46, -6); fillStroke(c, '#d9552e', 3);

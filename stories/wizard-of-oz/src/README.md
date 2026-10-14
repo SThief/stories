@@ -4,7 +4,11 @@
   the mark's exact shape from all the pictures and undoes it, and `edge.py` tidies the last thin outline.
   Run them in that order (each takes a source folder and an output folder).
 - `cartoon/`: the cartoon, drawn in code. `cartoon.html` draws any moment of the film; `scenes.js` has one scene per
-  page, `chars.js` the characters and `world.js` the scenery. `timeline.js` is the first, narrated timing that each
+  page, `chars.js` the characters and `world.js` the scenery. `look.js` lays the cartoon's look over all of them
+  (October 2026): every filled shape is painted with a shadow and highlight from the page's light (`LIGHTS`), limbs
+  taper, each character is drawn on its own layer, lit (tint, rim of light, long soft shadow), outlined and given a
+  little acting (leaning into walks, settling, breathing, faces sliding between moods); far hills are hazy, close-ups
+  blur the background, sunny pages get sun rays, and frames get a soft glow and grain. `?classic` turns it off. `timeline.js` is the first, narrated timing that each
   scene's action was drawn to.
   - Walking: `legsPose` in `chars.js` is the walk cycle for everyone (the arm drawn in front hangs from the back
     shoulder; arms swing against the legs). Time a walk with `since(moment)` (real film seconds, since the narration
@@ -25,3 +29,15 @@
   - Sound: `python soundtrack.py dialogue.json ../../../../tools/storytell soundtrack.wav` lays the voices over
     the storytelling harp.
   - Then join the two with ffmpeg (CRF 27, `-tune animation`, faststart) as `stories/wizard-of-oz/cartoon.mp4`.
+- `remake/`: the cartoon as it is now (October 2026), the same story, narration and voices (the first cartoon's
+  `dialogue.js` and soundtrack) told again as a new film: places built from layers that move at different speeds,
+  one light per moment (gray Kansas, the dark storm, a burst of colour in Oz, the golden road, the emerald glow, a warm
+  gold Kansas at the end), close-ups at the feelings, and the characters in the illustrated style with acting
+  (`../cartoon/look.js`; Dorothy and Toto are redrawn in `heroes.js`).
+  - `film.js`, `film2.js`, `film3.js`: the shots, in order (`shot(start, end, light, camera, drawing)`); `LIT` are
+    the lights. `index.html` plays them with the captions.
+  - Pictures: `PAGE=index.html node render.js remake-silent.mp4 301.4` (about 1 hour 40 minutes on the MacBook),
+    then join it with the sound of the first cartoon (copy the audio of `cartoon.mp4`; CRF 27, `-tune animation`).
+  - Checks: `node review.js <folder>` writes a frame from every shot to look at; `node check.js` checks that
+    everyone moving faces the way they go and steps forward.
+
