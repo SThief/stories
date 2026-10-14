@@ -1,0 +1,35 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:Fredoka;font-weight:600;src:url(fonts/fredoka-latin-600-normal.woff2)}
+html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="cv" width="1920" height="1080"></canvas>
+<script src="kit.js"></script><script src="chars.js"></script><script src="world.js"></script><script src="env.js"></script><script src="film.js"></script>
+<script>
+// The Boy Who Changed His Stars: frame(t) draws any moment of the film (render.js turns it into a video; the sound is
+// soundtrack.m4a, the narration and music of the first cartoon, which these shots are timed to).
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d'), raw = mkC(), r = raw.getContext('2d');
+function caption(c, text, a) {
+  if (a <= 0) return; c.save(); c.globalAlpha = a; c.font = '600 34px Fredoka';
+  const words = text.split(' '), lines = []; let line = '';
+  for (const w of words) { const tryL = line ? line + ' ' + w : w; if (c.measureText(tryL).width > 1500) { lines.push(line); line = w; } else line = tryL; }
+  lines.push(line);
+  const bw = Math.max(...lines.map(l => c.measureText(l).width)) + 80, bh = lines.length * 44 + 24, bx = (W - bw) / 2, by = H - bh - 22;
+  c.shadowColor = 'rgba(20,10,0,.4)'; c.shadowBlur = 24; c.beginPath(); c.roundRect(bx, by, bw, bh, 26); c.fillStyle = 'rgba(255,250,238,.94)'; c.fill(); c.shadowBlur = 0;
+  c.fillStyle = '#3a2618'; c.textAlign = 'center'; c.textBaseline = 'top'; lines.forEach((l, i) => c.fillText(l, W / 2, by + 13 + i * 44)); c.restore();
+}
+window.frame = t => {
+  let i = SHOTS.length - 1; while (i > 0 && t < SHOTS[i][0]) i--;
+  const [a, b, light, camera, draw] = SHOTS[i], u = t - a, cm = typeof camera === 'function' ? camera(u) : camera;
+  r.setTransform(1, 0, 0, 1, 0, 0); r.filter = 'none'; r.globalAlpha = 1; r.globalCompositeOperation = 'source-over'; r.fillStyle = '#000'; r.fillRect(0, 0, W, H);
+  r.setTransform(view(cm, 1)); setLight(light, r.getTransform(), cm.z); COUNT = {}; cnow = r;
+  draw(r, t, u, cm);
+  r.setTransform(1, 0, 0, 1, 0, 0); finish(r, t, light === 'night' || light === 'fire' || light === 'forge' || light === 'candle' ? .42 : .26);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(raw, 0, 0);
+  for (const [c0, c1, text] of CAPS) { const k = Math.min(clamp((t - c0) / .25), clamp((c1 - t) / .25)); if (k > 0) caption(ctx, text, k); }
+  const fade = Math.min(clamp(t / .8), clamp((TOTAL - t) / 1.2)); if (fade < 1) { ctx.fillStyle = `rgba(0,0,0,${1 - fade})`; ctx.fillRect(0, 0, W, H); }
+  return cv.toDataURL('image/jpeg', .9);
+};
+// a pose on a plain card, for checking arms and legs (poses.js)
+window.card = (name, pose, s = 1.6) => { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#e8e4ee'; ctx.fillRect(0, 0, W, H); ctx.fillStyle = '#bbb'; ctx.fillRect(0, 900, W, 3);
+  setLight('day', new DOMMatrix(), 1); COUNT = {}; const fn = name === 'whiteHorse' ? whiteHorse : C[name]; put(ctx, fn, 900, 900, s, pose, 1, false, name === 'whiteHorse' ? HORSE : {}); return cv.toDataURL('image/jpeg', .85); };
+window.ready = document.fonts.load('600 34px Fredoka').then(() => true);
+</script></body></html>
