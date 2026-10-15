@@ -34,9 +34,14 @@
   one light per moment (gray Kansas, the dark storm, a burst of colour in Oz, the golden road, the emerald glow, a warm
   gold Kansas at the end), close-ups at the feelings, and the characters in the illustrated style with acting
   (`../cartoon/look.js`; Dorothy and Toto are redrawn in `heroes.js`).
+  - Bodies: every character draws its far arm first and its near arm last, in front of the head too; both arms take
+    an angle and an elbow bend (`armF`/`bendF`, `armB`/`bendB`), and `item(c, x, y, t)` draws a held thing in the near
+    hand (the oil can, the bucket, the Witch's shoe; `spot()` notes where its working end is on screen, `HANDS`).
+  - The yellow brick road winds with the land to the Emerald City's gate: `brickRibbon()` (a road along a curve) and
+    `hillRoad()` (a stretch over a hill, cut at its top) in `film.js`; the side view bends with `roadBend()`.
   - `film.js`, `film2.js`, `film3.js`: the shots, in order (`shot(start, end, light, camera, drawing)`); `LIT` are
     the lights. `index.html` plays them with the captions.
-  - Pictures: `PAGE=index.html node render.js remake-silent.mp4 301.4` (about 1 hour 40 minutes on the MacBook),
+  - Pictures: `PAGE=index.html node render.js remake-silent.mp4 301.4` (about 1 hour 25 minutes on the MacBook),
     then join it with the sound of the first cartoon (copy the audio of `cartoon.mp4`; CRF 27, `-tune animation`).
   - Checks: `node review.js <folder>` writes a frame from every shot to look at; `node check.js` checks that
     everyone moving faces the way they go and steps forward.

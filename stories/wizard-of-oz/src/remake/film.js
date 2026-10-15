@@ -33,7 +33,7 @@ const LIT = {
 // Dorothy and Toto (heroes.js), wrapped so the look's acting (blended faces) and the voice reach them
 const dor = (c, p, t) => { const f = p.__face || {}, cross = (f.brow ?? 0) < -.4, sad = (f.smile ?? 0) < -.3;
   // a kind face unless she is cross or sad: brows lifted softly in the middle, eyes open
-  dorothy2(c, { ...p, ...f, brow: cross || sad ? f.brow : Math.max(f.brow ?? 0, .35), lid: sad ? f.lid : 0, open: Math.max(f.open || 0, p.talk || 0) }, t); };
+  dorothy2(c, { ...p, ...f, shoes: t > 71.9 ? 'silver' : p.shoes, brow: cross || sad ? f.brow : Math.max(f.brow ?? 0, .35), lid: sad ? f.lid : 0, open: Math.max(f.open || 0, p.talk || 0) }, t); };
 const tot = (c, p, t) => toto2(c, { ...p, bark: (p.talk || 0) > .2 }, t);
 const STR_D = 108 * .5 * 2 / Math.PI, STR_T = 20;   // foot travel per radian of the walk, at size 1
 // who is talking, and how loudly, from the dialogue
@@ -55,6 +55,38 @@ function hillsW(c, off, base, amp, col, k, haze = clamp((790 - base) / 260) * .4
   c.save(); c.clip(); c.fillStyle = lin(c, 0, base - amp * 1.4, 0, base + 120, [[0, 'rgba(255,255,230,.18)'], [.4, 'rgba(0,40,0,0)'], [1, 'rgba(0,40,0,.12)']]); c.fillRect(-2500, base - amp * 1.5, W + 5000, 260);
   if (haze > 0) { c.fillStyle = `rgba(${PAGE_L.haze},${haze})`; c.fillRect(-2500, -1000, W + 5000, 4000); } c.restore();
 }
+// the yellow brick road along a smooth curve through pts (near end first), wide at the near end (w0) and narrow at
+// the far end (w1), with rows of bricks that shrink into the distance; it winds with the land instead of running straight
+function curvePts(pts, per = 18) { const S = [], n = pts.length;
+  for (let i = 0; i < n - 1; i++) { const a = pts[Math.max(0, i - 1)], b = pts[i], d = pts[i + 1], e = pts[Math.min(n - 1, i + 2)];
+    for (let k = 0; k < per; k++) { const s = k / per, s2 = s * s, s3 = s2 * s, f = j => .5 * (2 * b[j] + (-a[j] + d[j]) * s + (2 * a[j] - 5 * b[j] + 4 * d[j] - e[j]) * s2 + (-a[j] + 3 * b[j] - 3 * d[j] + e[j]) * s3); S.push([f(0), f(1)]); } }
+  S.push(pts[n - 1]); let L = 0; S.forEach((q, i) => { if (i) L += Math.hypot(q[0] - S[i - 1][0], q[1] - S[i - 1][1]); q[2] = L; }); return S; }
+function roadAt(S, d) {   // the point (and direction) at distance d along a curve from curvePts
+  let i = 1; while (i < S.length - 1 && S[i][2] < d) i++; const a = S[i - 1], b = S[i], k = clamp((d - a[2]) / Math.max(1e-6, b[2] - a[2]));
+  return { x: lerp(a[0], b[0], k), y: lerp(a[1], b[1], k), dx: b[0] - a[0], dy: b[1] - a[1] }; }
+function brickRibbon(c, pts, w0, w1, near = '#efb646', far = '#ffe08a') {
+  const S = curvePts(pts), L = S[S.length - 1][2], wAt = d => w0 * Math.pow(w1 / w0, d / L);
+  const side = sg => S.map((q, i) => { const a = S[Math.max(0, i - 1)], b = S[Math.min(S.length - 1, i + 1)], l = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1, w = wAt(q[2]) / 2 * sg;
+    return [q[0] - (b[1] - a[1]) / l * w, q[1] + (b[0] - a[0]) / l * w]; });
+  const A = side(1), B = side(-1);
+  c.beginPath(); A.forEach(([x, y], i) => i ? c.lineTo(x, y) : c.moveTo(x, y)); for (let i = B.length - 1; i >= 0; i--) c.lineTo(B[i][0], B[i][1]); c.closePath();
+  c.fillStyle = lin(c, S[0][0], S[0][1], S[S.length - 1][0], S[S.length - 1][1], [[0, near], [1, far]]); c.fill();
+  c.save(); c.clip(); c.lineCap = 'butt';
+  for (const f of [.33, .67]) { c.beginPath(); A.forEach((q, i) => { const x = lerp(q[0], B[i][0], f), y = lerp(q[1], B[i][1], f); i ? c.lineTo(x, y) : c.moveTo(x, y); }); c.lineWidth = Math.max(1, w1 * .05); c.strokeStyle = 'rgba(160,100,40,.35)'; c.stroke(); }
+  for (let d = 0, j = 0; d < L; d += wAt(d) * .22, j++) { const i = S.findIndex(q => q[2] >= d), f0 = j % 2 ? .33 : 0;
+    for (const [f1, f2] of [[0, .33], [.33, .67], [.67, 1]]) { if ((j + Math.round(f1 * 3)) % 2) continue; const a = A[i], b = B[i];
+      c.beginPath(); c.moveTo(lerp(a[0], b[0], f1), lerp(a[1], b[1], f1)); c.lineTo(lerp(a[0], b[0], f2), lerp(a[1], b[1], f2)); c.lineWidth = Math.max(1, wAt(d) * .012); c.strokeStyle = 'rgba(150,90,40,.4)'; c.stroke(); }
+    c.beginPath(); c.moveTo(A[i][0], A[i][1]); c.lineTo(B[i][0], B[i][1]); c.lineWidth = Math.max(.8, wAt(d) * .01); c.strokeStyle = 'rgba(150,90,40,.28)'; c.stroke(); }
+  c.restore();
+  for (const E of [A, B]) { c.beginPath(); E.forEach(([x, y], i) => i ? c.lineTo(x, y) : c.moveTo(x, y)); c.lineWidth = Math.max(1, w1 * .08); c.strokeStyle = 'rgba(140,84,30,.45)'; c.stroke(); }
+  return S;
+}
+function hillRoad(g, off, base, amp, k, pts, w0, w1) {   // a stretch of road on hillsW's hills, cut off where it goes over their top
+  g.save(); g.beginPath(); g.moveTo(-2500, 3000); for (let x = -2500; x <= W + 2500; x += 20) g.lineTo(x, crestY(x, off, base, amp, k)); g.lineTo(W + 2500, 3000); g.closePath(); g.clip();
+  brickRibbon(g, pts, w0, w1); g.restore(); }
+const crestY = (x, off, base, amp, k) => { const u = x + off; return base - Math.sin(u * k) * amp - Math.sin(u * k * 2.3 + 1) * amp * .4; };   // the top of hillsW's hills at x
+function cityGate(c, x, y, s) { c.save(); c.translate(x, y); c.scale(s, s); c.beginPath(); c.moveTo(-26, 0); c.lineTo(-26, -40); c.arc(0, -40, 26, Math.PI, 0); c.lineTo(26, 0); c.closePath();
+  c.fillStyle = '#2f8f55'; c.fill(); c.strokeStyle = 'rgba(20,70,40,.6)'; c.lineWidth = 3; c.stroke(); c.beginPath(); c.moveTo(-16, 0); c.lineTo(-16, -38); c.arc(0, -38, 16, Math.PI, 0); c.lineTo(16, 0); c.closePath(); c.fillStyle = '#ffe9a0'; c.fill(); c.restore(); }
 function prairie(c, cam, t, wind = 0, skyOn = true) {   // flat gray Kansas under a wide sky
   if (skyOn) layer(c, cam, 0, g => { g.fillStyle = lin(g, 0, -400, 0, 700, [[0, '#8a96a2'], [.6, '#b8b8b2'], [1, '#d8d0c0']]); g.fillRect(-2000, -1500, W + 4000, 2600); sun(g, 1500, 160, 300, '255,250,235');
     for (let i = 0; i < 9; i++) { const x = ((hash(i, 3) * 3000 + t * (6 + wind * 60)) % 3200) - 600, y = 80 + hash(i, 4) * 420; ell(g, x, y, 260 + hash(i, 5) * 300, 14 + hash(i, 6) * 10); g.fillStyle = 'rgba(240,236,228,.5)'; g.fill(); } });
@@ -80,12 +112,15 @@ function grassFront(c, cam, t, col, p = 1.6, blur = 6, seed = 1, wind = 0) {
 // 00 title: the golden road to a far green city
 shot(0, 5.4, 'golden', push(960, 560, 1, 1.12, 5.4), (c, t, u, cam) => {
   layer(c, cam, 0, g => { g.fillStyle = lin(g, 0, -300, 0, 700, [[0, '#3a3a7c'], [.5, '#d8737c'], [.85, '#ffb574'], [1, '#ffe0a8']]); g.fillRect(-2000, -1500, W + 4000, 2600); sun(g, 1180, 600, 600, '255,226,160'); });
-  layer(c, cam, .1, g => { hillsW(g, 0, 650, 30, '#b39acb', .004); emeraldCity(g, 1180, 660, .8, t, 1.3); });
-  layer(c, cam, .4, g => { hillsW(g, 300, 720, 26, '#c98f86', .005); });
+  // the road winds from the near field, over two hills, to the city's gate
+  layer(c, cam, .1, g => { hillsW(g, 0, 650, 30, '#b39acb', .004); brickRibbon(g, [[1230, 740], [1200, 700], [1150, 680], [1180, 662]], 22, 9); emeraldCity(g, 1180, 660, .8, t, 1.3); cityGate(g, 1180, 662, .45); });
+  layer(c, cam, .4, g => { hillsW(g, 300, 720, 26, '#c98f86', .005); hillRoad(g, 300, 720, 26, .005, [[1420, 800], [1360, 745], [1250, 700], [1200, 670]], 50, 26); });
+  let road;
   layer(c, cam, 1, g => { g.fillStyle = '#a99050'; g.fillRect(-2000, 760, W + 4000, 1000);
-    g.beginPath(); g.moveTo(-200, 1100); g.quadraticCurveTo(700, 900, 1180, 680); g.lineTo(1200, 680); g.quadraticCurveTo(1000, 900, 1100, 1100); g.closePath(); g.fillStyle = lin(g, 0, 1100, 0, 680, [[0, '#efb646'], [1, '#ffe08a']]); g.fill(); });
-  [[lion, -150, .2], [tinWoodman, -60, .2], [scarecrow, 20, .2], [dorothy, 90, .2], [toto, 150, .3]].forEach(([f, o, s], i) => { const d = u * 40, x = 820 + o + d * 1.4, y = 820 - d * .6 + o * .05;
-    put(c, f, x, y, s, { ph: (f === toto ? d * 1.5 / (12 * s) : stepPh(f, d * 1.5, s)) + i, walk: 1, blink: false, shoes: 'silver' }, t, false); });
+    g.save(); g.beginPath(); g.rect(-2000, 760, W + 4000, 1000); g.clip(); road = brickRibbon(g, [[-200, 1250], [420, 990], [800, 870], [1120, 802], [1330, 772], [1420, 740]], 420, 54); g.restore(); });
+  // the friends walk along the road, single file, smaller as they go farther
+  [[lion, 0, .2], [tinWoodman, 70, .2], [scarecrow, 125, .2], [dorothy, 180, .2], [toto, 235, .3]].forEach(([f, o, s], i) => { const d = u * 55, q = roadAt(road, 560 + o + d), k = s * (1 + (q.y - 840) / 300);
+    put(c, f, q.x, q.y, k, { ph: (f === toto ? d / (12 * k) : stepPh(f, d, k)) + i, walk: 1, blink: false, shoes: 'silver' }, t, q.dx < 0); });
   grassFront(c, cam, t, 'rgba(60,30,50,.9)', 1.6, 8, 3);
   const k = ease((u - .6) / 1);
   c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = k; c.textAlign = 'center'; c.font = '600 120px Fredoka'; c.lineWidth = 16; c.lineJoin = 'round'; c.strokeStyle = 'rgba(70,30,30,.55)';
@@ -135,7 +170,8 @@ shot(24.6, 28.9, 'storm', u => ({ x: 960, y: lerp(700, 560, ease(u / 4.3)), z: l
 });
 shot(28.9, 31.2, 'storm', push(560, 640, 1.8, 1.95, 2.3), (c, t, u, cam) => {
   stormSky(c, cam, t, 1); prairie(c, cam, t, 1, false); dark(c, .4, '20,34,44'); layer(c, cam, .4, g => funnel(g, 1100, 700, .7, t)); desat(c, .3);
-  put(c, uncleHenry, 520, 880, .8, { walk: 0, blink: false, arms: 1.1, wave: 1, mood: 'wow' }, t, true);   // turned so his waving arm points at the cyclone dust(c, t, 3, '90,100,104'); lightning(c, t, 1);
+  put(c, uncleHenry, 520, 880, .8, { walk: 0, blink: false, arms: 1.1, wave: 1, mood: 'wow' }, t, true);   // turned so his waving arm points at the cyclone
+  dust(c, t, 3, '90,100,104'); lightning(c, t, 1);
 });
 shot(31.2, 36.1, 'storm', u => ({ x: 500 + u * 330, y: 560, z: 1.15 }), (c, t, u, cam) => {
   stormSky(c, cam, t, 1); prairie(c, cam, t, 1, false); dark(c, .4, '20,34,44'); layer(c, cam, .35, g => funnel(g, 600 + u * 80, 720, .75, t)); desat(c, .3); dust(c, t, 3, '90,100,104');

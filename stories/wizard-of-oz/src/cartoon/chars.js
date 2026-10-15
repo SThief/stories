@@ -170,7 +170,7 @@ function scarecrow(c, p, t = 0) {
   c.save(); c.translate(0, bob * 13);
   const straw = (x, y, ang, n = 6) => { for (let i = 0; i < n; i++) { const q = ang + (i - n / 2) * .22 + Math.sin(t * 3 + i) * .05;
     c.beginPath(); c.moveTo(x, y); c.lineTo(x + Math.sin(q) * 24, y + Math.cos(q) * 24); c.lineWidth = 4; c.strokeStyle = i % 2 ? '#e8c254' : '#d4a632'; c.stroke(); } };
-  const [fx0, fy0] = limb(c, p.armF != null ? 34 : g.shoulder(1, 34), -222, 96, p.armF ?? (g.arm(1) * .7 + .2 - flop * .25), 16, '#6c94c2', .4);
+  const [fx0, fy0] = limb(c, p.armF != null ? 34 : g.shoulder(1, 34), -222, 96, p.armF ?? (g.arm(1) * .7 + .2 - flop * .25), 16, '#6c94c2', p.bendF ?? .4);
   straw(fx0, fy0, -.2 + flop * .2, 5);
   for (const s of [-1, 1]) {
     const [fx, fy] = limb(c, g.hip(s, 13), -128, 118, g.leg(s) * .62, 20, s < 0 && g.w ? '#76552f' : '#8a6440', g.knee(s) * 1.1);
@@ -182,8 +182,9 @@ function scarecrow(c, p, t = 0) {
   fillStroke(c, lin(c, -50, 0, 50, 0, [[0, '#5f88b8'], [.5, '#82a9d4'], [1, '#5b83b2']]));
   rr(c, -30, -176, 22, 20, 4); fillStroke(c, '#c9a36b', 3); rr(c, 14, -146, 18, 16, 3); fillStroke(c, '#a77b4c', 3);
   c.beginPath(); c.moveTo(-46, -132); c.quadraticCurveTo(0, -124, 46, -132); c.lineWidth = 6; c.strokeStyle = '#c9a66b'; c.stroke();
-  const [hx, hy] = limb(c, p.armB != null ? -34 : g.shoulder(-1, 34), -222, 96, p.armB ?? (g.arm(-1) * .7 - .2 + flop * .25), 16, '#82a9d4', .4);
-  straw(hx, hy, -.4, 6);
+  // the near arm is drawn after the head (below), so a raised near arm is always in front of it
+  const nearArm = () => { const [hx, hy] = limb(c, p.armB != null ? -34 : g.shoulder(-1, 34), -222, 96, p.armB ?? (g.arm(-1) * .7 - .2 + flop * .25), 16, '#82a9d4', p.bendB ?? .4);
+    if (p.item) p.item(c, hx, hy, t); straw(hx, hy, -.4, 6); };
   straw(0, -234, Math.PI, 8);
   c.save(); c.translate(6, -282 + flop * 3); c.rotate(Math.sin(t * 2.4) * .05 + .04);
   ell(c, 0, 0, 46, 50); fillStroke(c, rad(c, -12, -14, 5, 60, [[0, '#f6e2b8'], [1, '#d9bd88']]));
@@ -198,7 +199,7 @@ function scarecrow(c, p, t = 0) {
   ell(c, 0, 0, 72, 16); fillStroke(c, lin(c, 0, -10, 0, 16, [[0, '#7fb0e0'], [1, '#4f86c4']]));
   c.beginPath(); c.moveTo(-34, -4); c.quadraticCurveTo(-14, -60, 10 + Math.sin(t * 2.2 - 1.6) * 10, -104); c.quadraticCurveTo(18, -60, 34, -4); c.quadraticCurveTo(0, 6, -34, -4);
   fillStroke(c, lin(c, -30, 0, 30, 0, [[0, '#5f97d2'], [.5, '#8fc0ee'], [1, '#538cca']]));
-  c.restore(); c.restore(); c.restore();
+  c.restore(); c.restore(); nearArm(); c.restore();
 }
 
 function tinWoodman(c, p, t = 0) {
@@ -222,14 +223,6 @@ function tinWoodman(c, p, t = 0) {
   c.beginPath(); c.moveTo(gx - 60, -260); c.lineTo(gx - 30, -260); c.lineTo(gx - 90, -110); c.lineTo(gx - 120, -110); c.fill(); c.restore();
   for (let i = 0; i < 6; i++) rivet(-40 + i * 16, -236);
   ell(c, 8, -196, 12, 11); fillStroke(c, '#f2b6c4', 3);
-  // the axe arm: the near arm, on the back shoulder in front of his body (armF is its angle); whatever the arm does,
-  // the axe stands up and a little forward from his hand, blade facing forward, clear of his face
-  const axeArm = -(p.armF ?? g.arm(-1) * .3) - .9;
-  c.save(); c.translate(p.armF != null ? -44 : g.shoulder(-1, 44, .5), -232); c.rotate(axeArm);
-  rr(c, -12, 0, 24, 86, 11); fillStroke(c, tin(-12, 12)); rusty();
-  if (!p.noAxe) { c.save(); c.translate(0, 86); c.rotate(-2.65 - axeArm); rr(c, -6, -10, 12, 150, 6); fillStroke(c, lin(c, -6, 0, 6, 0, [[0, '#8b5a2b'], [1, '#b47b42']]), 3.5);
-    c.beginPath(); c.moveTo(-6, 118); c.quadraticCurveTo(-46, 120, -50, 150); c.quadraticCurveTo(-24, 146, -6, 148); c.closePath(); fillStroke(c, tin(-50, -6), 3.5); c.restore(); }
-  ell(c, 0, 86, 13, 13); fillStroke(c, tin(-13, 13), 3); c.restore();
   c.save(); c.translate(4, -300 + Math.sin((p.ph || 0) * 2) * 1.2);
   rr(c, -38, -34, 76, 84, 26); fillStroke(c, tin(-38, 38)); rusty();
   cheeks(c, 4, 22, 22, 10);
@@ -239,7 +232,16 @@ function tinWoodman(c, p, t = 0) {
   tear(c, -12, 14, p.tears || 0);
   c.beginPath(); c.moveTo(-34, -30); c.lineTo(34, -30); c.lineTo(10, -70); c.lineTo(-10, -70); c.closePath(); fillStroke(c, tin(-34, 34));
   rr(c, -5, -112, 10, 44, 4); fillStroke(c, tin(-5, 5), 3);
-  c.restore(); c.restore();
+  c.restore();
+  // the axe arm: the near arm, on the back shoulder in front of his body (armF is its angle); whatever the arm does,
+  // the axe stands up and a little forward from his hand, blade facing forward, clear of his face
+  const axeArm = -(p.armF ?? g.arm(-1) * .3) - .9;
+  c.save(); c.translate(p.armF != null ? -44 : g.shoulder(-1, 44, .5), -232); c.rotate(axeArm);
+  rr(c, -12, 0, 24, 86, 11); fillStroke(c, tin(-12, 12)); rusty();
+  if (!p.noAxe) { c.save(); c.translate(0, 86); c.rotate(-2.65 - axeArm); rr(c, -6, -10, 12, 150, 6); fillStroke(c, lin(c, -6, 0, 6, 0, [[0, '#8b5a2b'], [1, '#b47b42']]), 3.5);
+    c.beginPath(); c.moveTo(-6, 118); c.quadraticCurveTo(-46, 120, -50, 150); c.quadraticCurveTo(-24, 146, -6, 148); c.closePath(); fillStroke(c, tin(-50, -6), 3.5); c.restore(); }
+  ell(c, 0, 86, 13, 13); fillStroke(c, tin(-13, 13), 3); c.restore();
+  c.restore();
 }
 
 function lion(c, p, t = 0) {
@@ -283,12 +285,11 @@ function glinda(c, p, t = 0) {
   // long red hair behind
   c.beginPath(); c.moveTo(-50, -330); c.bezierCurveTo(-90, -250, -70, -200, -86 + Math.sin(t * 2) * 6, -150); c.lineTo(80 + Math.sin(t * 2 + 1) * 6, -150); c.bezierCurveTo(70, -220, 90, -260, 50, -330); c.closePath();
   fillStroke(c, lin(c, 0, -340, 0, -150, [[0, '#d9552e'], [1, '#b8401f']]));
-  const [hx, hy] = limb(c, 26, -236, 90, p.armF ?? 1.6 + Math.sin(t * 2) * .1, 16, '#eef0f7', -.2);
+  const [hx, hy] = limb(c, 26, -236, 90, p.armF ?? 1.6 + Math.sin(t * 2) * .1, 16, '#eef0f7', p.bendF ?? .2);
   // flowing white gown
   c.beginPath(); c.moveTo(-30, -250); c.bezierCurveTo(-60, -160, -110, -60, -120 + Math.sin(t * 2) * 8, 0); c.quadraticCurveTo(0, 22, 120 + Math.sin(t * 2 + 1) * 8, 0); c.bezierCurveTo(110, -60, 60, -160, 30, -250); c.closePath();
   fillStroke(c, lin(c, -100, 0, 100, 0, [[0, '#e8ecf6'], [.45, '#ffffff'], [1, '#dfe4f2']]));
   c.save(); c.clip(); c.strokeStyle = 'rgba(170,180,210,.5)'; c.lineWidth = 3; for (let i = -3; i <= 3; i++) { c.beginPath(); c.moveTo(i * 8, -230); c.quadraticCurveTo(i * 22, -120, i * 34, 10); c.stroke(); } c.restore();
-  const [nx, ny] = limb(c, -26, -236, 90, -.2, 16, '#fff', .1); hand(c, nx, ny, 10);
   hand(c, hx, hy, 10);
   // star wand
   c.save(); c.translate(hx, hy); c.rotate(-.5); c.beginPath(); c.moveTo(0, 0); c.lineTo(0, -80); c.lineWidth = 5; c.strokeStyle = '#c9d3e6'; c.stroke();
@@ -302,7 +303,9 @@ function glinda(c, p, t = 0) {
   for (const s of [-1, 1]) { if (p.blink > .5) { c.beginPath(); c.arc(s * 16, 0, 7, .15 * Math.PI, .85 * Math.PI); ink(c, 3); c.stroke(); }
     else { ell(c, s * 16, -2, 7, 9); fillStroke(c, '#fff', 2.5); ell(c, s * 16 + 1, 0, 5, 6); c.fillStyle = '#3c78c8'; c.fill(); ell(c, s * 16 + 2, -2, 1.8, 1.8); c.fillStyle = '#fff'; c.fill(); } }
   mouth(c, 0, 20, 9, p);
-  c.restore(); c.restore();
+  c.restore();
+  { const [nx, ny] = limb(c, -26, -236, 90, p.armB ?? -.2, 16, '#fff', p.bendB ?? .1); if (p.item) p.item(c, nx, ny, t); hand(c, nx, ny, 10); }   // near arm, in front
+  c.restore();
 }
 
 function witch(c, p, t = 0) {
@@ -315,7 +318,7 @@ function witch(c, p, t = 0) {
   }
   shadow(c, 60);
   // striped umbrella in her far hand (front shoulder, behind her dress)
-  const [hx, hy] = limb(c, 26, -206, 86, p.armF ?? .6, 15, '#7a4cb0', -.4);
+  const [hx, hy] = limb(c, 26, -206, 86, p.armF ?? .6, 15, '#7a4cb0', p.bendF ?? .4);
   c.save(); c.translate(hx, hy); c.rotate(-.3); c.beginPath(); c.moveTo(0, 0); c.lineTo(0, 120); c.lineWidth = 5; c.strokeStyle = '#5a3a1e'; c.stroke();
   c.beginPath(); c.moveTo(-18, 10); c.lineTo(0, 100); c.lineTo(18, 10); c.closePath(); fillStroke(c, '#c95fa0', 3);
   c.beginPath(); c.moveTo(-6, 10); c.lineTo(0, 100); c.lineTo(6, 10); c.closePath(); c.fillStyle = '#ffe36b'; c.fill(); c.restore();
@@ -324,7 +327,6 @@ function witch(c, p, t = 0) {
   c.beginPath(); c.moveTo(-30, -220); c.quadraticCurveTo(-60, -110, -78, 0); c.quadraticCurveTo(0, 14, 78, 0); c.quadraticCurveTo(60, -110, 30, -220); c.closePath();
   fillStroke(c, lin(c, -70, 0, 70, 0, [[0, '#6a3f9a'], [.5, '#8c5cc4'], [1, '#633a92']]));
   rr(c, -36, -90, 26, 24, 4); fillStroke(c, '#b08ad6', 3); rr(c, 20, -60, 22, 20, 4); fillStroke(c, '#5a8a4a', 3);
-  { const [x, y] = limb(c, -26, -206, 86, -.15, 15, '#8c5cc4', .3); hand(c, x, y, 10, '#e9e2c9'); }   // her near arm
   c.save(); c.translate(4, -262);
   for (const [x, y, r] of [[-38, 10, 20], [36, 12, 18], [-30, 34, 14], [32, 36, 13]]) { ell(c, x, y, r, r); fillStroke(c, '#c9c9c9', 3); }
   ell(c, 0, 0, 40, 44); fillStroke(c, '#efe6cf');
@@ -338,19 +340,20 @@ function witch(c, p, t = 0) {
   c.save(); c.translate(0, -32); c.rotate(Math.sin(t * 2) * .05);
   ell(c, 0, 0, 70, 16); fillStroke(c, '#5c3488');
   c.beginPath(); c.moveTo(-34, -2); c.quadraticCurveTo(-20, -70, 20, -84); c.quadraticCurveTo(54, -90, 60, -56); c.quadraticCurveTo(30, -66, 34, -2); c.closePath(); fillStroke(c, lin(c, -30, 0, 40, 0, [[0, '#6a3f9a'], [1, '#8c5cc4']]));
-  c.restore(); c.restore(); c.restore();
+  c.restore(); c.restore();
+  { const [x, y] = limb(c, -26, -206, 86, p.armB ?? -.15, 15, '#8c5cc4', p.bendB ?? .3); if (p.item) p.item(c, x, y, t); hand(c, x, y, 10, '#e9e2c9'); }   // her near arm, in front
+  c.restore();
 }
 
 function wizardMan(c, p, t = 0) {
   p = live('wizardMan', c, p, 2, -236);
   shadow(c, 50);
   c.save(); c.translate(0, Math.sin(t * 2) * 1.5);
-  { const [x, y] = limb(c, 40, -186, 76, p.armF ?? .5, 16, '#8a5c34', -.4); hand(c, x, y, 10); }
+  { const [x, y] = limb(c, 40, -186, 76, p.armF ?? .5, 16, '#8a5c34', p.bendF ?? .4); hand(c, x, y, 10); }
   for (const s of [1, -1]) limb(c, -s * 12, -96, 92, 0, 18, '#5a4632');
   for (const s of [-1, 1]) { ell(c, s * 12 + 8, -4, 18, 9); fillStroke(c, '#3a2a1c', 3); }
   rr(c, -46, -196, 92, 106, 30); fillStroke(c, checks(c));
   c.beginPath(); c.moveTo(0, -196); c.lineTo(0, -96); ink(c, 3); c.stroke();
-  { const [x, y] = limb(c, -40, -186, 76, -.2, 16, '#9a6a3f', -.4); hand(c, x, y, 10); }
   c.save(); c.translate(2, -236);
   ell(c, 0, 0, 40, 42); fillStroke(c, rad(c, -10, -16, 4, 54, [[0, '#fff2e6'], [1, '#f6d2b4']]));
   ell(c, -10, -22, 12, 7, -.4); c.fillStyle = 'rgba(255,255,255,.7)'; c.fill();
@@ -359,7 +362,9 @@ function wizardMan(c, p, t = 0) {
   c.beginPath(); c.moveTo(-4, -2); c.lineTo(4, -2); ink(c, 3); c.stroke();
   c.beginPath(); c.moveTo(-18, 18); c.quadraticCurveTo(0, 8, 18, 18); c.quadraticCurveTo(0, 26, -18, 18); fillStroke(c, '#eeeeee', 2.5);
   mouth(c, 0, 26, 8, { ...p, mood: p.mood || 'happy' });
-  c.restore(); c.restore();
+  c.restore();
+  { const [x, y] = limb(c, -40, -186, 76, p.armB ?? -.2, 16, '#9a6a3f', p.bendB ?? .4); if (p.item) p.item(c, x, y, t); hand(c, x, y, 10); }   // near arm, in front
+  c.restore();
 }
 
 function bigHead(c, t, glow = 1) {
@@ -393,13 +398,14 @@ function auntEm(c, p, t = 0) {
   arm(1);
   c.beginPath(); c.moveTo(-36, -230); c.quadraticCurveTo(-56, -120, -64, -90); c.quadraticCurveTo(0, -80, 64, -90); c.quadraticCurveTo(56, -120, 36, -230); c.closePath(); fillStroke(c, '#8a8f9e');
   c.beginPath(); c.moveTo(-26, -200); c.lineTo(-38, -96); c.quadraticCurveTo(0, -88, 38, -96); c.lineTo(26, -200); c.closePath(); fillStroke(c, '#f3ead6', 3);
-  arm(-1);
   c.save(); c.translate(2, -270);
   ell(c, 0, -46, 22, 18); fillStroke(c, '#bdbdbd', 3);
   ell(c, 0, 0, 42, 44); fillStroke(c, rad(c, -8, -10, 4, 52, [[0, '#ffe8d6'], [1, '#f2c8a8']]));
   c.beginPath(); c.moveTo(-44, 0); c.quadraticCurveTo(-40, -44, 0, -42); c.quadraticCurveTo(40, -44, 44, 0); c.quadraticCurveTo(20, -26, -44, 0); fillStroke(c, '#c4c4c4', 3);
   cheeks(c, 0, 16, 26, 11); eyes(c, 2, 0, 15, 8, p, 1); mouth(c, 2, 20, 9, { ...p, mood: 'happy' });
-  c.restore(); c.restore();
+  c.restore();
+  arm(-1);   // the near arm, in front of the head
+  c.restore();
 }
 
 function uncleHenry(c, p, t = 0) {
@@ -414,13 +420,14 @@ function uncleHenry(c, p, t = 0) {
   rr(c, -42, -240, 84, 140, 24); fillStroke(c, '#c9b48e');
   rr(c, -32, -190, 64, 96, 10); fillStroke(c, '#4f6f9a', 3);
   for (const s of [-1, 1]) { c.beginPath(); c.moveTo(s * 24, -190); c.lineTo(s * 28, -236); ink(c, 6); c.strokeStyle = '#4f6f9a'; c.stroke(); }
-  arm(-1);
   c.save(); c.translate(2, -282);
   ell(c, 0, 0, 40, 44); fillStroke(c, rad(c, -8, -10, 4, 52, [[0, '#ffe2cc'], [1, '#eebd98']]));
   c.beginPath(); c.moveTo(-34, 10); c.quadraticCurveTo(-30, 64, 0, 66); c.quadraticCurveTo(30, 64, 34, 10); c.quadraticCurveTo(0, 30, -34, 10); fillStroke(c, '#d0d0d0', 3);
   eyes(c, 2, -4, 15, 8, p, 1);
   c.save(); c.translate(0, -34); ell(c, 0, 0, 64, 12); fillStroke(c, '#e2c27a', 3); rr(c, -34, -36, 68, 38, 14); fillStroke(c, '#e8cb86', 3); c.restore();
-  c.restore(); c.restore();
+  c.restore();
+  arm(-1);   // the near arm, in front of the head
+  c.restore();
 }
 
 function munchkin(c, p, t = 0, hue = 0) {

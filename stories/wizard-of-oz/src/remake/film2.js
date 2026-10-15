@@ -11,13 +11,13 @@ function pastelLand(c, cam, t) {   // Munchkin country in Glinda's soft light
 function wideRoad(c, cam, t, sunset = false, glow = 1) {   // the yellow brick road winding away to the Emerald City
   layer(c, cam, 0, g => { g.fillStyle = sunset ? lin(g, 0, -300, 0, 700, [[0, '#3a3a7c'], [.5, '#d8737c'], [.85, '#ffb574'], [1, '#ffe0a8']]) : lin(g, 0, -300, 0, 700, [[0, '#5cb6f2'], [.7, '#bfe6ff'], [1, '#fff3d0']]);
     g.fillRect(-2000, -1500, W + 4000, 2600); sun(g, sunset ? 1300 : 260, sunset ? 600 : 80, 600, sunset ? '255,226,160' : '255,248,210'); if (!sunset) clouds(g, t, CLOUDS); });
-  layer(c, cam, .08, g => { hillsW(g, 0, 650, 30, sunset ? '#b39acb' : '#a6c8e8', .004); emeraldCity(g, 1300, 662, .55, t, glow); });
-  layer(c, cam, .3, g => hillsW(g, 300, 710, 26, sunset ? '#c98f86' : '#8ccb7a', .005));
-  layer(c, cam, .6, g => hillsW(g, 900, 780, 30, sunset ? '#b19a62' : '#6cb85a', .003));
+  // the road winds across the field, over the hills, and up to the city's gate
+  layer(c, cam, .08, g => { hillsW(g, 0, 650, 30, sunset ? '#b39acb' : '#a6c8e8', .004); brickRibbon(g, [[1240, 720], [1250, 690], [1320, 676], [1300, 663]], 16, 7); emeraldCity(g, 1300, 662, .55, t, glow); cityGate(g, 1300, 663, .3); });
+  layer(c, cam, .3, g => { hillsW(g, 300, 710, 26, sunset ? '#c98f86' : '#8ccb7a', .005); hillRoad(g, 300, 710, 26, .005, [[1080, 790], [1160, 740], [1230, 700], [1250, 680]], 34, 18); });
+  layer(c, cam, .6, g => { hillsW(g, 900, 780, 30, sunset ? '#b19a62' : '#6cb85a', .003); hillRoad(g, 900, 780, 30, .003, [[1250, 860], [1150, 800], [1060, 760], [1040, 730]], 64, 36); });
   layer(c, cam, 1, g => { g.fillStyle = sunset ? '#a99050' : '#5ea84c'; g.fillRect(-2500, 800, W + 5000, 1400);
-    g.beginPath(); g.moveTo(-300, 1200); g.quadraticCurveTo(600, 950, 900, 850); g.quadraticCurveTo(1150, 760, 1300, 676); g.lineTo(1306, 676); g.quadraticCurveTo(1220, 780, 1100, 870); g.quadraticCurveTo(900, 1000, 1000, 1200); g.closePath();
-    g.fillStyle = lin(g, 0, 1200, 0, 676, [[0, '#efb646'], [1, '#ffe08a']]); g.fill(); g.strokeStyle = 'rgba(160,100,40,.35)'; g.lineWidth = 2; for (let k = 0; k < 24; k++) { const q = k / 24; g.beginPath(); g.moveTo(lerp(-300, 1300, q * q), lerp(1200, 676, q)); g.lineTo(lerp(1000, 1306, q * q), lerp(1200, 676, q)); g.stroke(); }
-    for (const p of POP) { const x = p.x * .7 - 200, y = 860 + (p.y - 600) * 3; ell(g, x, y, p.r * .9, p.r * .7); g.fillStyle = sunset ? '#e2483e' : '#ff4a3d'; g.fill(); } });
+    for (const p of POP) { const x = p.x * .7 - 200, y = 860 + (p.y - 600) * 3; ell(g, x, y, p.r * .9, p.r * .7); g.fillStyle = sunset ? '#e2483e' : '#ff4a3d'; g.fill(); }   // poppies beside the road, not on it
+    g.save(); g.beginPath(); g.rect(-2500, 800, W + 5000, 1400); g.clip(); brickRibbon(g, [[-200, 1320], [560, 1010], [1000, 880], [1260, 820], [1300, 780]], 640, 80); g.restore(); });
 }
 // the side view of the road for tracking shots: far hills and the city, a cornfield, the road the characters walk on
 function sideRoad(c, cam, t, o = {}) {
@@ -32,13 +32,16 @@ function sideRoad(c, cam, t, o = {}) {
       ell(g, x + lean, 862 - h - 6, 3, 9); g.fillStyle = sunset ? '#ffe6a0' : '#f2d870'; g.fill(); } });
   layer(c, cam, 1, g => { g.fillStyle = sunset ? '#6f6a3a' : '#5ea84c'; g.fillRect(-3000, 846, W + 9000, 600); brickRoadW(g, 852, 1010, cam.x); });
 }
+const roadBend = x => Math.sin(x * .0019) * 16 + Math.sin(x * .00073 + 1) * 10;   // how far the side road bends toward us (+) or away
 function brickRoadW(c, top, bot, cx) {
+  const quad = (x0, x1, y0, y1) => { const n = Math.max(1, Math.ceil((x1 - x0) / 40)); c.beginPath();
+    for (let i = 0; i <= n; i++) { const x = lerp(x0, x1, i / n); c.lineTo(x, y0 + roadBend(x)); } for (let i = n; i >= 0; i--) { const x = lerp(x0, x1, i / n); c.lineTo(x, y1 + roadBend(x)); } c.closePath(); };
   let y = top; for (let r = 0; r < 7; r++) { const h = (bot - top) / 7, len = h * 3.4 + r * 4, off = (r % 2) * len * .5, x0 = cx - 1800;
     for (let x = Math.floor((x0 - off) / len) * len + off; x < cx + 1800; x += len) { const tone = hash(Math.round(x / len), r) * .14;
-      c.fillStyle = lin(c, 0, y, 0, y + h, [[0, '#ffdc84'], [1, '#efb646']]); c.fillRect(x, y, len, h); c.fillStyle = `rgba(${tone > .07 ? '255,255,220' : '120,60,20'},${tone})`; c.fillRect(x, y, len, h);
-      c.fillStyle = 'rgba(150,90,40,.55)'; c.fillRect(x, y, 2.5, h); }
-    c.fillStyle = 'rgba(150,90,40,.5)'; c.fillRect(cx - 1800, y + h - 1.5, 3600, 2); y += h; }
-  c.fillStyle = 'rgba(255,240,190,.45)'; c.fillRect(cx - 1800, top - 4, 3600, 10);
+      quad(x, x + len, y, y + h); c.fillStyle = lin(c, 0, y + roadBend(x), 0, y + h + roadBend(x), [[0, '#ffdc84'], [1, '#efb646']]); c.fill(); c.fillStyle = `rgba(${tone > .07 ? '255,255,220' : '120,60,20'},${tone})`; c.fill();
+      quad(x, x + 2.5, y, y + h); c.fillStyle = 'rgba(150,90,40,.55)'; c.fill(); }
+    quad(cx - 1800, cx + 1800, y + h - 1.5, y + h + .5); c.fillStyle = 'rgba(150,90,40,.5)'; c.fill(); y += h; }
+  quad(cx - 1800, cx + 1800, top - 4, top + 6); c.fillStyle = 'rgba(255,240,190,.45)'; c.fill();
 }
 function cornFront(c, cam, t, dx = 0) {   // tall corn passing close to the lens
   blurLayer(c, cam, 1.8, 8, g => { g.fillStyle = 'rgba(46,24,50,.92)';
@@ -110,7 +113,7 @@ shot(89.4, 92.5, 'golden', at(1900, 640, 1.25), (c, t, u, cam) => {
   sideRoad(c, cam, t, { sunX: 2300, sunY: 430 });
   layer(c, cam, 1, g => { const px = 2200; rr(g, px - 13, 380, 26, 520, 6); fillStroke(g, '#5a3a22'); rr(g, px - 140, 470, 280, 22, 6); fillStroke(g, '#5a3a22'); });
   const drop = ease((u - .8) / .9), sx = lerp(2200, 2050, drop), sy = lerp(790, 930, drop) - Math.sin(drop * Math.PI) * 60;
-  put(c, dor, 1760, 930, 1, { walk: 0, mood: 'happy', blink: blink(t), shoes: 'silver', armB: u < 1.2 ? 2.4 : .3, bendB: .2, lean: u < 1.2 ? .06 : 0 }, t);
+  put(c, dor, 1760, 930, 1, { walk: 0, mood: 'happy', blink: blink(t), shoes: 'silver', armF: u < 1.2 ? 2.4 : .2, bendF: .2, armB: .3, lean: u < 1.2 ? .06 : 0 }, t);   // reaching up with her far hand
   put(c, scarecrow, sx, sy, 1, { walk: 0, blink: blink(t, 2), armF: lerp(1.55, .3, drop), armB: lerp(-1.55, -.3, drop), mood: drop > .9 ? 'happy' : 'wow' }, t, true);
   if (drop > .9 && u < 2.6) for (let i = 0; i < 12; i++) { const k = (u - 1.7) / .9, q = i / 12 * Math.PI; layer(c, cam, 1, g => { g.save(); g.translate(2050 + Math.cos(q) * 120 * k, 930 - Math.sin(q) * 60 * k); g.rotate(q); g.fillStyle = `rgba(232,194,84,${1 - k})`; g.fillRect(-12, -2, 24, 4); g.restore(); }); }
   put(c, tot, 1580, 962, 1.3, { walk: 0, blink: blink(t, 2) }, t);
@@ -130,7 +133,7 @@ shot(95.5, 98.6, 'golden', push(1900, 640, 1.35, 1.5, 3.1), (c, t, u, cam) => {
 // ---------- 06 the Tin Woodman, in the forest ----------
 shot(98.6, 104.2, 'forest', u => ({ x: lerp(700, 1050, ease(u / 5.6)), y: 560, z: lerp(1.05, 1.15, ease(u / 5.6)) }), (c, t, u, cam) => {
   forest(c, cam, t);
-  put(c, tinWoodman, 1300, 900, 1.05, { walk: 0, blink: false, rust: 1, armF: 2.3, armB: -.1, mood: 'sad' }, t);
+  put(c, tinWoodman, 1300, 900, 1.05, { walk: 0, blink: false, rust: 1, armF: 2.3, armB: .3, mood: 'sad' }, t, true);   // stuck, facing the friends who find him
   [[scarecrow, 0, 1], [dor, 160, 1], [tot, 300, 1.3]].forEach(([f, o, s], i) => { const w = walked(u, .4, -300 + o, 520 + o, 210);
     put(c, f, w.x, f === tot ? 935 : 905, s * .95, { walk: w.walk, ph: f === scarecrow ? stepPh(scarecrow, w.d, s * .95) : w.d / ((f === tot ? STR_T : STR_D) * s * .95), mood: u > 3 ? 'wow' : 'calm', blink: blink(t, i), shoes: 'silver' }, t); });
   fernsFront(c, cam, t);
@@ -140,14 +143,24 @@ shot(104.2, 106.8, 'forest', u => u < 1.3 ? { x: 520, y: 600, z: 2 } : { x: 1180
   put(c, scarecrow, 520, 905, .95, { walk: 0, blink: false, armF: u < 1.3 ? 1.7 : .4, mood: 'happy', mouth: voice('scarecrow', t) }, t);
   layer(c, cam, 1, g => { g.save(); g.translate(1180, 895); g.rotate(.2); rr(g, -18, -30, 36, 48, 8); fillStroke(g, '#c3cddb', 3); g.beginPath(); g.moveTo(0, -30); g.lineTo(-40, -58); ink(g, 6); g.stroke(); g.restore();
     if (u > 1.3) sparkle(g, 1200, 860, 16 * Math.abs(Math.sin(t * 4)), t, '#ffffff'); });
-  put(c, tinWoodman, 1300, 900, 1.05, { walk: 0, blink: false, rust: 1, armF: 2.3, armB: -.1, mood: 'sad' }, t);
+  put(c, tinWoodman, 1300, 900, 1.05, { walk: 0, blink: false, rust: 1, armF: 2.3, armB: .3, mood: 'sad' }, t, true);   // stuck, facing the friends who find him
 });
+// things held in a hand: drawn by the character (its `item` hook), and they note where their working end is on screen
+const HANDS = {};
+const spot = (cc, key, x, y) => { HANDS[key] = cc.getTransform().transformPoint(new DOMPoint(x, y)); };
+const oilCan = tip => (cc, x, y) => { cc.save(); cc.translate(x + 8, y - 4); cc.rotate(tip);   // the spout points the way she faces; tipping turns it down toward him
+  cc.beginPath(); cc.arc(-14, -4, 13, Math.PI * .6, Math.PI * 1.5); cc.lineWidth = 4; cc.strokeStyle = '#7b8698'; cc.stroke();   // handle
+  rr(cc, -14, -22, 30, 36, 8); fillStroke(cc, lin(cc, -14, 0, 16, 0, [[0, '#8c97a8'], [.4, '#eef3fa'], [1, '#7b8698']]), 3);
+  cc.beginPath(); cc.moveTo(10, -14); cc.lineTo(54, -34); ink(cc, 7); cc.stroke(); cc.beginPath(); cc.moveTo(10, -14); cc.lineTo(54, -34); cc.lineWidth = 3; cc.strokeStyle = '#c3cddb'; cc.stroke();
+  spot(cc, 'oil', 56, -35); cc.restore(); };
 shot(106.8, 110.1, 'forest', push(1240, 560, 2.1, 2.3, 3.3), (c, t, u, cam) => {
-  forest(c, cam, t); const oil = clamp(u / 3.3);
-  put(c, dor, 1060, 905, .95, { walk: 0, mood: 'calm', blink: blink(t), shoes: 'silver', armB: 1.75 + Math.sin(u * 7) * .1, bendB: .1 }, t);
-  layer(c, cam, 1, g => { g.save(); g.translate(1190, 640); g.rotate(-.6); rr(g, -14, -20, 28, 36, 6); fillStroke(g, '#c3cddb', 3); g.beginPath(); g.moveTo(0, -20); g.lineTo(-30, -40); ink(g, 5); g.stroke(); g.restore();
-    for (let i = 0; i < 3; i++) { const k = (u * 1.5 + i / 3) % 1; ell(g, 1220, 610 + k * 60, 4, 6); g.fillStyle = 'rgba(200,170,60,.9)'; g.fill(); } });
-  put(c, tinWoodman, 1300, 900, 1.05, { walk: 0, blink: oil > .6 ? blink(t) : false, rust: 1 - oil, armF: 2.3 - oil * .4 + Math.sin(t * 9) * .03 * oil, armB: -.1, mood: oil > .7 ? 'wow' : 'sad' }, t);
+  forest(c, cam, t); const oil = clamp(u / 3.3), pour = .3 + Math.max(0, Math.sin(u * 6)) * .2;
+  put(c, tinWoodman, 1300, 900, 1.05, { walk: 0, blink: oil > .6 ? blink(t) : false, rust: 1 - oil, armF: 2.3 - oil * .4 + Math.sin(t * 9) * .03 * oil, armB: .45 + oil * .25, mood: oil > .7 ? 'wow' : 'sad' }, t, true);
+  // Dorothy faces him and tips the oil can toward his stiff arm, the spout pointing at him
+  put(c, dor, 1105, 905, .95, { walk: 0, mood: 'calm', blink: blink(t), armB: 1.5, bendB: .05, lean: .04, item: oilCan(pour) }, t);
+  const z = cam.z, sp = HANDS.oil; c.save(); c.setTransform(1, 0, 0, 1, 0, 0);
+  for (let i = 0; i < 4; i++) { const k = (u * 1.8 + i / 4) % 1; ell(c, sp.x + k * 5 * z, sp.y + k * k * 34 * z, 2.6 * z, 3.8 * z); c.fillStyle = 'rgba(214,176,60,.95)'; c.fill(); }
+  c.restore();
   if (Math.sin(t * 7) > .7) popWord(c, 'squeak!', 1420, 420, 40);
 });
 shot(110.1, 113.1, 'forest', push(1220, 520, 1.5, 1.65, 3), (c, t, u, cam) => {
@@ -203,7 +216,7 @@ shot(135.3, 138.3, 'forest', push(1000, 560, 2.2, 2.35, 3), (c, t, u, cam) => {
 shot(138.3, 142.1, 'forest', push(1170, 640, 1.7, 1.85, 3.8), (c, t, u, cam) => {
   deepWood(c, cam, t);
   put(c, lion, 1250, 900, 1, { walk: 0, sit: true, blink: blink(t), mood: u > 2 ? 'calm' : 'sad', tears: u < 2 ? (u * .8) % 1 : 0 }, t, true);
-  put(c, dor, 1130, 905, .95, { walk: 0, mood: 'calm', blink: blink(t), shoes: 'silver', armB: 2.3 + Math.sin(t * 4) * .1, bendB: .15, lean: .06 }, t);   // her hand on his mane
+  put(c, dor, 1130, 905, .95, { walk: 0, mood: 'calm', blink: blink(t), shoes: 'silver', armF: 2.1 + Math.sin(t * 4) * .12, bendF: .2, armB: .2, lean: .06 }, t);   // her far hand on his mane
 });
 shot(142.1, 146.3, 'forest', push(980, 580, 1.15, 1.3, 4.2), (c, t, u, cam) => {
   deepWood(c, cam, t);

@@ -114,9 +114,6 @@ function dorothy2(c, p, t = 0) {
   for (const s of [-1, 1]) ipart(c, circ(s * 34, -206, 16, 14), DP.blouse, 4, 2);   // puffed sleeves
   for (const s of [-1, 1]) { const col = new Path2D(); col.moveTo(0, -214); col.quadraticCurveTo(s * 28, -222, s * 24, -202); col.quadraticCurveTo(s * 12, -198, 0, -206); col.closePath(); ipart(c, col, DP.blouse, 3, 1); }
   if (p.hold) { c.save(); c.translate(36, -146); c.scale(.82, .82); toto2(c, { walk: 0, blink: p.blink, tilt: .1, ears: Math.sin(t * 3) * .1, wag: t * 7 }, t); c.restore(); }
-  // near arm, in front
-  const aB = p.armB ?? (p.hold ? .62 : -sw * w * .55), NA = itaper(shB, -206, 84, aB, p.bendB ?? (p.hold ? .9 : elbow(aB)), 8.5, 7.5, 6.5);
-  ipart(c, NA.p, DP.skin, 4, 2); ipart(c, circ(NA.e[0], NA.e[1], 11), DP.skin, 3, 2);
   // head, tilting at the neck; curls bounce a beat behind
   c.save(); c.translate(4, -226); c.rotate(-(p.tilt || 0)); c.translate(0, -46 + Math.sin((p.ph || 0) * 2) * 1.5 * w);
   const hb = p.bounce || 0, curls = [[-46, -14, 22], [-40, -38, 22], [-20, -54, 24], [6, -58, 24], [30, -50, 22], [46, -30, 20], [-50, 10, 18], [48, -8, 16], [-44, 30, 14]];
@@ -130,7 +127,11 @@ function dorothy2(c, p, t = 0) {
   const eyes = [[-14, -2, 12], [22, -2, 12]];
   ieyes(c, eyes, p, '#4a3020', DP.skin[1], true); ibrows(c, eyes, p, '#6a3418', 3);
   imouth(c, 8, 22, 10, p);
-  c.restore(); c.restore();
+  c.restore();
+  // near arm, in front of everything (the head too), with whatever she holds
+  const aB = p.armB ?? (p.hold ? .62 : -sw * w * .55), NA = itaper(shB, -206, 84, aB, p.bendB ?? (p.hold ? .9 : elbow(aB)), 8.5, 7.5, 6.5);
+  ipart(c, NA.p, DP.skin, 4, 2); if (p.item) p.item(c, NA.e[0], NA.e[1], t); ipart(c, circ(NA.e[0], NA.e[1], 11), DP.skin, 3, 2);
+  c.restore();
 }
 
 // ---------------- Toto ----------------

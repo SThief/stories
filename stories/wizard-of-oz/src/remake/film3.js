@@ -108,33 +108,53 @@ shot(191.8, 197.0, 'dusk', push(900, 690, 1.3, 1.45, 5.2), (c, t, u, cam) => {
 });
 
 // ---------- 11 the Witch's castle ----------
+const silverShoe = (c, x, y, t) => { ell(c, x, y, 22, 11); c.fillStyle = lin(c, x - 20, 0, x + 20, 0, [[0, '#fff'], [.5, '#b9c4da'], [1, '#eef2fa']]); c.fill(); ink(c, 3); c.stroke(); sparkle(c, x + 16, y - 12, 14 * Math.abs(Math.sin(t * 4)), t * 3); };
+const shoeInHand = (cc, x, y, t) => { silverShoe(cc, x + 4, y - 16, t); spot(cc, 'shoe', x, y); };
 shot(197.0, 202.2, 'fire', push(1080, 600, 1.2, 1.35, 5.2), (c, t, u, cam) => {
-  castleHall(c, cam, t); const grab = ease((u - 1.8) / 1.2);
+  castleHall(c, cam, t); const grab = ease((u - 1.8) / 1.2), got = u > 3;
   put(c, dor, 800, 920, .95, { walk: 0, mood: u > 2 ? 'worried' : 'calm', blink: blink(t), shoes: 'silver', tilt: -.05 }, t);
-  put(c, witch, 1300, 920, 1.05, { armF: lerp(.6, 1.6, grab) - (u > 3 ? .8 : 0), blink: false, mood: grab > .5 ? 'wow' : null }, t, true);
-  if (u > 1.8 && u < 3.2) { const sx = lerp(820, 1200, grab), sy = lerp(915, 720, grab) - Math.sin(grab * Math.PI) * 120; ell(c, sx, sy, 22, 11); c.fillStyle = lin(c, sx - 20, 0, sx + 20, 0, [[0, '#fff'], [.5, '#b9c4da'], [1, '#eef2fa']]); c.fill(); ink(c, 3); c.stroke(); sparkle(c, sx + 16, sy - 12, 16, t * 3); }
+  // she reaches with her near hand; the umbrella stays down in the other
+  put(c, witch, 1300, 920, 1.05, { armB: got ? 1.05 : lerp(-.15, 1.05, ease((u - 1.4) / .6)), bendB: .2, blink: false, mood: grab > .5 ? 'wow' : null, item: got ? shoeInHand : (cc, x, y) => spot(cc, 'shoe', x, y) }, t, true);
+  if (u > 1.8 && !got) { const S = c.getTransform().transformPoint(new DOMPoint(820, 915)), E = HANDS.shoe, z = cam.z, k = grab;
+    c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.translate(lerp(S.x, E.x, k), lerp(S.y, E.y - 16 * z, k) - Math.sin(k * Math.PI) * 120 * z); c.scale(z, z); silverShoe(c, 0, 0, t); c.restore(); }
 });
 shot(202.2, 204.6, 'fire', push(1300, 560, 2.1, 2.25, 2.4), (c, t, u, cam) => {
-  castleHall(c, cam, t); put(c, witch, 1300, 920, 1.05, { armF: 2.0, blink: false, mood: 'wow', mouth: voice('witch', t) }, t, true);
-  ell(c, 1182, 676, 22, 11); c.fillStyle = lin(c, 1160, 0, 1204, 0, [[0, '#fff'], [.5, '#b9c4da'], [1, '#eef2fa']]); c.fill(); ink(c, 3); c.stroke(); sparkle(c, 1196, 664, 14 * Math.abs(Math.sin(t * 4)), t * 3);   // in her raised hand
+  castleHall(c, cam, t); put(c, witch, 1300, 920, 1.05, { armB: 1.1, bendB: .35, blink: false, mood: 'wow', mouth: voice('witch', t), item: shoeInHand }, t, true);   // the shoe held up in her hand
 });
+const bucket = tip => (cc, x, y) => { cc.save(); cc.translate(x, y); cc.rotate(tip); cc.translate(22, -6);   // tipping turns its open top toward the way she faces
+  cc.beginPath(); cc.moveTo(-34, -26); cc.lineTo(34, -26); cc.lineTo(28, 38); cc.lineTo(-28, 38); cc.closePath(); fillStroke(cc, lin(cc, -34, 0, 34, 0, [[0, '#6e5236'], [.45, '#a07a52'], [1, '#6e5236']]), 3);
+  for (const yy of [-6, 20]) { cc.beginPath(); cc.moveTo(-32, yy); cc.lineTo(32, yy); cc.lineWidth = 4; cc.strokeStyle = '#5a5f6a'; cc.stroke(); }
+  ell(cc, 0, -26, 34, 8); fillStroke(cc, '#7cc4f0', 3); cc.beginPath(); cc.arc(0, -26, 36, Math.PI * 1.05, Math.PI * 1.95); cc.lineWidth = 3; cc.strokeStyle = '#4a4f5a'; cc.stroke();   // water inside, the handle
+  spot(cc, 'bucket', 0, -26); cc.restore(); };
 shot(204.6, 206.2, 'fire', push(820, 600, 2, 2.15, 1.6), (c, t, u, cam) => {
   castleHall(c, cam, t);
-  put(c, dor, 800, 920, .95, { walk: 0, mood: 'cross', blink: false, shoes: 'silver', talk: voice('dorothy', t), armB: 2.2, bendB: .2, lean: .05 }, t);
-  layer(c, cam, 1, g => { g.save(); g.translate(870, 600); g.rotate(-.3); rr(g, -34, -26, 68, 64, 10); fillStroke(g, '#8a6a4a', 3); g.restore(); });
+  put(c, dor, 800, 920, .95, { walk: 0, mood: 'cross', blink: false, shoes: 'silver', talk: voice('dorothy', t), armB: 1.45, bendB: .35, armF: 1.6, bendF: .35, lean: .05, item: bucket(-.2) }, t);   // the bucket in both hands
 });
+function water(c, A, B, k, z, t) {   // water thrown from A to B (screen points): a thick tongue at the front, a spray of drops in an arc behind it
+  const h = 170 * z, P = q => ({ x: lerp(A.x, B.x, q), y: lerp(A.y, B.y, q) - Math.sin(q * Math.PI) * h });
+  const head = Math.min(1, k), tail = clamp(k - .45);
+  if (head > tail) { c.beginPath(); const n = 24; for (let i = 0; i <= n; i++) { const q = lerp(tail, head, i / n), p = P(q), w = (6 + 30 * Math.sin(i / n * Math.PI * .5)) * z; c.lineTo(p.x, p.y - w / 2); }
+    for (let i = n; i >= 0; i--) { const q = lerp(tail, head, i / n), p = P(q), w = (6 + 30 * Math.sin(i / n * Math.PI * .5)) * z; c.lineTo(p.x, p.y + w / 2); } c.closePath();
+    c.fillStyle = 'rgba(120,195,255,.85)'; c.fill(); c.strokeStyle = 'rgba(255,255,255,.6)'; c.lineWidth = 2 * z; c.stroke();
+    if (k < 1) { const p = P(head); ell(c, p.x, p.y, 20 * z, 17 * z); c.fillStyle = 'rgba(120,195,255,.9)'; c.fill(); c.stroke(); ell(c, p.x - 6 * z, p.y - 6 * z, 6 * z, 4 * z); c.fillStyle = 'rgba(255,255,255,.75)'; c.fill(); } }
+  for (let i = 0; i < 34; i++) { const q = lerp(tail, head, hash(i, 31)), p = P(q), r = (3 + hash(i, 32) * 7) * z, dx = (hash(i, 33) - .5) * 40 * z, dy = (hash(i, 34) - .5) * 40 * z + (k - q) * 30 * z;
+    if (head <= tail) continue; ell(c, p.x + dx, p.y + dy, r, r * 1.25); c.fillStyle = 'rgba(140,205,255,.85)'; c.fill(); ell(c, p.x + dx - r * .3, p.y + dy - r * .4, r * .3, r * .3); c.fillStyle = 'rgba(255,255,255,.8)'; c.fill(); }
+  const hit = k - 1; if (hit > 0) for (let i = 0; i < 40; i++) {   // the splash: drops bursting off her and falling
+    const a = -Math.PI * (.1 + hash(i, 41) * 1.1), v = (200 + hash(i, 42) * 340) * z, q = Math.min(hit, .9), x = B.x + Math.cos(a) * v * q - 30 * z, y = B.y + Math.sin(a) * v * q + 600 * z * q * q, r = (3 + hash(i, 43) * 7) * z * (1 - q * .5);
+    ell(c, x, y, r, r * 1.3); c.fillStyle = `rgba(140,205,255,${.9 * (1 - q)})`; c.fill(); }
+}
 shot(206.2, 207.9, 'fire', at(1060, 620, 1.3), (c, t, u, cam) => {
-  castleHall(c, cam, t); const k = clamp(u / 1.5);
-  put(c, dor, 800, 920, .95, { walk: 0, mood: 'cross', blink: false, shoes: 'silver', armB: 1.4, bendB: .2, lean: .08 }, t);
-  put(c, witch, 1300, 920, 1.05, { armF: 1.2, blink: false, mood: 'wow' }, t, true);
-  layer(c, cam, 1, g => { g.save(); g.translate(880, 650); g.rotate(-1.3); rr(g, -34, -26, 68, 64, 10); fillStroke(g, '#8a6a4a', 3); g.restore(); });   // the bucket, tipped
-  for (let i = 0; i < 30; i++) { const q = i / 30, x = lerp(880, 1300, k * (.6 + q * .5)), y = 620 - Math.sin(k * Math.PI) * 160 + q * 60 * k; ell(c, x, y, 9, 13); c.fillStyle = 'rgba(130,200,255,.8)'; c.fill(); }
-  if (u > .3) popWord(c, 'Splash!', 1100, 280, 80, '#bfe4ff');
+  castleHall(c, cam, t); const swing = ease(u / .45), k = clamp((u - .3) / .7) * 1 + clamp((u - 1) / .7);   // k: 0..1 the water flies, 1..2 it splashes
+  put(c, witch, 1300, 920, 1.05, { armB: 1.05 - clamp(u - 1) * .6, bendB: .2, blink: false, mood: 'wow', item: shoeInHand }, t, true);
+  put(c, dor, 800, 920, .95, { walk: 0, mood: 'cross', blink: false, shoes: 'silver', armB: lerp(1.45, 1.75, swing), bendB: .2, armF: lerp(1.6, 1.85, swing), bendF: .2, lean: lerp(.05, .12, swing), item: bucket(lerp(-.2, 1.7, swing)) }, t);
+  if (u > .3) { const M = c.getTransform(), B = M.transformPoint(new DOMPoint(1275, 750)); c.save(); c.setTransform(1, 0, 0, 1, 0, 0); water(c, HANDS.bucket, B, k, cam.z, t); c.restore(); }
+  if (u > .9) popWord(c, 'Splash!', 1100, 280, 80, '#bfe4ff');
 });
 shot(207.9, 211.1, 'fire', push(1300, 640, 1.7, 1.4, 3.2), (c, t, u, cam) => {
   castleHall(c, cam, t); const melt = clamp(u / 3);
   put(c, witch, 1300, 920, 1.05, { melt, armF: .6 + Math.sin(t * 6) * .4, blink: false, mood: 'wow', mouth: voice('witch', t) }, t, true);
   for (let i = 0; i < 8; i++) { const q = (t * .6 + i / 8) % 1; ell(c, 1250 + Math.sin(i * 3) * 80, 900 - q * 300, 30 + q * 40); c.fillStyle = `rgba(200,170,240,${.35 * (1 - q) * melt})`; c.fill(); }
+  if (u > .4) { const k = ease((u - .4) / .5); silverShoe(c, lerp(1170, 1110, k), lerp(760, 912, k) - Math.sin(k * Math.PI) * 40, t); }   // the shoe drops from her hand
 });
 shot(211.1, 215.5, 'fire', push(860, 600, 1.15, 1.25, 4.4), (c, t, u, cam) => {
   castleHall(c, cam, t);
@@ -198,7 +218,7 @@ shot(255.9, 259.2, 'morning', push(1300, 600, 1.4, 1.55, 3.3), (c, t, u, cam) =>
 shot(259.2, 261.6, 'morning', push(1180, 600, 2.2, 2.35, 2.4), (c, t, u, cam) => { pinkMorning(c, cam, t);
   put(c, dor, 1180, 920, .92, { walk: 0, mood: 'happy', blink: false, shoes: 'silver', talk: voice('dorothy', t), tilt: .1 }, t); sparkle(c, 1150, 610, 12 * Math.abs(Math.sin(t * 3)), t, '#bfe4ff'); });
 shot(261.6, 265.1, 'morning', push(1500, 560, 2.2, 2.35, 3.5), (c, t, u, cam) => { pinkMorning(c, cam, t);
-  put(c, tinWoodman, 1500, 920, .95, { walk: 0, blink: blink(t, 4), mood: 'sad', rust: 0, tears: (u * .8) % 1, armF: 1.6 + Math.sin(t * 3) * .1 }, t, true); });
+  put(c, tinWoodman, 1500, 920, .95, { walk: 0, blink: blink(t, 4), mood: 'sad', rust: 0, tears: (u * .8) % 1, armF: .25 + Math.sin(t * 3) * .05, tilt: .08 }, t, true); });   // axe down, a tear rolling: his arm stays clear of his face
 shot(265.1, 267.5, 'morning', at(1100, 890, 2.8), (c, t, u, cam) => { pinkMorning(c, cam, t);
   const clicks = [.2, .9, 1.6], lift = clicks.reduce((m, k) => Math.max(m, clamp(1 - Math.abs(u - k) / .22)), 0);
   put(c, dor, 1100, 920 - lift * 18, .92, { walk: 0, mood: 'calm', blink: false, shoes: 'silver', sparkle: lift }, t);
