@@ -90,5 +90,19 @@
       "thumb": "storytelling-thumb.jpg",
       "minutes": 3.2
     }
+  },
+  {
+    "id": "three-musketeers",
+    "title": "The Three Musketeers",
+    "from": "The Three Musketeers (1844)",
+    "age": "4-8",
+    "lesson": "Friends who stand together are stronger.",
+    "made": "2026-11-04",
+    "cartoon": {
+      "file": "cartoon.mp4",
+      "thumb": "cartoon-thumb.jpg",
+      "minutes": 4.1,
+      "blurb": "Swords, a stormy sea and twelve sparkling diamonds!"
+    }
   }
 ]
