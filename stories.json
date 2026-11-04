@@ -93,7 +93,7 @@
   },
   {
     "id": "three-musketeers",
-    "title": "The Three Musketeers",
+    "title": "All for One",
     "from": "The Three Musketeers (1844)",
     "age": "4-8",
     "lesson": "Friends who stand together are stronger.",
@@ -110,7 +110,7 @@
     "storytelling": {
       "file": "storytelling.mp4",
       "thumb": "storytelling-thumb.jpg",
-      "minutes": 3.6
+      "minutes": 3.5
     }
   }
 ]
