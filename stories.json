@@ -103,6 +103,9 @@
       "thumb": "cartoon-thumb.jpg",
       "minutes": 4.1,
       "blurb": "Swords, a stormy sea and twelve sparkling diamonds!"
-    }
+    },
+    "book": "book/book.json",
+    "pages": 15,
+    "bookThumb": "book/05.jpg"
   }
 ]
