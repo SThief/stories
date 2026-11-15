@@ -105,12 +105,14 @@
       "blurb": "Swords, a stormy sea and twelve sparkling diamonds!"
     },
     "book": "book/book.json",
-    "pages": 15,
-    "bookThumb": "book/05.jpg",
+    "pages": 36,
+    "bookThumb": "book/18.jpg",
     "storytelling": {
       "file": "storytelling.mp4",
       "thumb": "storytelling-thumb.jpg",
       "minutes": 3.5
-    }
+    },
+    "bookBlurb": "The real picture book. Turn the pages like paper, or tap \"Read to me\".",
+    "source": "novel"
   }
 ]

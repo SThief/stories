@@ -7,6 +7,7 @@
 <title>Story Library</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
 <style>
   :root { --night: #0d1330; --deep: #080c20; --card: #18204a; --line: rgba(255, 236, 200, .16); --ink: #fff7ea; --soft: #cfc4b0;
     --gold: #f4c542; --warm: #ff9a4a; --blue: #6fa8ff; --green: #6fd08c; }
@@ -80,6 +81,44 @@
   .controls .count { color: var(--soft); font-size: 20px; min-width: 80px; text-align: center; }
   .dots { display: flex; gap: 6px; justify-content: center; margin-top: 14px; flex-wrap: wrap; }
   .dots i { width: 10px; height: 10px; border-radius: 50%; background: rgba(255, 255, 255, .2); } .dots i.on { background: var(--gold); }
+
+  /* real book (page-turn) */
+  body.reading { overflow: hidden; } body.reading .moon { opacity: 0; transition: opacity .6s; }
+  .rb { position: relative; margin-top: 10px; display: flex; flex-direction: column; align-items: center; }
+  .rb .lamp { position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background: radial-gradient(60% 55% at 50% 52%, rgba(255, 196, 120, .20), rgba(255, 170, 90, .06) 55%, transparent 75%); }
+  .rb .stage { position: relative; z-index: 1; } .rb .stage.ready { transition: transform .8s cubic-bezier(.3, .7, .2, 1); }
+  .rb .stage.closed-front { transform: translateX(-25%); } .rb .stage.closed-back { transform: translateX(25%); }
+  .rb .stage.portrait.closed-front, .rb .stage.portrait.closed-back { transform: none; }
+  .rb .table-shadow { position: absolute; left: 4%; right: 4%; bottom: -26px; height: 40px; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(0, 0, 0, .55), transparent); filter: blur(6px); z-index: -1; transition: left .8s, right .8s; }
+  .rb .stage.closed-front .table-shadow { left: 52%; } .rb .stage.closed-back .table-shadow { right: 52%; }
+  .rb .stack { position: absolute; top: 3px; bottom: 3px; z-index: -1; border-radius: 2px; transition: width .6s;
+    background: repeating-linear-gradient(90deg, #efe4cc 0 1px, #d9cbae 1px 2px); box-shadow: 0 2px 6px rgba(0, 0, 0, .35); }
+  .rb .stack.l { right: 100%; } .rb .stack.r { left: 100%; }
+  .rb #book { width: 100%; height: 100%; }
+  .rb .page { background: #f6eedb; overflow: hidden; }
+  .rb .page img { width: 100%; height: 100%; object-fit: cover; display: block; user-select: none; -webkit-user-drag: none; pointer-events: none; }
+  .rb .page .gut { position: absolute; top: 0; bottom: 0; width: 14%; pointer-events: none; }
+  .rb .page.--left .gut { right: 0; background: linear-gradient(90deg, transparent, rgba(60, 40, 20, .06) 55%, rgba(40, 25, 10, .26)); }
+  .rb .page.--right .gut { left: 0; background: linear-gradient(270deg, transparent, rgba(60, 40, 20, .06) 55%, rgba(40, 25, 10, .26)); }
+  .rb .page.hard { background: #24356b; }
+  .rb .page.hard.--right::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3%; z-index: 1; pointer-events: none; background: linear-gradient(90deg, rgba(0, 0, 0, .28), rgba(255, 255, 255, .10) 40%, transparent); } .rb .page.hard .gut { display: none; }
+  .rb .page.hard::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(105deg, rgba(255, 255, 255, .10), transparent 30%, transparent 70%, rgba(0, 0, 0, .12)); }
+  .rb .endpaper { width: 100%; height: 100%; background: #f1e6cd url("endpaper.svg?v=2") 0 0 / 25% auto repeat; }
+  .rb #say.on { animation: rpulse 1.6s ease-in-out infinite; } @keyframes rpulse { 50% { box-shadow: 0 0 0 6px rgba(244, 197, 66, .25); } }
+  .rb .bar { position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 34px; flex-wrap: wrap; }
+  .rb .bar button { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 9px 22px; font-size: 20px; font-weight: 700; color: var(--ink); }
+  .rb .bar button:hover { background: #222c66; } .rb .bar button.on { background: var(--gold); color: #2a1d08; border-color: transparent; }
+  .rb .bar button.arrow { min-width: 58px; font-size: 26px; padding: 4px 18px; }
+  .rb .bar .count { color: var(--soft); font-size: 19px; min-width: 128px; text-align: center; }
+  .rb .prog { width: min(560px, 80vw); height: 4px; border-radius: 4px; background: rgba(255, 255, 255, .12); margin-top: 14px; position: relative; z-index: 2; overflow: hidden; }
+  .rb .prog i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--gold); border-radius: 4px; transition: width .6s; }
+  .rb .hint { position: relative; z-index: 2; color: var(--soft); font-size: 16px; margin-top: 10px; opacity: .8; }
+  @media (max-width: 560px) { .rb .bar { gap: 8px; margin-top: 24px; } .rb .bar button { font-size: 16px; padding: 8px 13px; } .rb .bar button.arrow { min-width: 44px; font-size: 22px; padding: 2px 12px; }
+    .rb #next { order: 4; } .rb .bar .count { order: 5; font-size: 16px; min-width: 0; } .rb #fs { order: 6; } .rb .hint { display: none; } }
+  .rb.fs { position: fixed; inset: 0; z-index: 50; margin: 0; justify-content: center; background: radial-gradient(1400px 700px at 50% -20%, #25336e, var(--night) 55%, var(--deep)); }
   @media (max-width: 760px) {
     .story { grid-template-columns: 1fr; gap: 24px; } .story .cover { max-width: 300px; }
     .way { grid-template-columns: 110px 1fr; } .way .tag { display: none; }
@@ -112,7 +151,7 @@ function story(s) {
     <a class="way c1" href="#/watch/${s.id}/cartoon"><div class="th" style="background-image:url('${base(s.id)}${s.cartoon.thumb}')"></div><div><h3>Cartoon</h3><p>${esc(s.cartoon.blurb || 'Watch the story move.')}</p></div><span class="tag">${Math.round(s.cartoon.minutes)} min</span></a>
     ${s.puppets ? `<a class="way c4" href="#/watch/${s.id}/puppets"><div class="th" style="background-image:url('${base(s.id)}${s.puppets.thumb}')"></div><div><h3>Puppet cartoon</h3><p>The same story with painted puppets in big painted places.</p></div><span class="tag">${Math.round(s.puppets.minutes)} min</span></a>` : ''}
     ${s.storytelling ? `<a class="way c2" href="#/watch/${s.id}/storytelling"><div class="th" style="background-image:url('${base(s.id)}${s.storytelling.thumb}')"></div><div><h3>Storytelling</h3><p>Painted pictures and a storyteller's voice.</p></div><span class="tag">${Math.round(s.storytelling.minutes)} min</span></a>` : ''}
-    ${s.book ? `<a class="way c3 readit" href="#/read/${s.id}/0"><div class="th" style="background-image:url('${base(s.id)}${s.bookThumb || 'book/05.jpg'}')"></div><div><h3>Read the book</h3><p>Turn the pages yourself. Tap "Read to me" to hear each page.</p></div><span class="tag">${s.pages || 15} pages</span></a>` : ''}
+    ${s.book ? `<a class="way c3 readit" href="#/read/${s.id}/0"><div class="th" style="background-image:url('${base(s.id)}${s.bookThumb || 'book/05.jpg'}')"></div><div><h3>Read the book</h3><p>${esc(s.bookBlurb || 'Turn the pages yourself. Tap "Read to me" to hear each page.')}</p></div><span class="tag">${s.pages || 15} pages</span></a>` : ''}
   </div></div></section>`;
 }
 function watch(s, kind) {
@@ -121,8 +160,110 @@ function watch(s, kind) {
   <div class="player"><video src="${base(s.id)}${v.file}" poster="${base(s.id)}${v.thumb}" controls playsinline autoplay></video></div>`;
 }
 let audio = null, autoRead = false;
+/* ---------- the real book: printed pages you turn like paper ---------- */
+let flip = null, ac = null;
+function pageSound() {
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)(); const t = ac.currentTime, d = .55;
+    const buf = ac.createBuffer(1, ac.sampleRate * d, ac.sampleRate), ch = buf.getChannelData(0);
+    for (let i = 0; i < ch.length; i++) { const x = i / ch.length; ch[i] = (Math.random() * 2 - 1) * Math.pow(Math.sin(Math.PI * Math.min(1, x * 1.15)), 1.6) * (1 + 1.5 * (Math.random() < .004)); }
+    const src = ac.createBufferSource(); src.buffer = buf; src.playbackRate.value = .9 + Math.random() * .2;
+    const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = .7; bp.frequency.setValueAtTime(900, t); bp.frequency.exponentialRampToValueAtTime(3200, t + d * .7);
+    const g = ac.createGain(); g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.16, t + .08); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+    src.connect(bp).connect(g).connect(ac.destination); src.start(t);
+    const o = ac.createOscillator(), og = ac.createGain(); o.frequency.setValueAtTime(110, t + d * .75); o.frequency.exponentialRampToValueAtTime(55, t + d);
+    og.gain.setValueAtTime(.0001, t + d * .72); og.gain.exponentialRampToValueAtTime(.05, t + d * .78); og.gain.exponentialRampToValueAtTime(.0001, t + d + .08);
+    o.connect(og).connect(ac.destination); o.start(t + d * .7); o.stop(t + d + .1);
+  } catch (e) {}
+}
+function realBook(s, b, n) {
+  document.body.classList.add('reading');
+  const dir = base(s.id) + 'book/', V = b.v ? '?v=' + b.v : '';
+  // a printed book: front cover, inside cover, pages 1..N (odd pages on the right), inside back cover, back cover
+  const P = [];
+  b.pages.forEach((p, i) => {
+    if (i === b.pages.length - 1 && p.cover) P.push({ end: true });
+    P.push(p);
+    if (i === 0 && p.cover) P.push({ end: true });
+  });
+  if (P.length % 2) P.splice(P.length - 1, 0, { end: true });
+  const pageHTML = (p, i) => {
+    const hard = p.cover ? ' hard' : '';
+    const inner = p.end ? '<div class="endpaper"></div>' : `<img alt="${esc(p.text || '')}" data-src="${dir + p.img + V}">`;
+    return `<div class="page${hard}" ${p.cover ? 'data-density="hard"' : ''} data-i="${i}">${inner}<div class="gut"></div></div>`;
+  };
+  app.innerHTML = `<a class="back" href="#/story/${s.id}">‹ ${esc(s.title)}</a>
+  <section class="rb" id="rb"><div class="lamp"></div>
+    <div class="stage" id="stage"><div class="table-shadow"></div><div class="stack l" id="stl"></div><div class="stack r" id="str"></div>
+      <div id="book">${P.map(pageHTML).join('')}</div></div>
+    <div class="bar"><button class="arrow" id="prev" aria-label="Previous page">‹</button><button id="say">🔊 Read to me</button><button id="auto" class="${autoRead ? 'on' : ''}">Read it all</button><span class="count" id="count"></span><button id="fs" aria-label="Full screen">⛶</button><button class="arrow" id="next" aria-label="Next page">›</button></div>
+    <div class="prog"><i id="prog"></i></div><div class="hint">Drag a page corner, tap a page, or use the arrows.</div></section>`;
+  const stage = document.getElementById('stage'), bookEl = document.getElementById('book'), rb = document.getElementById('rb');
+  const imgs = [...bookEl.querySelectorAll('img')];
+  const load = i => { for (let k = i - 3; k <= i + 5; k++) { const el = bookEl.querySelector(`.page[data-i="${k}"] img`); if (el && !el.src) el.src = el.dataset.src; } };
+  load(0);
+  const narrow = () => innerWidth < 720 || innerWidth < innerHeight * .9;
+  function size() {
+    const fs = rb.classList.contains('fs'), room = innerHeight - (fs ? 150 : 230);
+    const ps = narrow() ? Math.min(innerWidth - 32, room) : Math.min((innerWidth - 170) / 2, room, 760);
+    stage.style.width = (narrow() ? ps : ps * 2) + 'px'; stage.style.height = ps + 'px';
+    stage.classList.toggle('portrait', narrow());
+  }
+  size();
+  if (!window.St) { bookEl.innerHTML = '<p style="padding:40px;color:#fff">The book needs the internet to open. Please try again.</p>'; return; }
+  if (flip) { try { flip.destroy(); } catch (e) {} }
+  flip = new St.PageFlip(bookEl, { width: 600, height: 600, size: 'stretch', minWidth: 200, maxWidth: 1600, minHeight: 200, maxHeight: 1600,
+    showCover: true, usePortrait: true, flippingTime: 900, maxShadowOpacity: .55, drawShadow: true, mobileScrollSupport: false, autoSize: true, startPage: 0 });
+  flip.loadFromHTML(bookEl.querySelectorAll('.page'));
+  requestAnimationFrame(() => { flip.update(); update(); setTimeout(() => stage.classList.add('ready'), 60); });
+  const pageAt = i => P[i];
+  const visible = () => { const i = flip.getCurrentPageIndex(); if (flip.getOrientation() === 'portrait' || i === 0) return [i]; if (i >= P.length - 1) return [P.length - 1]; const l = i % 2 ? i : i - 1; return [l, l + 1]; };
+  function update() {
+    const i = flip.getCurrentPageIndex(), v = visible(), last = P.length - 1;
+    load(i);
+    stage.classList.toggle('closed-front', v[0] === 0 && v.length === 1); stage.classList.toggle('closed-back', v[0] === last && v.length === 1);
+    const done = Math.min(1, v[v.length - 1] / last), thick = 10;
+    document.getElementById('stl').style.width = (v.length === 2 ? Math.max(1, done * thick) : 0) + 'px';
+    document.getElementById('str').style.width = (v.length === 2 ? Math.max(1, (1 - done) * thick) : 0) + 'px';
+    const nums = v.map(k => { const p = pageAt(k); return p && !p.cover && !p.end ? +p.img.replace(/\D/g, '') : null; }).filter(x => x);
+    document.getElementById('count').textContent = v[0] === 0 ? 'Cover' : v[0] === last ? 'Back cover' : nums.length ? 'Page ' + nums.join('–') : 'Inside cover';
+    document.getElementById('prog').style.width = (done * 100) + '%';
+    history.replaceState(null, '', `#/read/${s.id}/${i}`);
+  }
+  const sayBtn = on => { const b = document.getElementById('say'); if (b) { b.classList.toggle('on', on); b.textContent = on ? '🔊 Reading…' : '🔊 Read to me'; } };
+  let queue = [], reading = null;
+  function stopReading() { queue = []; if (audio) audio.pause(); sayBtn(false); reading = null; }
+  function readNext() {
+    if (!queue.length) sayBtn(false);
+    const k = queue.shift();
+    if (k == null) { if (autoRead) { if (flip.getCurrentPageIndex() >= P.length - 1 || visible().includes(P.length - 1)) { autoRead = false; document.getElementById('auto').classList.remove('on'); } else setTimeout(() => { if (autoRead) flip.flipNext('top'); }, 1100); } return; }
+    const p = pageAt(k); if (!p || !p.audio) return readNext();
+    sayBtn(true);
+    if (audio) audio.pause(); audio = new Audio(dir + p.audio + V); reading = k;
+    audio.onended = () => setTimeout(readNext, 450); audio.play().catch(() => { autoRead = false; stopReading(); });
+  }
+  const readSpread = () => { stopReading(); queue = visible().filter(k => pageAt(k) && pageAt(k).audio); if (!queue.length && autoRead) { setTimeout(() => autoRead && flip.flipNext('top'), 700); return; } readNext(); };
+  flip.on('flip', () => { pageSound(); update(); if (autoRead) setTimeout(readSpread, 500); else stopReading(); });
+  flip.on('changeOrientation', update);
+  flip.on('changeState', e => { if (e.data === 'user_fold' || e.data === 'fold_corner') load(flip.getCurrentPageIndex()); });
+  document.getElementById('prev').onclick = () => { autoRead = false; document.getElementById('auto').classList.remove('on'); flip.flipPrev('top'); };
+  document.getElementById('next').onclick = () => { autoRead = false; document.getElementById('auto').classList.remove('on'); flip.flipNext('top'); };
+  document.getElementById('say').onclick = () => { const was = reading != null; autoRead = false; document.getElementById('auto').classList.remove('on'); if (was) stopReading(); else readSpread(); };
+  document.getElementById('auto').onclick = e => { autoRead = !autoRead; e.currentTarget.classList.toggle('on', autoRead); if (autoRead) readSpread(); else stopReading(); };
+  document.getElementById('fs').onclick = () => { rb.classList.toggle('fs'); const el = document.documentElement;
+    if (rb.classList.contains('fs')) { if (el.requestFullscreen) el.requestFullscreen().catch(() => {}); } else if (document.fullscreenElement) document.exitFullscreen();
+    size(); setTimeout(() => { flip.update(); update(); }, 50); };
+  document.onfullscreenchange = () => { if (!document.fullscreenElement && rb.classList.contains('fs')) { rb.classList.remove('fs'); size(); flip.update(); } };
+  window.onresize = () => { if (!document.getElementById('book')) return; size(); requestAnimationFrame(() => { flip.update(); update(); }); };
+  realKeys = e => { if (e.key === 'ArrowRight') flip.flipNext('top'); if (e.key === 'ArrowLeft') flip.flipPrev('top'); };
+  n = Math.max(0, Math.min(P.length - 1, n | 0)); if (n) { load(n); flip.turnToPage(n); }
+  update(); if (autoRead) readSpread();
+}
+let realKeys = null;
+
 async function read(s, n) {
-  const b = s._book || (s._book = await (await fetch(base(s.id) + s.book)).json());
+  const b = s._book || (s._book = await (await fetch(base(s.id) + s.book, { cache: 'no-cache' })).json());
+  if (b.real) return realBook(s, b, n);
   n = Math.max(0, Math.min(b.pages.length - 1, n | 0)); const p = b.pages[n];
   const img = p.img.startsWith('..') ? base(s.id) + p.img.slice(3) : base(s.id) + 'book/' + p.img;
   app.innerHTML = `<a class="back" href="#/story/${s.id}">‹ ${esc(s.title)}</a>
@@ -142,15 +283,16 @@ async function read(s, n) {
   sp.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
   sp.addEventListener('touchend', e => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) { autoRead = false; go(n + (dx < 0 ? 1 : -1)); } x0 = null; });
 }
-document.addEventListener('keydown', e => { const m = location.hash.match(/#\/read\/([^/]+)\/(\d+)/); if (!m) return;
+document.addEventListener('keydown', e => { const m = location.hash.match(/#\/read\/([^/]+)\/(\d+)/); if (!m) return; if (document.getElementById('book') && realKeys) return realKeys(e);
   if (e.key === 'ArrowRight') { autoRead = false; location.hash = `#/read/${m[1]}/${+m[2] + 1}`; } if (e.key === 'ArrowLeft') { autoRead = false; location.hash = `#/read/${m[1]}/${+m[2] - 1}`; } });
 function route() {
   if (audio && !autoRead) audio.pause();
+  document.body.classList.remove('reading'); if (flip && !location.hash.startsWith('#/read/')) { try { flip.destroy(); } catch (e) {} flip = null; }
   const h = location.hash.slice(2).split('/'), s = STORIES.find(x => x.id === h[1]);
   if (h[0] === 'story' && s) story(s); else if (h[0] === 'watch' && s) watch(s, h[2]); else if (h[0] === 'read' && s) read(s, +h[2]); else shelf();
   window.scrollTo(0, 0);
 }
-fetch('stories.json').then(r => r.json()).then(j => { STORIES = j; route(); });
+fetch('stories.json', { cache: 'no-cache' }).then(r => r.json()).then(j => { STORIES = j; route(); });
 addEventListener('hashchange', route);
 </script>
 </body>

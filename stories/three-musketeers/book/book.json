@@ -1,81 +1,193 @@
 {
  "title": "All for One",
+ "real": true,
  "pages": [
   {
-   "img": "00.jpg",
+   "img": "front.jpg",
+   "cover": true,
    "text": "All for One",
-   "audio": "00.mp3",
-   "cover": true
+   "audio": "front.mp3"
   },
   {
-   "img": "01.jpg",
-   "text": "Long ago in France, a boy named d'Artagnan lived on a farm in Gascony. One morning he hugged his mum and dad goodbye. \"Be brave, my son!\" said Papa. Then d'Artagnan climbed onto his funny yellow horse and rode off to Paris.",
-   "audio": "01.mp3"
+   "img": "01.jpg"
   },
   {
-   "img": "02.jpg",
-   "text": "Paris was big and busy and full of colors. D'Artagnan met Captain Tréville, the leader of the King's Musketeers. \"You are brave,\" said the Captain, \"but a Musketeer must also be wise and loyal. First, prove yourself!\"",
-   "audio": "02.mp3"
+   "img": "02.jpg"
   },
   {
    "img": "03.jpg",
-   "text": "Rushing down the hall, d'Artagnan bumped into Athos. Oops! He tangled in Porthos's big cape. Oops! He stepped on Aramis's hanky. Oops! All three were cross. \"Meet us at noon for a sword contest!\" they said. Gulp!",
+   "text": "All for One. A story of the Three Musketeers, from the novel by Alexandre Dumas.",
    "audio": "03.mp3"
   },
   {
    "img": "04.jpg",
-   "text": "At noon, the Cardinal's guards marched in. \"Halt! No contests allowed!\" D'Artagnan could have run away. Instead, he stood next to the three Musketeers. \"I'm with you!\" he said.",
+   "text": "Who's who. The Musketeers are the King's brave soldiers. D'Artagnan, a brave boy from the farm. Athos, the calm Musketeer. Porthos, the big Musketeer. Aramis, the gentle Musketeer. Papa, and the funny yellow horse. King Louis, the King of France. Queen Anne, the Queen of France. Constance, the Queen's helper. Captain Tréville, chief of the Musketeers. The Duke of Buckingham, the Queen's friend. Cardinal Richelieu, the King's sneaky adviser. Milady, the Cardinal's spy. And the Cardinal's guards, his soldiers in red.",
    "audio": "04.mp3"
   },
   {
    "img": "05.jpg",
-   "text": "Swish! Clang! Pop! The four friends sent the guards' hats flying, and the guards ran away. Nobody was hurt. Then the friends raised their swords together: \"All for one, and one for all!\"",
+   "text": "The journey. From d'Artagnan's farm to Paris. Then on to Calais, over the sea, all the way to London in England!",
    "audio": "05.mp3"
   },
   {
    "img": "06.jpg",
-   "text": "The King once gave Queen Anne twelve sparkling diamonds. She gave them to a friend in England as a present. Sneaky Cardinal Richelieu knew. He whispered to the King, \"Ask the Queen to wear her diamonds at the Royal Ball!\"",
+   "text": "Long ago in France, a boy named d'Artagnan lived on a farm. He was poor. But he was very brave.",
    "audio": "06.mp3"
   },
   {
    "img": "07.jpg",
-   "text": "The Queen was worried. Her kind friend Constance knew just who could help. \"I will bring the diamonds back in time!\" promised d'Artagnan. \"Us too!\" said Athos, Porthos and Aramis.",
+   "text": "His papa gave him an old sword, a letter, and a funny yellow horse. \"Be brave, my son. Never give up!\"",
    "audio": "07.mp3"
   },
   {
    "img": "08.jpg",
-   "text": "The four friends galloped toward the sea. But the Cardinal's guards tried to stop them. One by one, Porthos, Aramis and Athos stayed behind to hold the guards back. \"Go on, d'Artagnan! Don't stop!\"",
+   "text": "Clip-clop, clip-clop. People laughed at the yellow horse. D'Artagnan held his head high. Off he rode to Paris!",
    "audio": "08.mp3"
   },
   {
    "img": "09.jpg",
-   "text": "D'Artagnan sailed to England and found the Duke of Buckingham. The Duke opened the box, and they counted. One, two, three... ten. Only ten! Sneaky Milady, the Cardinal's spy, had snipped two away.",
+   "text": "Paris was big and busy and noisy. D'Artagnan went to see Captain Tréville, chief of the King's Musketeers.",
    "audio": "09.mp3"
   },
   {
    "img": "10.jpg",
-   "text": "The Duke's jeweler worked all night long, tap, tap, tapping by candlelight. D'Artagnan tried to stay awake. By morning, two new diamonds sparkled just like the others. Twelve again!",
+   "text": "\"I want to be a Musketeer!\" cried d'Artagnan. \"You are brave,\" smiled the Captain. \"But first, you must learn.\"",
    "audio": "10.mp3"
   },
   {
    "img": "11.jpg",
-   "text": "D'Artagnan raced home across the stormy sea. The waves were huge and the thunder was loud, but he held on tight. Then he galloped over the hills to Paris. Hurry, hurry!",
+   "text": "D'Artagnan rushed out. Bump! He ran into Athos. \"Ow, my shoulder!\" groaned Athos. \"Meet me at noon!\"",
    "audio": "11.mp3"
   },
   {
    "img": "12.jpg",
-   "text": "At the Royal Ball, music played and candles glowed. The Cardinal giggled. He was sure the diamonds were gone. Then the Queen walked in...",
+   "text": "Flap! He got stuck in Porthos's big cape. \"Meet me at one!\" grumbled Porthos.",
    "audio": "12.mp3"
   },
   {
    "img": "13.jpg",
-   "text": "...and there they were: all twelve diamonds, shining bright! The King cheered. The Cardinal turned as red as his robe. His sneaky plan had failed.",
+   "text": "Oops! He picked up Aramis's lace hanky. \"Meet me at two!\" huffed Aramis. Gulp!",
    "audio": "13.mp3"
   },
   {
    "img": "14.jpg",
-   "text": "For his courage and loyalty, d'Artagnan became a real Musketeer at last. The four friends promised to always help each other, in good times and hard times. All for one, and one for all!",
+   "text": "At noon, the three Musketeers were waiting. Athos, the calm one. Porthos, the big one. Aramis, the gentle one.",
    "audio": "14.mp3"
+  },
+  {
+   "img": "15.jpg",
+   "text": "\"Halt!\" The Cardinal's guards marched in. \"No sword fights! Give up your swords!\"",
+   "audio": "15.mp3"
+  },
+  {
+   "img": "16.jpg",
+   "text": "Five guards. Three Musketeers. D'Artagnan did not run away. \"I'm with you!\" he said.",
+   "audio": "16.mp3"
+  },
+  {
+   "img": "17.jpg",
+   "text": "Swish! Clang! Clink! Hats flew. Swords flew. The guards ran away.",
+   "audio": "17.mp3"
+  },
+  {
+   "img": "18.jpg",
+   "text": "Arm in arm, they marched home. Now they were four friends. \"All for one, and one for all!\"",
+   "audio": "18.mp3"
+  },
+  {
+   "img": "19.jpg",
+   "text": "Meanwhile, at the palace, King Louis gave Queen Anne a present: twelve diamonds on a blue bow.",
+   "audio": "19.mp3"
+  },
+  {
+   "img": "20.jpg",
+   "text": "The Queen gave them to a friend in England, the Duke of Buckingham.",
+   "audio": "20.mp3"
+  },
+  {
+   "img": "21.jpg",
+   "text": "Sneaky Cardinal Richelieu found out. He whispered to the King, \"Ask the Queen to wear her diamonds to the ball!\"",
+   "audio": "21.mp3"
+  },
+  {
+   "img": "22.jpg",
+   "text": "The Queen was so worried. Her helper Constance whispered, \"I know a brave boy.\" \"I will bring them back!\" promised d'Artagnan.",
+   "audio": "22.mp3"
+  },
+  {
+   "img": "23.jpg",
+   "text": "\"We will help!\" cheered his friends. \"All for one, and one for all!\" Off they galloped to the sea.",
+   "audio": "23.mp3"
+  },
+  {
+   "img": "24.jpg",
+   "text": "The Cardinal's men tried to stop them. One by one, his friends stayed behind. \"Go on, d'Artagnan! All for one!\"",
+   "audio": "24.mp3"
+  },
+  {
+   "img": "25.jpg",
+   "text": "D'Artagnan sailed over the sea to England. He found the Duke.",
+   "audio": "25.mp3"
+  },
+  {
+   "img": "26.jpg",
+   "text": "They opened the box and counted. One, two, three … ten. Only ten!",
+   "audio": "26.mp3"
+  },
+  {
+   "img": "27.jpg",
+   "text": "Who took them? Milady, the Cardinal's sneaky spy! Snip, snip! At a ball, she had cut off two.",
+   "audio": "27.mp3"
+  },
+  {
+   "img": "28.jpg",
+   "text": "\"Wake my jeweller!\" called the Duke. Tap, tap, tap, all night long. By morning: twelve diamonds!",
+   "audio": "28.mp3"
+  },
+  {
+   "img": "29.jpg",
+   "text": "Back over the sea. Then fast horses all the way to Paris. Hurry, hurry! \"One for all!\"",
+   "audio": "29.mp3"
+  },
+  {
+   "img": "30.jpg",
+   "text": "At the ball, music played. Candles glowed. The Cardinal smiled a sneaky smile.",
+   "audio": "30.mp3"
+  },
+  {
+   "img": "31.jpg",
+   "text": "Then the Queen walked in. On her shoulder sparkled … all twelve diamonds!",
+   "audio": "31.mp3"
+  },
+  {
+   "img": "32.jpg",
+   "text": "The Cardinal turned as red as his robe. His plan had failed! The Queen gave d'Artagnan a ring. \"Thank you!\"",
+   "audio": "32.mp3"
+  },
+  {
+   "img": "33.jpg",
+   "text": "D'Artagnan rode back for his friends. Athos, Porthos and Aramis were safe! \"All for one, and one for all!\"",
+   "audio": "33.mp3"
+  },
+  {
+   "img": "34.jpg",
+   "text": "And one day, d'Artagnan got the blue uniform of a Musketeer. Now say it with them: \"All for one, and one for all!\"",
+   "audio": "34.mp3"
+  },
+  {
+   "img": "35.jpg",
+   "text": "The End.",
+   "audio": "35.mp3"
+  },
+  {
+   "img": "36.jpg",
+   "text": "About this story. Alexandre Dumas wrote The Three Musketeers in France in 1844. It is one of the best-loved adventure stories ever told. This book retells its first big adventure, the Queen's diamonds, in a short and gentle way for young children. When they are older, the whole book is waiting for them!",
+   "audio": "36.mp3"
+  },
+  {
+   "img": "back.jpg",
+   "cover": true
   }
- ]
+ ],
+ "v": "2026-11-15b"
 }

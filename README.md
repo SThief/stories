@@ -10,6 +10,12 @@ Run it: the `story-library` launch config (port 8260), or `python3 -m http.serve
 2. `book/book.json` lists the pages in order: `{ "img": "01.jpg", "text": "...", "audio": "01.mp3" }`. The first page may use `"cover": true`.
 3. Add one entry to `stories.json`.
 
+**A real printed book** (like All for One): put `"real": true` in `book.json` and list the print pages in order, front
+cover first and back cover last (`"cover": true`), each with an optional `"audio"`. The reader then shows them as a
+paper book you turn by dragging a corner: odd pages on the right, inside covers added automatically. All for One's pages
+come from the KDP print pages via `~/Projects/three-musketeers/web-book/make_web_book.py` (trims the bleed, records
+the narration in Kokoro af_heart).
+
 Story 1 was made in `~/Project/knights-tale-kids`, and its build scripts live there.
 
 ## Make the storytelling video
