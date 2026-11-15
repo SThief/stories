@@ -94,7 +94,7 @@
     background: radial-gradient(closest-side, rgba(0, 0, 0, .55), transparent); filter: blur(6px); z-index: -1; transition: left .8s, right .8s; }
   .rb .stage.closed-front .table-shadow { left: 52%; } .rb .stage.closed-back .table-shadow { right: 52%; }
   .rb .stack { position: absolute; top: 3px; bottom: 3px; z-index: -1; border-radius: 2px; transition: width .6s;
-    background: repeating-linear-gradient(90deg, #efe4cc 0 1px, #d9cbae 1px 2px); box-shadow: 0 2px 6px rgba(0, 0, 0, .35); opacity: 0; transition: width .6s, opacity .3s; }
+    background: repeating-linear-gradient(90deg, #efe4cc 0 1px, #d9cbae 1px 2px); box-shadow: 0 2px 6px rgba(0, 0, 0, .35); opacity: 0; transition: width .6s, opacity .15s; }
   .rb .stack.l { right: 100%; } .rb .stack.r { left: 100%; }
   .rb #book { width: 100%; height: 100%; }
   .rb .page { background: #f6eedb; overflow: hidden; }
@@ -246,7 +246,13 @@ function realBook(s, b, n) {
   const readSpread = () => { stopReading(); queue = visible().filter(k => pageAt(k) && pageAt(k).audio); if (!queue.length && autoRead) { setTimeout(() => autoRead && flip.flipNext('top'), 700); return; } readNext(); };
   flip.on('flip', () => { pageSound(); update(); if (autoRead) setTimeout(readSpread, 500); else stopReading(); });
   flip.on('changeOrientation', update);
-  flip.on('changeState', e => { if (e.data === 'user_fold' || e.data === 'fold_corner') load(flip.getCurrentPageIndex()); });
+  const hideEdges = () => ['stl', 'str'].forEach(id => { document.getElementById(id).style.opacity = 0; });
+  flip.on('changeState', e => {
+    if (e.data === 'user_fold' || e.data === 'fold_corner') load(flip.getCurrentPageIndex());
+    // turning from the first or last spread may close the book: hide the page edges before the turn starts
+    const v = visible(); if ((e.data === 'flipping' || e.data === 'user_fold') && v.length === 2 && (v[0] <= 1 || v[1] >= P.length - 2)) hideEdges();
+    if (e.data === 'read') update();
+  });
   document.getElementById('prev').onclick = () => { autoRead = false; document.getElementById('auto').classList.remove('on'); flip.flipPrev('top'); };
   document.getElementById('next').onclick = () => { autoRead = false; document.getElementById('auto').classList.remove('on'); flip.flipNext('top'); };
   document.getElementById('say').onclick = () => { const was = reading != null; autoRead = false; document.getElementById('auto').classList.remove('on'); if (was) stopReading(); else readSpread(); };
