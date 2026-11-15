@@ -94,7 +94,7 @@
     background: radial-gradient(closest-side, rgba(0, 0, 0, .55), transparent); filter: blur(6px); z-index: -1; transition: left .8s, right .8s; }
   .rb .stage.closed-front .table-shadow { left: 52%; } .rb .stage.closed-back .table-shadow { right: 52%; }
   .rb .stack { position: absolute; top: 3px; bottom: 3px; z-index: -1; border-radius: 2px; transition: width .6s;
-    background: repeating-linear-gradient(90deg, #efe4cc 0 1px, #d9cbae 1px 2px); box-shadow: 0 2px 6px rgba(0, 0, 0, .35); }
+    background: repeating-linear-gradient(90deg, #efe4cc 0 1px, #d9cbae 1px 2px); box-shadow: 0 2px 6px rgba(0, 0, 0, .35); opacity: 0; transition: width .6s, opacity .3s; }
   .rb .stack.l { right: 100%; } .rb .stack.r { left: 100%; }
   .rb #book { width: 100%; height: 100%; }
   .rb .page { background: #f6eedb; overflow: hidden; }
@@ -225,6 +225,7 @@ function realBook(s, b, n) {
     const done = Math.min(1, v[v.length - 1] / last), thick = 10;
     document.getElementById('stl').style.width = (v.length === 2 ? Math.max(1, done * thick) : 0) + 'px';
     document.getElementById('str').style.width = (v.length === 2 ? Math.max(1, (1 - done) * thick) : 0) + 'px';
+    ['stl', 'str'].forEach(id => { document.getElementById(id).style.opacity = v.length === 2 ? 1 : 0; });
     const nums = v.map(k => { const p = pageAt(k); return p && !p.cover && !p.end ? +p.img.replace(/\D/g, '') : null; }).filter(x => x);
     document.getElementById('count').textContent = v[0] === 0 ? 'Cover' : v[0] === last ? 'Back cover' : nums.length ? 'Page ' + nums.join('–') : 'Inside cover';
     document.getElementById('prog').style.width = (done * 100) + '%';
